@@ -1,16 +1,14 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import React from "react";
-import { View, Text } from "react-native";
+import { Text, View } from "react-native";
 
 const Placeholder = () => {
-    return (
-        <View style={{flex:1}}>
-            <Text>
-                LOGIN PAGE!!
-            </Text>
-        </View>
-    )
-}
+  return (
+    <View style={{ flex: 1 }}>
+      <Text>LOGIN PAGE!!</Text>
+    </View>
+  );
+};
 
 const AuthStack = createNativeStackNavigator();
 
@@ -19,13 +17,13 @@ const AuthStack = createNativeStackNavigator();
     screens to be built. 
 */
 export default function AuthStackNavigator() {
-    return (
-        <AuthStack.Navigator>
-            <AuthStack.Screen
-                name='Placeholder'
-                component={Placeholder}
-                options={{ headerShown: false }}
-            />
-        </AuthStack.Navigator>
-    )
+  return (
+    <AuthStack.Navigator>
+      <AuthStack.Screen
+        name="Placeholder"
+        component={Placeholder}
+        options={{ headerShown: false }}
+      />
+    </AuthStack.Navigator>
+  );
 }

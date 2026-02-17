@@ -7,30 +7,28 @@
  */
 
 declare global {
-    namespace ReactNavigation {
-        interface RootParamList extends RootStackParamList { }
-    }
+  namespace ReactNavigation {
+    interface RootParamList extends RootStackParamList {}
+  }
 }
 
 // RootStackParamList is the default list of Params for useNavigation()
 type RootStackParamList = {
-    AuthNav: undefined,
-    MainTabNav: undefined
-}
+  AuthNav: undefined;
+  MainTabNav: undefined;
+};
 
 export default RootStackParamList;
 
 export type AuthStackParamList = {
-    Placeholder: undefined,
-    LoginScreen: undefined,
-    RegisterScreen: undefined,
-    PasswordResetScreen: undefined
-}
+  Placeholder: undefined;
+  LoginScreen: undefined;
+  RegisterScreen: undefined;
+  PasswordResetScreen: undefined;
+};
 
 export type MainTabParamList = {
-    CommBoardStackNav: undefined
-}
+  CommBoardStackNav: undefined;
+};
 
-export type CommBoardStackParamList = {
-
-}
+export type CommBoardStackParamList = {};
