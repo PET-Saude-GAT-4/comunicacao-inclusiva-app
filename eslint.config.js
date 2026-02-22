@@ -1,10 +1,16 @@
-// https://docs.expo.dev/guides/using-eslint/
-const { defineConfig } = require('eslint/config');
-const expoConfig = require('eslint-config-expo/flat');
+import expoConfig from "eslint-config-expo/flat.js";
+import eslintPluginPrettierRecommended from "eslint-plugin-prettier/recommended";
+import { defineConfig, globalIgnores } from "eslint/config";
+import globals from "globals";
 
-module.exports = defineConfig([
+export default defineConfig([
+  globalIgnores(["dist/*"]),
   expoConfig,
+  eslintPluginPrettierRecommended,
   {
-    ignores: ['dist/*'],
+    ignores: ["dist/*"],
+    languageOptions: {
+      globals: globals.node,
+    },
   },
 ]);
