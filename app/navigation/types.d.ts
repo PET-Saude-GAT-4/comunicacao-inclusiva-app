@@ -18,7 +18,7 @@ type RootStackParamList = {
   MainTabNav: undefined;
 };
 
-export default RootStackParamList;
+export type { RootStackParamList };
 
 export type AuthStackParamList = {
   Placeholder: undefined;

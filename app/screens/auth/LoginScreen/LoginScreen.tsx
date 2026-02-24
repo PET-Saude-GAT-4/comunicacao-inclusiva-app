@@ -1,5 +1,4 @@
 import React from "react";
-
 import {
   Image,
   KeyboardAvoidingView,
@@ -11,13 +10,14 @@ import {
 } from "react-native";
 import { Button, TextInput } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
-import styles from "./LoginScreen.styles";
 
 import {
   keyboardAvoidantView,
   primaryButtonProps,
   textInputAreaProps,
-} from "@/app/styles/globalProps";
+} from "@/styles/globalProps";
+
+import styles from "./LoginScreen.styles";
 
 export default function LoginScreen() {
   const [cpf, setCPF] = React.useState("");

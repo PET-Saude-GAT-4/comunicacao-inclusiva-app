@@ -1,5 +1,6 @@
-import { COLORS, CONTAINERS, TYPOGRAPHY } from "@/app/styles/themes";
 import { StyleSheet } from "react-native";
+
+import { COLORS, CONTAINERS, TYPOGRAPHY } from "@/styles/themes";
 
 const styles = StyleSheet.create({
   backgroundContainer: {
@@ -26,7 +27,7 @@ const styles = StyleSheet.create({
     backgroundColor: "transparent",
     paddingBlock: CONTAINERS.spacings.md,
     justifyContent: "center",
-    alignItems:  "center",
+    alignItems: "center",
   },
   textInput: {
     borderRadius: CONTAINERS.radius.md,

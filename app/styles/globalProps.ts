@@ -1,4 +1,4 @@
-import { COLORS } from "@/app/styles/themes";
+import { COLORS } from "./themes";
 
 export const primaryButtonProps = {
   buttonColor: COLORS.primaryDark,
