@@ -11,7 +11,7 @@ const RootStack = createNativeStackNavigator();
     authenticate as they are sent to the AuthStackNavigator.
 */
 export default function RootStackNavigator() {
-  const { user, isLoading } = { user: true, isLoading: false };
+  const { user, isLoading } = { user: false, isLoading: false };
 
   return (
     <RootStack.Navigator>

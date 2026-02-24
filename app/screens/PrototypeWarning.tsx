@@ -1,6 +1,7 @@
 import React from "react";
 import { Image, Text, View } from "react-native";
 import { useTheme } from "react-native-paper";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const PrototypeWarningScreen = () => {
   // const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
@@ -12,7 +13,7 @@ const PrototypeWarningScreen = () => {
   const theme = useTheme();
 
   return (
-    <View style={{ flex: 1, justifyContent: "center" }}>
+    <SafeAreaView style={{ flex: 1, justifyContent: "center" }}>
       <View style={{}}>
         <Text style={{ fontSize: 24, width: "auto", textAlign: "center" }}>
           Função Não Prototipada
@@ -21,7 +22,7 @@ const PrototypeWarningScreen = () => {
       <View style={{ marginBlock: 40, alignItems: "center" }}>
         <Image style={{}} source={require("../../assets/images/alert.png")} />
       </View>
-    </View>
+    </SafeAreaView>
   );
 };
 
