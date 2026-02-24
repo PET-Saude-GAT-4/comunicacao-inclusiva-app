@@ -61,6 +61,7 @@ export const TYPOGRAPHY = {
     bodyEmph: 16,
     heading: 20,
     title: 36,
+    extravagantTitle:42,
   },
   weights: {
     regular: "400",
