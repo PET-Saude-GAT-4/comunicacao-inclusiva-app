@@ -12,10 +12,11 @@ import { Button, TextInput } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import {
-  keyboardAvoidantView,
-  primaryButtonProps,
-  textInputAreaProps,
-} from "@/styles/globalProps";
+  cpfInputProp,
+  passwordInputProp,
+} from "@/screens/auth/Shared/AuthShared.props";
+
+import { keyboardAvoidantView, primaryButtonProps } from "@/styles/globalProps";
 
 import styles from "./LoginScreen.styles";
 
@@ -28,6 +29,10 @@ export default function LoginScreen() {
   const handleSignIn = () => {};
 
   return (
+    /* 
+      In future building, it would be ideal for the follwing 3 wrappers to be bound into one
+      So it may be reused properly by other screens which take them for keyboard avoidance
+     */
     <SafeAreaView style={styles.backgroundContainer}>
       <ScrollView {...keyboardAvoidantView}>
         <KeyboardAvoidingView
@@ -36,27 +41,15 @@ export default function LoginScreen() {
         >
           <View style={{ flex: 5 }}>
             <View style={styles.contentContainer}>
-              <Image source={require("../../../../assets/images/icon.png")} />
+              <Image source={require("@assets/images/icon.png")} />
             </View>
           </View>
           <View style={styles.generalContainer}>
             <Text style={styles.headerText}>Entrar</Text>
+            <TextInput {...cpfInputProp} onChangeText={(cpf) => setCPF(cpf)} />
             <TextInput
-              style={styles.textInput}
-              placeholder="CPF"
-              autoCapitalize="none"
-              autoCorrect={false}
-              autoComplete="off"
-              keyboardType="numeric"
-              {...textInputAreaProps}
-              onChangeText={(cpf) => setCPF(cpf)}
-            />
-            <TextInput
-              style={styles.textInput}
-              placeholder="Senha"
-              secureTextEntry
               onChangeText={(password) => setPassword(password)}
-              {...textInputAreaProps}
+              {...passwordInputProp}
             />
             <TouchableWithoutFeedback onPress={() => handlePasswordReset()}>
               <Text style={styles.hyperlinkText}>Esqueci minha senha!</Text>
