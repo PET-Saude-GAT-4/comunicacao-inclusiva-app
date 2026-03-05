@@ -14,7 +14,7 @@ const Placeholder = () => {
 const Stack = createNativeStackNavigator();
 export default function CommBoardStackNav() {
   return (
-    <Stack.Navigator>
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen name="placeholder" component={Placeholder} />
     </Stack.Navigator>
   );

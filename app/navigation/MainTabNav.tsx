@@ -22,7 +22,7 @@ export default function MainTabNav() {
         allows for better flow within all screens related to "Prancha Livre"
     */
   return (
-    <MainTabs.Navigator screenOptions={{ headerShown: false }}>
+    <MainTabs.Navigator >
       <MainTabs.Screen
         name="CommBoardStackNav"
         component={CommBoardStackNavigator}

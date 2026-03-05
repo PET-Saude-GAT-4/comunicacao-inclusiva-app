@@ -18,7 +18,7 @@ export default function MyBoardsStackNav() {
   const { user, isLoading } = { user: false, isLoading: false };
 
   return (
-    <Stack.Navigator>
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen name="placeholder" component={Placeholder} />
     </Stack.Navigator>
   );
