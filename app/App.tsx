@@ -3,7 +3,7 @@ import { StatusBar } from "react-native";
 import { PaperProvider, useTheme } from "react-native-paper";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
-import RootStackNavigator from "./navigation/RootStackNavigator.tsx";
+import RootStackNavigator from "./navigation/RootStackNav";
 
 export default function App() {
   const theme = useTheme();

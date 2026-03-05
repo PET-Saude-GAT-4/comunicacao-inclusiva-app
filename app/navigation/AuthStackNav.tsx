@@ -8,14 +8,10 @@ const AuthStack = createNativeStackNavigator();
         This navigator leads into login, register and other authentication related
     screens to be built. 
 */
-export default function AuthStackNavigator() {
+export default function AuthStackNav() {
   return (
-    <AuthStack.Navigator>
-      <AuthStack.Screen
-        name="LoginScreen"
-        component={LoginScreen}
-        options={{ headerShown: false }}
-      />
+    <AuthStack.Navigator screenOptions={{ headerShown: false }}>
+      <AuthStack.Screen name="LoginScreen" component={LoginScreen} />
     </AuthStack.Navigator>
   );
 }

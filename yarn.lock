@@ -1762,6 +1762,24 @@
     use-latest-callback "^0.2.4"
     use-sync-external-store "^1.5.0"
 
+"@react-navigation/elements@^2.9.10":
+  version "2.9.10"
+  resolved "https://registry.yarnpkg.com/@react-navigation/elements/-/elements-2.9.10.tgz#8cde92a7b4d088a46efb931e6edb2644eddd630c"
+  integrity sha512-N8tuBekzTRb0pkMHFJGvmC6Q5OisSbt6gzvw7RHMnp4NDo5auVllT12sWFaTXf8mTduaLKNSrD/NZNaOqThCBg==
+  dependencies:
+    color "^4.2.3"
+    use-latest-callback "^0.2.4"
+    use-sync-external-store "^1.5.0"
+
+"@react-navigation/material-top-tabs@^7.4.18":
+  version "7.4.18"
+  resolved "https://registry.yarnpkg.com/@react-navigation/material-top-tabs/-/material-top-tabs-7.4.18.tgz#6d3496b967375daf0cb9808dcaee75e6f6b6ab07"
+  integrity sha512-O/gM4ToH//+iUyC907eQ8vMvAXuNsQtlR0/97s79GbArUEep5pbMnCyBd1xZwwzVK55djU5YyyH5CryQblalSA==
+  dependencies:
+    "@react-navigation/elements" "^2.9.10"
+    color "^4.2.3"
+    react-native-tab-view "^4.2.2"
+
 "@react-navigation/native-stack@^7.12.0", "@react-navigation/native-stack@^7.3.16":
   version "7.13.0"
   resolved "https://registry.yarnpkg.com/@react-navigation/native-stack/-/native-stack-7.13.0.tgz#a85a142ca9ce34a86147c5f36a956c3324e32238"
@@ -5883,6 +5901,11 @@ react-native-is-edge-to-edge@^1.1.6, react-native-is-edge-to-edge@^1.2.1:
   resolved "https://registry.yarnpkg.com/react-native-is-edge-to-edge/-/react-native-is-edge-to-edge-1.2.1.tgz#64e10851abd9d176cbf2b40562f751622bde3358"
   integrity sha512-FLbPWl/MyYQWz+KwqOZsSyj2JmLKglHatd3xLZWskXOpRaio4LfEDEz8E/A6uD8QoTHW6Aobw1jbEwK7KMgR7Q==
 
+react-native-pager-view@6.9.1:
+  version "6.9.1"
+  resolved "https://registry.yarnpkg.com/react-native-pager-view/-/react-native-pager-view-6.9.1.tgz#a9e6d9323935cc2ae1d46d7816b66f76dc3eff8e"
+  integrity sha512-uUT0MMMbNtoSbxe9pRvdJJKEi9snjuJ3fXlZhG8F2vVMOBJVt/AFtqMPUHu9yMflmqOr08PewKzj9EPl/Yj+Gw==
+
 react-native-paper@^5.14.5:
   version "5.15.0"
   resolved "https://registry.yarnpkg.com/react-native-paper/-/react-native-paper-5.15.0.tgz#3f99734b00f0305fc7dec6b80be86adc3d5acdf2"
@@ -5913,6 +5936,13 @@ react-native-screens@~4.16.0:
     react-freeze "^1.0.0"
     react-native-is-edge-to-edge "^1.2.1"
     warn-once "^0.1.0"
+
+react-native-tab-view@^4.2.2:
+  version "4.2.2"
+  resolved "https://registry.yarnpkg.com/react-native-tab-view/-/react-native-tab-view-4.2.2.tgz#303accb4ddb2f5856d62bb323dd202724275e6a2"
+  integrity sha512-NXtrG6OchvbGjsvbySJGVocXxo4Y2vA17ph4rAaWtA2jh+AasD8OyikKBRg2SmllEfeQ+GEhcKe8kulHv8BhTg==
+  dependencies:
+    use-latest-callback "^0.2.4"
 
 react-native-web@~0.21.0:
   version "0.21.2"
