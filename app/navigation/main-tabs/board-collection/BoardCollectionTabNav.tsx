@@ -8,8 +8,16 @@ const TopTabs = createMaterialTopTabNavigator();
 export default function MainTabNavigator() {
   return (
     <TopTabs.Navigator>
-      <TopTabs.Screen name="MyBoards" component={MyBoardsStackNav} />
-      <TopTabs.Screen name="AddBoard" component={AddBoardStackNav} />
+      <TopTabs.Screen
+        name="MyBoards"
+        component={MyBoardsStackNav}
+        options={{ title: "Minha Coleção" }}
+      />
+      <TopTabs.Screen
+        name="AddBoard"
+        component={AddBoardStackNav}
+        options={{ title: "Adicionar" }}
+      />
     </TopTabs.Navigator>
   );
 }

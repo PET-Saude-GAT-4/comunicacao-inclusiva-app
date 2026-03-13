@@ -1,12 +1,17 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import React from "react";
 
-import CommBoardStackNavigator from "./main-tabs/comm-board/CommBoardStackNav";
-import ReadyInteractionsTabNav from "./main-tabs/ready-interactions/ReadyInteractionsTabNav";
+import GlobalHeader from "@/components/GlobalHeaderComponent";
+import { Appbar } from "react-native-paper";
 import BoardCollectionTabNav from "./main-tabs/board-collection/BoardCollectionTabNav";
-import SettingsStackNav from "./main-tabs/settings/SettingsStackNav";
+import CommBoardStackNavigator from "./main-tabs/comm-board/CommBoardStackNav";
 import EmergencyTabNav from "./main-tabs/emergency/EmergencyTabNav";
+import ReadyInteractionsTabNav from "./main-tabs/ready-interactions/ReadyInteractionsTabNav";
+import SettingsStackNav from "./main-tabs/settings/SettingsStackNav";
 
+// *.*
+import { Platform } from "react-native";
+const MORE_ICON = Platform.OS === "ios" ? "dots-horizontal" : "dots-vertical";
 
 const MainTabs = createBottomTabNavigator();
 
@@ -22,31 +27,49 @@ export default function MainTabNav() {
         allows for better flow within all screens related to "Prancha Livre"
     */
   return (
-    <MainTabs.Navigator >
+    <MainTabs.Navigator screenOptions={{ header: GlobalHeader }}>
       <MainTabs.Screen
         name="CommBoardStackNav"
         component={CommBoardStackNavigator}
-        options={{}}
+        options={{
+          title: "Prancha Livre",
+          headerRight: () => (
+            //*.*
+            <Appbar.Action icon={MORE_ICON} onPress={() => {}} />
+          ),
+        }}
       />
       <MainTabs.Screen
         name="ReadyInteractions"
         component={ReadyInteractionsTabNav}
-        options={{}}
+        options={{
+          title: "Frases Prontas",
+          headerRight: () => <></>,
+        }}
       />
-        <MainTabs.Screen
+      <MainTabs.Screen
         name="Emergency"
         component={EmergencyTabNav}
-        options={{}}
+        options={{
+          title: "Emergência",
+          headerRight: () => <></>,
+        }}
       />
       <MainTabs.Screen
         name="BoardCollection"
         component={BoardCollectionTabNav}
-        options={{}}
+        options={{
+          title: "Minhas Pranchas",
+          headerRight: () => <></>,
+        }}
       />
       <MainTabs.Screen
         name="Settings"
         component={SettingsStackNav}
-        options={{}}
+        options={{
+          title: "Configurações",
+          headerRight: () => <></>,
+        }}
       />
     </MainTabs.Navigator>
   );
