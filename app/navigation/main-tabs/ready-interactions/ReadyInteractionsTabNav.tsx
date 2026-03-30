@@ -17,14 +17,16 @@ const TopTabs = createMaterialTopTabNavigator();
 
 export default function ReadyInteractionsTabNav() {
   return (
-    <TopTabs.Navigator >
+    <TopTabs.Navigator>
       <TopTabs.Screen
         name="MyInteractions"
         component={MyInteractionsStackNav}
+        options={{ title: "Minhas Frases" }}
       />
       <TopTabs.Screen
         name="AddInteractions"
         component={AddInteractionStackNav}
+        options={{ title: "Adicionar Frase" }}
       />
     </TopTabs.Navigator>
   );
