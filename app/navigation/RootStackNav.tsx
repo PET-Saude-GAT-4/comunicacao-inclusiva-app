@@ -1,7 +1,7 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
-import AuthStackNavigator from "./AuthStackNavigator";
-import MainTabNavigator from "./MainTabNavigator";
+import AuthStackNavigator from "./AuthStackNav";
+import MainTabNavigator from "./MainTabNav";
 
 const RootStack = createNativeStackNavigator();
 
@@ -10,22 +10,22 @@ const RootStack = createNativeStackNavigator();
     they will be sent to the MainTabNavigator, otherwise they will be prompted to
     authenticate as they are sent to the AuthStackNavigator.
 */
-export default function RootStackNavigator() {
-  const { user, isLoading } = { user: false, isLoading: false };
+export default function RootStackNav() {
+  const { user, isLoading } = { user: true, isLoading: false };
 
   return (
-    <RootStack.Navigator>
+    <RootStack.Navigator screenOptions={{ headerShown: false }}>
       {!user ? (
         <RootStack.Screen
           name="AuthNav"
           component={AuthStackNavigator}
-          options={{ headerShown: false }}
+          options={{}}
         />
       ) : (
         <RootStack.Screen
           name="MainTabNav"
           component={MainTabNavigator}
-          options={{ headerShown: false }}
+          options={{}}
         />
       )}
     </RootStack.Navigator>
