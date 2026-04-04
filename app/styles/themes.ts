@@ -61,13 +61,13 @@ export const TYPOGRAPHY = {
     bodyEmph: 16,
     heading: 20,
     title: 36,
-    extravagantTitle:42,
+    extravagantTitle: 42,
   },
   weights: {
     regular: "400",
     medium: "500",
     bold: "700",
-  },
+  } as const,
 };
 
 // To be added later into development

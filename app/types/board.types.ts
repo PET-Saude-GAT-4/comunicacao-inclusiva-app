@@ -2,7 +2,7 @@ import { Pictogram } from "./pictogram.types";
 
 export interface BoardPictogram {
   order: number;
-  pictogram: Pictogram; 
+  pictogram: Pictogram;
 }
 
 export interface Board {
