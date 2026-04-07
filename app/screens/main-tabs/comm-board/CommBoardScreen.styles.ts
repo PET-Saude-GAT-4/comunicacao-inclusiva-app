@@ -1,11 +1,10 @@
 import { StyleSheet } from "react-native";
-import { COLORS, TYPOGRAPHY } from "../../../styles/themes"; // Pegando as cores do design system
+import { COLORS, CONTAINERS, TYPOGRAPHY } from "../../../styles/themes"; // Pegando as cores do design system
 
 export const styles = StyleSheet.create({
   text: {
     fontSize: TYPOGRAPHY.sizes.bodyEmph,
     fontWeight: TYPOGRAPHY.weights.medium,
-    marginBottom: 8,
     color: COLORS.text.onPrimary,
   },
   container: {
@@ -16,6 +15,37 @@ export const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: COLORS.background,
     padding: 16,
+  },
+  actionsContainer: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    marginTop: 16,
+  },
+  deleteButton: {
+    backgroundColor: "red",
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    justifyContent: "center",
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  sendButton: {
+    backgroundColor: "#00e0ff",
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    justifyContent: "center",
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
   },
   listSelectedPictograms: {
     backgroundColor: COLORS.surface.secondary,

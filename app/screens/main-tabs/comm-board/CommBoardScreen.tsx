@@ -1,4 +1,5 @@
 import { commBoardMock } from "@/mocks/commBoardMock";
+import { Ionicons } from "@expo/vector-icons";
 import React, { useState } from "react";
 import {
   FlatList,
@@ -20,10 +21,18 @@ export default function CommBoardScreen() {
     setSelectedPictograms((prev) => [...prev, pictogram]);
   };
 
+  const handleDeleteLast = () => {
+    setSelectedPictograms((prev) => prev.slice(0, -1));
+  };
+
+  const handleClear = () => {
+    setSelectedPictograms([]);
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.visorContainer}>
-        <Text style={styles.text}>Iteração do Porfissional</Text>
+        <Text style={styles.text}>Personalize sua frase</Text>
         <View style={styles.listSelectedPictograms}>
           {/* Scroll view to list all selected pictograms  */}
           <ScrollView horizontal={true}>
@@ -39,6 +48,14 @@ export default function CommBoardScreen() {
               </View>
             ))}
           </ScrollView>
+        </View>
+        <View style={styles.actionsContainer}>
+          <TouchableOpacity onPress={handleDeleteLast} style={styles.deleteButton}>
+            <Ionicons name="backspace-outline" size={32} color="#333" />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => console.log("Send pictograms:", selectedPictograms)} style={styles.sendButton}>
+            <Ionicons name="send-outline" size={32} color="#333" />
+          </TouchableOpacity>
         </View>
       </View>
 
