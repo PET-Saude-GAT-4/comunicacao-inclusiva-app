@@ -3,14 +3,14 @@ import React from "react";
 
 import GlobalHeader from "@/components/GlobalHeaderComponent";
 import { Appbar } from "react-native-paper";
-import BoardCollectionTabNav from "./main-tabs/board-collection/BoardCollectionTabNav";
 import CommBoardStackNavigator from "./main-tabs/comm-board/CommBoardStackNav";
 import EmergencyTabNav from "./main-tabs/emergency/EmergencyTabNav";
-import ReadyInteractionsTabNav from "./main-tabs/ready-interactions/ReadyInteractionsTabNav";
 import SettingsStackNav from "./main-tabs/settings/SettingsStackNav";
 
 // *.*
 import { Platform } from "react-native";
+import BoardCollectionTabNav from "./main-tabs/my-board-collection/BoardCollectionTabNav";
+import LibraryTabNav from "./main-tabs/library/LibraryTabNav";
 const MORE_ICON = Platform.OS === "ios" ? "dots-horizontal" : "dots-vertical";
 
 const MainTabs = createBottomTabNavigator();
@@ -40,11 +40,14 @@ export default function MainTabNav() {
         }}
       />
       <MainTabs.Screen
-        name="ReadyInteractions"
-        component={ReadyInteractionsTabNav}
+        name="BoardCollection"
+        component={BoardCollectionTabNav}
         options={{
-          title: "Frases Prontas",
-          headerRight: () => <></>,
+          title: "Minha Coleção",
+          headerRight: () => (
+            //*.*
+            <Appbar.Action icon={MORE_ICON} onPress={() => {}} />
+          ),
         }}
       />
       <MainTabs.Screen
@@ -55,14 +58,19 @@ export default function MainTabNav() {
           headerRight: () => <></>,
         }}
       />
+
       <MainTabs.Screen
-        name="BoardCollection"
-        component={BoardCollectionTabNav}
+        name="Library"
+        component={LibraryTabNav}
         options={{
-          title: "Minhas Pranchas",
-          headerRight: () => <></>,
+          title: "Biblioteca",
+          headerRight: () => (
+            //*.*
+            <Appbar.Action icon={MORE_ICON} onPress={() => {}} />
+          ),
         }}
       />
+
       <MainTabs.Screen
         name="Settings"
         component={SettingsStackNav}
