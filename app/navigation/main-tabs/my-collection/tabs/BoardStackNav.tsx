@@ -1,6 +1,6 @@
 import React from "react";
 
-import MyBoardScreen from "@/screens/main-tabs/my-board-collection/tabs/MyBoardScreen";
+import MyBoardScreen from "@/screens/main-tabs/my-collection/tabs/MyBoardScreen";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
 const Stack = createNativeStackNavigator();

@@ -9,7 +9,7 @@ import SettingsStackNav from "./main-tabs/settings/SettingsStackNav";
 
 // *.*
 import { Platform } from "react-native";
-import BoardCollectionTabNav from "./main-tabs/my-board-collection/BoardCollectionTabNav";
+import BoardCollectionTabNav from "./main-tabs/my-collection/BoardCollectionTabNav";
 import LibraryTabNav from "./main-tabs/library/LibraryTabNav";
 const MORE_ICON = Platform.OS === "ios" ? "dots-horizontal" : "dots-vertical";
 
