@@ -2,7 +2,8 @@ import { Board } from "../types/board.types";
 
 export const commBoardMock: Board = {
   id: 1,
-  title: "Comuns",
+  title: "Partes do Corpo",
+  imageUrl: require("../../assets/images/corpo.png"),
   items: [
     {
       order: 1,
