@@ -1,11 +1,13 @@
-import { commBoardMock } from "@/mocks/commBoardMock";
+import { commBoardsMock } from "@/mocks/commBoardMock";
 import { Ionicons } from "@expo/vector-icons";
-import React, { useState } from "react";
+import { LinearGradient } from "expo-linear-gradient";
+import React, { useState, useMemo } from "react";
 import {
   FlatList,
   Image,
   ScrollView,
   Text,
+  TextInput,
   TouchableOpacity,
   View,
 } from "react-native";
@@ -15,6 +17,9 @@ import { styles } from "./CommBoardScreen.styles";
 export default function CommBoardScreen() {
   //save the selected pictogram sequence
   const [selectedPictograms, setSelectedPictograms] = useState<Pictogram[]>([]);
+  const [selectedBoardId, setSelectedBoardId] = useState<number>(commBoardsMock[0].id);
+  const [isSearchActive, setIsSearchActive] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
 
   //add pictograms to the list
   const handleSelect = (pictogram: Pictogram) => {
@@ -28,6 +33,17 @@ export default function CommBoardScreen() {
   const handleClear = () => {
     setSelectedPictograms([]);
   };
+
+  const filteredBoards = useMemo(() => {
+    return commBoardsMock.filter((board) =>
+      board.title.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+  }, [searchQuery]);
+
+  const currentBoardItems = useMemo(() => {
+    const board = commBoardsMock.find((b) => b.id === selectedBoardId);
+    return board ? board.items : [];
+  }, [selectedBoardId]);
 
   return (
     <View style={styles.container}>
@@ -59,23 +75,80 @@ export default function CommBoardScreen() {
         </View>
       </View>
 
-      {/* FlatList to list all pictograms */}
       <View style={styles.gridContainer}>
-        <FlatList
-          horizontal={true}
-          data={commBoardMock.items}
-          keyExtractor={(item) => item.pictogram.id.toString()}
-          renderItem={({ item }) => (
-            <TouchableOpacity onPress={() => handleSelect(item.pictogram)}>
-              <View style={styles.pictrogramDiv}>
-                <Image
-                  source={item.pictogram.imageUrl}
-                  style={styles.pictrogramImage}
-                />
-              </View>
-            </TouchableOpacity>
-          )}
-        />
+        {/* Categories Bar */}
+        {isSearchActive && (
+          <View style={{ marginBottom: 16 }}>
+            <TextInput
+              style={styles.searchInput}
+              placeholder="Buscar prancha..."
+              value={searchQuery}
+              onChangeText={setSearchQuery}
+              autoFocus
+            />
+          </View>
+        )}
+        <View style={styles.categoriesWrapper}>
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.categoriesScroll}>
+            {filteredBoards.map((board) => {
+              const isSelected = board.id === selectedBoardId;
+              return (
+                <TouchableOpacity
+                  key={board.id}
+                  onPress={() => setSelectedBoardId(board.id)}
+                >
+                  <View style={[styles.categoryItem, isSelected && styles.categoryItemSelected]}>
+                    <LinearGradient
+                      colors={["#5ce1e6", "#ffb8e4"]}
+                      style={styles.categoryGradient}
+                    >
+                      {board.imageUrl && (
+                        <Image source={board.imageUrl} style={styles.categoryImage} />
+                      )}
+                      <Text style={styles.categoryText} numberOfLines={2}>
+                        {board.title.toUpperCase()}
+                      </Text>
+                    </LinearGradient>
+                  </View>
+                </TouchableOpacity>
+              );
+            })}
+          </ScrollView>
+
+          <TouchableOpacity
+            style={styles.searchButtonContainer}
+            onPress={() => {
+              setIsSearchActive(!isSearchActive);
+              setSearchQuery("");
+            }}
+          >
+            <View style={styles.searchButton}>
+              <Ionicons name={isSearchActive ? "close" : "search"} size={24} color="#666" />
+            </View>
+          </TouchableOpacity>
+        </View>
+
+        {/* FlatList to list all pictograms */}
+        <View style={{ flex: 1, paddingTop: 16 }}>
+          <FlatList
+            // changed numColumns to 4 according to screenshot or keep horizontal
+            // using numColumns=4 and removing horizontal to match screenshot grid layout better
+            numColumns={4}
+            data={currentBoardItems}
+            keyExtractor={(item) => item.pictogram.id.toString()}
+            renderItem={({ item }) => (
+              <TouchableOpacity onPress={() => handleSelect(item.pictogram)}>
+                <View style={styles.pictrogramDiv}>
+                  <Image
+                    source={item.pictogram.imageUrl}
+                    style={styles.pictrogramImage}
+                  />
+                </View>
+              </TouchableOpacity>
+            )}
+            columnWrapperStyle={{ justifyContent: "space-between" }}
+          />
+        </View>
       </View>
     </View>
   );

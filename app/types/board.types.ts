@@ -1,3 +1,4 @@
+import { ImageSourcePropType } from "react-native";
 import { Pictogram } from "./pictogram.types";
 
 export interface BoardPictogram {
@@ -9,4 +10,5 @@ export interface Board {
   id: number;
   title: string;
   items: BoardPictogram[];
+  imageUrl?: ImageSourcePropType;
 }
