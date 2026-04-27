@@ -25,7 +25,7 @@ export default function MyBoardScreen() {
         keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => (
           <TouchableOpacity
-            onPress={() => navigation.navigate("BoardDetails", { item })}
+            onPress={() => navigation.navigate("BoardDetails", { board: item })}
           >
             <View style={styles.boardBackground}>
               <Image source={item.imageUrl} style={styles.boardImage} />

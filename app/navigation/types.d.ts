@@ -38,7 +38,7 @@ export type CommBoardStackParamList = {
 
 export type MyCollectionStackParamList = {
   BoardCollectionTab: undefined;
-  BoardDetails: { item: Board };
+  BoardDetails: { board: Board };
 };
 
 export type BoardStackParamList = {
