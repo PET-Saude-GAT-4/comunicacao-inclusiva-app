@@ -31,4 +31,16 @@ export type MainTabParamList = {
   CommBoardStackNav: undefined;
 };
 
-export type CommBoardStackParamList = {};
+export type CommBoardStackParamList = {
+  BoardCollectionTabs: undefined;
+  BoardDetail: { item: Board };
+};
+
+export type MyCollectionStackParamList = {
+  BoardCollectionTab: undefined;
+  BoardDetails: { item: Board };
+};
+
+export type BoardStackParamList = {
+  placeholder: undefined;
+};
