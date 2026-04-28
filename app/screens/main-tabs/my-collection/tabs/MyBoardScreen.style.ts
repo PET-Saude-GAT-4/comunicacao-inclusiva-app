@@ -7,6 +7,15 @@ export const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingTop: 16,
   },
+  searchInput: {
+    height: 48,
+    backgroundColor: "#fff",
+    borderRadius: 24,
+    paddingHorizontal: 16,
+    borderWidth: 1,
+    borderColor: COLORS.outlineCommon,
+    color: COLORS.text.onPrimary,
+  },
   boardBackground: {
     backgroundColor: COLORS.surface.secondary,
     height: 100,

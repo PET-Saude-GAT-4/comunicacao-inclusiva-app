@@ -1,7 +1,7 @@
 import { commBoardsMock } from "@/mocks/commBoardMock";
 import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
-import React, { useState, useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import {
   FlatList,
   Image,
@@ -17,7 +17,9 @@ import { styles } from "./CommBoardScreen.styles";
 export default function CommBoardScreen() {
   //save the selected pictogram sequence
   const [selectedPictograms, setSelectedPictograms] = useState<Pictogram[]>([]);
-  const [selectedBoardId, setSelectedBoardId] = useState<number>(commBoardsMock[0].id);
+  const [selectedBoardId, setSelectedBoardId] = useState<number>(
+    commBoardsMock[0].id,
+  );
   const [isSearchActive, setIsSearchActive] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -36,7 +38,7 @@ export default function CommBoardScreen() {
 
   const filteredBoards = useMemo(() => {
     return commBoardsMock.filter((board) =>
-      board.title.toLowerCase().includes(searchQuery.toLowerCase())
+      board.title.toLowerCase().includes(searchQuery.toLowerCase()),
     );
   }, [searchQuery]);
 
@@ -66,10 +68,16 @@ export default function CommBoardScreen() {
           </ScrollView>
         </View>
         <View style={styles.actionsContainer}>
-          <TouchableOpacity onPress={handleDeleteLast} style={styles.deleteButton}>
+          <TouchableOpacity
+            onPress={handleDeleteLast}
+            style={styles.deleteButton}
+          >
             <Ionicons name="backspace-outline" size={32} color="#333" />
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => console.log("Send pictograms:", selectedPictograms)} style={styles.sendButton}>
+          <TouchableOpacity
+            onPress={() => console.log("Send pictograms:", selectedPictograms)}
+            style={styles.sendButton}
+          >
             <Ionicons name="send-outline" size={32} color="#333" />
           </TouchableOpacity>
         </View>
@@ -89,7 +97,11 @@ export default function CommBoardScreen() {
           </View>
         )}
         <View style={styles.categoriesWrapper}>
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.categoriesScroll}>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            style={styles.categoriesScroll}
+          >
             {filteredBoards.map((board) => {
               const isSelected = board.id === selectedBoardId;
               return (
@@ -97,13 +109,21 @@ export default function CommBoardScreen() {
                   key={board.id}
                   onPress={() => setSelectedBoardId(board.id)}
                 >
-                  <View style={[styles.categoryItem, isSelected && styles.categoryItemSelected]}>
+                  <View
+                    style={[
+                      styles.categoryItem,
+                      isSelected && styles.categoryItemSelected,
+                    ]}
+                  >
                     <LinearGradient
                       colors={["#5ce1e6", "#ffb8e4"]}
                       style={styles.categoryGradient}
                     >
                       {board.imageUrl && (
-                        <Image source={board.imageUrl} style={styles.categoryImage} />
+                        <Image
+                          source={board.imageUrl}
+                          style={styles.categoryImage}
+                        />
                       )}
                       <Text style={styles.categoryText} numberOfLines={2}>
                         {board.title.toUpperCase()}
@@ -123,7 +143,11 @@ export default function CommBoardScreen() {
             }}
           >
             <View style={styles.searchButton}>
-              <Ionicons name={isSearchActive ? "close" : "search"} size={24} color="#666" />
+              <Ionicons
+                name={isSearchActive ? "close" : "search"}
+                size={24}
+                color="#666"
+              />
             </View>
           </TouchableOpacity>
         </View>
@@ -131,8 +155,6 @@ export default function CommBoardScreen() {
         {/* FlatList to list all pictograms */}
         <View style={{ flex: 1, paddingTop: 16 }}>
           <FlatList
-            // changed numColumns to 4 according to screenshot or keep horizontal
-            // using numColumns=4 and removing horizontal to match screenshot grid layout better
             numColumns={4}
             data={currentBoardItems}
             keyExtractor={(item) => item.pictogram.id.toString()}
