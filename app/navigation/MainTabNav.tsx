@@ -9,8 +9,8 @@ import SettingsStackNav from "./main-tabs/settings/SettingsStackNav";
 
 // *.*
 import { Platform } from "react-native";
-import BoardCollectionTabNav from "./main-tabs/my-board-collection/BoardCollectionTabNav";
 import LibraryTabNav from "./main-tabs/library/LibraryTabNav";
+import MyCollectionStackNav from "./main-tabs/my-collection/MyCollectionStackNav";
 const MORE_ICON = Platform.OS === "ios" ? "dots-horizontal" : "dots-vertical";
 
 const MainTabs = createBottomTabNavigator();
@@ -41,8 +41,9 @@ export default function MainTabNav() {
       />
       <MainTabs.Screen
         name="BoardCollection"
-        component={BoardCollectionTabNav}
+        component={MyCollectionStackNav}
         options={{
+          headerShown: false,
           title: "Minha Coleção",
           headerRight: () => (
             //*.*

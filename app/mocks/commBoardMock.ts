@@ -33,7 +33,7 @@ export const commBoardsMock: Board[] = [
   {
     id: 3,
     title: "Corpo",
-    imageUrl: require("../../assets/images/cabeca.png"),
+    imageUrl: require("../../assets/images/corpo.png"),
     items: [
       { order: 1, pictogram: { id: 2, description: "Cabeça", imageUrl: require("../../assets/images/cabeca.png") } },
       { order: 2, pictogram: { id: 8, description: "Nariz", imageUrl: require("../../assets/images/nariz.png") } },

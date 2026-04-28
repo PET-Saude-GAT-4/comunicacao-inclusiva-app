@@ -9,6 +9,7 @@ export interface BoardPictogram {
 export interface Board {
   id: number;
   title: string;
+  imageUrl: ImageSourcePropType;
   items: BoardPictogram[];
   imageUrl?: ImageSourcePropType;
 }
