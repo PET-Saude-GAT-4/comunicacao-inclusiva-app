@@ -33,7 +33,6 @@ export default function MyBoardScreen() {
           placeholder="Buscar prancha..."
           value={searchQuery}
           onChangeText={setSearchQuery}
-          autoFocus
         />
       </View>
       <FlatList

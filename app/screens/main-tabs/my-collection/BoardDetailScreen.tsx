@@ -31,12 +31,12 @@ export default function BoardDetailScreen({ route }: Props) {
         contentContainerStyle={styles.listContainer}
         keyExtractor={(item) => item.pictogram.id.toString()}
         renderItem={({ item }) => (
-          <View style={styles.pictrogramDiv}>
+          <View style={styles.pictogramDiv}>
             <Image
               source={item.pictogram.imageUrl}
-              style={styles.pictrogramImg}
+              style={styles.pictogramImg}
             />
-            <Text style={styles.pictrogramText} numberOfLines={1}>
+            <Text style={styles.pictogramText} numberOfLines={1}>
               {item.pictogram.description.toUpperCase()}
             </Text>
           </View>

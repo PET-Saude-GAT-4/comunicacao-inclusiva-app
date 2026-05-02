@@ -43,7 +43,7 @@ export const styles = StyleSheet.create({
   listContainer: {
     paddingBottom: 24,
   },
-  pictrogramDiv: {
+  pictogramDiv: {
     flex: 1,
     backgroundColor: COLORS.surface.secondary,
     borderRadius: 16,
@@ -56,13 +56,13 @@ export const styles = StyleSheet.create({
     maxWidth: "22%",
     aspectRatio: 0.85,
   },
-  pictrogramImg: {
+  pictogramImg: {
     width: 48,
     height: 48,
     marginBottom: 8,
     resizeMode: "contain",
   },
-  pictrogramText: {
+  pictogramText: {
     fontSize: 10,
     fontWeight: "bold",
     color: "#000000",

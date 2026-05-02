@@ -52,7 +52,7 @@ export const styles = StyleSheet.create({
     height: 100,
     borderRadius: 20,
   },
-  selectedPictrogramDiv: {
+  selectedPictogramDiv: {
     flexDirection: "column",
     alignItems: "center",
     justifyContent: "center",
@@ -62,19 +62,25 @@ export const styles = StyleSheet.create({
     padding: 16,
     backgroundColor: COLORS.surface.secondary,
   },
-  selectedPictrogramImage: {
+  selectedPictogramImage: {
     width: 80,
     height: 80,
     marginRight: 10,
   },
-  pictrogramDiv: {
+  pictogramDiv: {
     flexDirection: "column",
     alignItems: "center",
     marginBottom: 12,
   },
-  pictrogramImage: {
+  pictogramImage: {
     width: 80,
     height: 80,
+  },
+  pictogramText:{
+    fontSize: 10,
+    fontWeight: "bold",
+    color: "#000000",
+    textAlign: "center",
   },
   categoriesWrapper: {
     flexDirection: "row",

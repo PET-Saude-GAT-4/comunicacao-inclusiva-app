@@ -57,11 +57,11 @@ export default function CommBoardScreen() {
             {selectedPictograms.map((pictogram, index) => (
               <View
                 key={`${pictogram.id}-${index}`}
-                style={styles.selectedPictrogramDiv}
+                style={styles.selectedPictogramDiv}
               >
                 <Image
                   source={pictogram.imageUrl}
-                  style={styles.selectedPictrogramImage}
+                  style={styles.selectedPictogramImage}
                 />
               </View>
             ))}
@@ -92,7 +92,6 @@ export default function CommBoardScreen() {
               placeholder="Buscar prancha..."
               value={searchQuery}
               onChangeText={setSearchQuery}
-              autoFocus
             />
           </View>
         )}
@@ -156,15 +155,19 @@ export default function CommBoardScreen() {
         <View style={{ flex: 1, paddingTop: 16 }}>
           <FlatList
             numColumns={4}
+            showsVerticalScrollIndicator={false}
             data={currentBoardItems}
             keyExtractor={(item) => item.pictogram.id.toString()}
             renderItem={({ item }) => (
               <TouchableOpacity onPress={() => handleSelect(item.pictogram)}>
-                <View style={styles.pictrogramDiv}>
+                <View style={styles.pictogramDiv}>
                   <Image
                     source={item.pictogram.imageUrl}
-                    style={styles.pictrogramImage}
+                    style={styles.pictogramImage}
                   />
+                  <Text style={styles.pictogramText} numberOfLines={1}>
+                    {item.pictogram.description.toUpperCase()}
+                  </Text>
                 </View>
               </TouchableOpacity>
             )}
