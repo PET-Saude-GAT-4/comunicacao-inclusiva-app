@@ -4,7 +4,7 @@ import { MyCollectionStackParamList } from "@/navigation/types";
 import { Board } from "@/types/board.types";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { useNavigation } from "expo-router";
+import { useNavigation } from "@react-navigation/native";
 import React, { useMemo, useState } from "react";
 import { FlatList, Image, Text, TouchableOpacity, View, TextInput } from "react-native";
 import { styles } from "./MyBoardScreen.style";

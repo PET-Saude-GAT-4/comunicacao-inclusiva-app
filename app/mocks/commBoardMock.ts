@@ -21,7 +21,7 @@ export const commBoardsMock: Board[] = [
     { order: 13, pictogram: { id: 13, description: "Coração", imageUrl: require("../../assets/images/coracao.png") } },
     { order: 14, pictogram: { id: 14, description: "Dente", imageUrl: require("../../assets/images/dente.png") } },
     { order: 15, pictogram: { id: 15, description: "Mão", imageUrl: require("../../assets/images/mao.png") } },
-    { order: 16, pictogram: { id: 16, description: "Pulmões", imageUrl: require("../../assets/images/pulmoes.png") } },
+    { order: 16, pictogram: { id: 16, description: "Rins", imageUrl: require("../../assets/images/rins.png") } },
     ],
   },
   {
@@ -48,7 +48,7 @@ export const commBoardsMock: Board[] = [
       { order: 6, pictogram: { id: 10, description: "Coração", imageUrl: require("../../assets/images/coracao.png") } },
       { order: 7, pictogram: { id: 10, description: "Dente", imageUrl: require("../../assets/images/dente.png") } },
       { order: 8, pictogram: { id: 10, description: "Mão", imageUrl: require("../../assets/images/mao.png") } },
-      { order: 9, pictogram: { id: 10, description: "Pulmões", imageUrl: require("../../assets/images/pulmoes.png") } },
+      { order: 9, pictogram: { id: 10, description: "Rins", imageUrl: require("../../assets/images/rins.png") } },
     ],
   },
   {
