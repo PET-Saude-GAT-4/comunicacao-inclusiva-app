@@ -63,6 +63,9 @@ export default function CommBoardScreen() {
                   source={pictogram.imageUrl}
                   style={styles.selectedPictogramImage}
                 />
+                <Text style={styles.pictogramText} numberOfLines={1}>
+                  {pictogram.description.toUpperCase()}
+                </Text>
               </View>
             ))}
           </ScrollView>

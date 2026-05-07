@@ -49,13 +49,15 @@ export const styles = StyleSheet.create({
   },
   listSelectedPictograms: {
     backgroundColor: COLORS.surface.secondary,
-    height: 100,
+    height: 110,
     borderRadius: 20,
+    padding: 1
   },
   selectedPictogramDiv: {
     flexDirection: "column",
     alignItems: "center",
     justifyContent: "center",
+    paddingRight: 20
   },
   gridContainer: {
     flex: 2,
@@ -65,7 +67,6 @@ export const styles = StyleSheet.create({
   selectedPictogramImage: {
     width: 80,
     height: 80,
-    marginRight: 10,
   },
   pictogramDiv: {
     flexDirection: "column",
