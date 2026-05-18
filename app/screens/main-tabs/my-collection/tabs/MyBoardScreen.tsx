@@ -1,12 +1,19 @@
 import { commBoardsMock } from "@/mocks/commBoardMock";
 
 import { MyCollectionStackParamList } from "@/navigation/types";
-import { Board } from "@/types/board.types";
+import { Board } from "@/types/mock/board.types";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useNavigation } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import React, { useMemo, useState } from "react";
-import { FlatList, Image, Text, TouchableOpacity, View, TextInput } from "react-native";
+import {
+  FlatList,
+  Image,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { styles } from "./MyBoardScreen.style";
 
 export default function MyBoardScreen() {
