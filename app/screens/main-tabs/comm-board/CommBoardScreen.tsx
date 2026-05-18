@@ -11,7 +11,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { Pictogram } from "../../../types/pictogram.types";
+import { Pictogram } from "../../../types/mock/pictogram.types";
 import { styles } from "./CommBoardScreen.styles";
 
 export default function CommBoardScreen() {

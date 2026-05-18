@@ -1,7 +1,8 @@
-import { ImageSourcePropType } from "react-native";
-
 export interface Pictogram {
   id: number;
+  uuid: string;
   description: string;
-  imageUrl: ImageSourcePropType;
+  fileUuid: string;
+  createdAt: string;
+  updatedAt: string;
 }
