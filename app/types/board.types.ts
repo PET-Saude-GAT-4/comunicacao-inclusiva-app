@@ -11,5 +11,4 @@ export interface Board {
   title: string;
   imageUrl: ImageSourcePropType;
   items: BoardPictogram[];
-  imageUrl?: ImageSourcePropType;
 }
