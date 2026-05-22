@@ -1,9 +1,8 @@
-import React from "react";
+import { NavigationContainer } from "@react-navigation/native";
 import { StatusBar } from "react-native";
 import { PaperProvider, useTheme } from "react-native-paper";
 import { SafeAreaProvider } from "react-native-safe-area-context";
-import { NavigationContainer } from "@react-navigation/native";
-
+import { SessionProvider } from "./app/contexts/SessionContext";
 import RootStackNavigator from "./app/navigation/RootStackNav";
 
 export default function App() {
@@ -12,14 +11,16 @@ export default function App() {
   return (
     <SafeAreaProvider>
       <PaperProvider>
-        <NavigationContainer>
-          <StatusBar
-            barStyle={theme.dark ? "light-content" : "dark-content"}
-            backgroundColor={theme.colors.background}
-          />
-          <RootStackNavigator />
-        </NavigationContainer>
-      </PaperProvider>
-    </SafeAreaProvider>
+        <SessionProvider>
+          <NavigationContainer>
+            <StatusBar
+              barStyle={theme.dark ? "light-content" : "dark-content"}
+              backgroundColor={theme.colors.background}
+            />
+            <RootStackNavigator />
+          </NavigationContainer>
+        </SessionProvider>
+      </PaperProvider >
+    </SafeAreaProvider >
   );
 }
