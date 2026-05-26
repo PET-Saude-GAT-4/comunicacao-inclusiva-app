@@ -16,6 +16,7 @@ export function useBoards() {
   const fetchBoards = async () => {
     setIsError(false);
 
+    let hasCache = false;
     try {
       //Tryng to get data from the cache first using AsyncStorage
       const cacheData = await AsyncStorage.getItem(CACHE_KEY);
@@ -23,25 +24,28 @@ export function useBoards() {
       if (cacheData) {
         setBoards(JSON.parse(cacheData));
         setIsLoading(false);
-      } else {
-        //Using existing mocks because there is no cache
-        setBoards(boardsMock);
-        setIsLoading(false);
+        hasCache = true;
       }
-
       //Trying to get API data with fetch
       const newData = await boardService.getBoards();
 
-      if (newData && newData.length === 0) {
-        return;
+      if (newData && newData.length > 0) {
+        //Update API data to the cache
+        setBoards(newData);
+        await AsyncStorage.setItem(CACHE_KEY, JSON.stringify(newData));
+      } else if (!hasCache) {
+        //If there is no data from the api and cache, use the mock
+        setBoards(boardsMock);
       }
-
-      //Update API data to the cache
-      setBoards(newData);
-      await AsyncStorage.setItem(CACHE_KEY, JSON.stringify(newData));
     } catch (error) {
       console.log("Erro na API, usando fallback", error);
       setIsError(true);
+
+      //if there is an api error and and there is no data in the cache
+      if (!hasCache) {
+        setBoards(boardsMock);
+      }
+
     } finally {
       setIsLoading(false);
     }
