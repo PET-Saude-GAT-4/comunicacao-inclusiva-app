@@ -1,14 +1,12 @@
-import { commBoardsMock } from "@/mocks/commBoardMock";
-
+import { useBoards } from "@/hooks/useBoards";
 import { MyCollectionStackParamList } from "@/navigation/types";
-import { Board } from "@/types/mock/board.types";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { Image } from "expo-image";
 import React, { useMemo, useState } from "react";
 import {
   FlatList,
-  Image,
   Text,
   TextInput,
   TouchableOpacity,
@@ -23,14 +21,15 @@ export default function MyBoardScreen() {
   >;
   const navigation = useNavigation<NavProp>();
 
-  const boards: Board[] = [...commBoardsMock];
+  const { boards, isLoading: isLoadingBoards } = useBoards();
+
   const [searchQuery, setSearchQuery] = useState("");
 
   const filteredBoards = useMemo(() => {
     return boards.filter((board) =>
       board.title.toLowerCase().includes(searchQuery.toLowerCase()),
     );
-  }, [searchQuery]);
+  }, [searchQuery, boards]);
 
   return (
     <View style={styles.container}>
@@ -45,13 +44,16 @@ export default function MyBoardScreen() {
       <FlatList
         data={filteredBoards}
         showsVerticalScrollIndicator={false}
-        keyExtractor={(item) => item.id.toString()}
+        keyExtractor={(item) => item.uuid}
         renderItem={({ item }) => (
           <TouchableOpacity
             onPress={() => navigation.navigate("BoardDetails", { board: item })}
           >
             <View style={styles.boardBackground}>
-              <Image source={item.imageUrl} style={styles.boardImage} />
+              <Image
+                source={{ uri: item.representativePictogram.imageSource }}
+                style={styles.boardImage}
+              />
               <View style={styles.divider} />
               <Text style={styles.boradTitle}>{item.title}</Text>
               <MaterialIcons name="arrow-forward-ios" size={25} color="#000" />

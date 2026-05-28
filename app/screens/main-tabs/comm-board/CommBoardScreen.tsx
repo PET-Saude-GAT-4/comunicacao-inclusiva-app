@@ -1,4 +1,3 @@
-import { OfflineBanner } from "@/components/OfflineBanner";
 import { useBoardPictogram } from "@/hooks/useBoardPictograms";
 import { useBoards } from "@/hooks/useBoards";
 import { Ionicons } from "@expo/vector-icons";
@@ -25,14 +24,10 @@ export default function CommBoardScreen() {
   const [isSearchActive, setIsSearchActive] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
 
-  const {
-    boards,
-    isLoading: isLoadingBoards,
-  } = useBoards();
-  const {
-    pictograms,
-    isLoading: isLoadingPics,
-  } = useBoardPictogram(selectedBoardUuid || "");
+  const { boards, isLoading: isLoadingBoards } = useBoards();
+  const { pictograms, isLoading: isLoadingPics } = useBoardPictogram(
+    selectedBoardUuid || "",
+  );
 
   useEffect(() => {
     if (boards.length > 0 && !selectedBoardUuid) {
