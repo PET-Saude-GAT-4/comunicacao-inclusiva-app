@@ -1,8 +1,6 @@
-import { BoardSkeleton } from "@/components/BoardSkeleton";
 import { OfflineBanner } from "@/components/OfflineBanner";
 import { useBoardPictogram } from "@/hooks/useBoardPictograms";
 import { useBoards } from "@/hooks/useBoards";
-import { useSyncEngine } from "@/hooks/useSyncEngine";
 import { Ionicons } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
@@ -17,12 +15,8 @@ import {
 } from "react-native";
 import { Pictogram } from "../../../types/pictogram.types";
 import { styles } from "./CommBoardScreen.styles";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function CommBoardScreen() {
-  // It starts the synchronization engine in the background and retrieves the status.
-  const { isError: isSyncError, isSyncing } = useSyncEngine();
-
   //save the selected pictogram sequence
   const [selectedPictograms, setSelectedPictograms] = useState<Pictogram[]>([]);
   const [selectedBoardUuid, setSelectedBoardUuid] = useState<string | null>(
@@ -34,28 +28,17 @@ export default function CommBoardScreen() {
   const {
     boards,
     isLoading: isLoadingBoards,
-    refetch: refetchBoards,
   } = useBoards();
   const {
     pictograms,
     isLoading: isLoadingPics,
-    refetch: refetchPictograms,
   } = useBoardPictogram(selectedBoardUuid || "");
-
-  // Refresh the screen once the background sync has finished saving the actual data to the cache.
-  useEffect(() => {
-    if (!isSyncing) {
-      refetchBoards();
-      refetchPictograms();
-    }
-  }, [isSyncing]);
 
   useEffect(() => {
     if (boards.length > 0 && !selectedBoardUuid) {
       setSelectedBoardUuid(boards[0].uuid);
     }
   }, [boards]);
-
 
   //add pictograms to the list
   const handleSelect = (pictogram: Pictogram) => {
@@ -76,10 +59,9 @@ export default function CommBoardScreen() {
     );
   }, [searchQuery, boards]);
 
-
   return (
     <View style={styles.container}>
-      <OfflineBanner visible={isSyncError} />
+      {/* OfflineBanner is now driven by the global SyncEngine in MainTabNav */}
       <View style={styles.visorContainer}>
         <Text style={styles.text}>Personalize sua frase</Text>
         <View style={styles.listSelectedPictograms}>
@@ -91,7 +73,7 @@ export default function CommBoardScreen() {
                 style={styles.selectedPictogramDiv}
               >
                 <Image
-                  source={{uri: pictogram.imageSource}}
+                  source={{ uri: pictogram.imageSource }}
                   style={styles.selectedPictogramImage}
                 />
                 <Text style={styles.pictogramText} numberOfLines={1}>
@@ -154,7 +136,9 @@ export default function CommBoardScreen() {
                     >
                       {board.representativePictogram && (
                         <Image
-                          source={{ uri: board.representativePictogram.imageSource }}
+                          source={{
+                            uri: board.representativePictogram.imageSource,
+                          }}
                           style={styles.categoryImage}
                         />
                       )}
@@ -196,7 +180,7 @@ export default function CommBoardScreen() {
               <TouchableOpacity onPress={() => handleSelect(item)}>
                 <View style={styles.pictogramDiv}>
                   <Image
-                    source={{uri: item.imageSource}}
+                    source={{ uri: item.imageSource }}
                     style={styles.pictogramImage}
                   />
                   <Text style={styles.pictogramText} numberOfLines={1}>
