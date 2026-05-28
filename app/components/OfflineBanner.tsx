@@ -5,20 +5,20 @@ interface OfflineBannerProps {
   visible: boolean;
 }
 
-export function OffilneBanner({ visible }: OfflineBannerProps) {
+export function OfflineBanner({ visible }: OfflineBannerProps) {
   if (!visible) return null;
 
   return (
     <View style={styles.container}>
-      <MaterialIcons name="wifi-off" size={16} color="white" style={styles.icon}/>
-      <Text style={styles.text}>Você está offline. Exibindo dados locais.</Text>
+      <MaterialIcons name="cloud-off" size={16} color="white" style={styles.icon}/>
+      <Text style={styles.text}>Servidor indisponível. Exibindo dados salvos.</Text>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "#FF3B30", // Vermelho padrão de alerta
+    backgroundColor: "#FF3B30",
     paddingVertical: 4,
     paddingHorizontal: 16,
     flexDirection: "row",

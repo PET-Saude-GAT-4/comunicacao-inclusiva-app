@@ -11,7 +11,7 @@ export interface ApiPictogram {
   id: number;
   uuid: string;
   description: string;
-  fileUuid: string;
+  fileUrl: string;
   createdAt: string;
   updatedAt: string;
 }

@@ -1,27 +1,61 @@
-import { commBoardsMock } from "@/mocks/commBoardMock";
+import { BoardSkeleton } from "@/components/BoardSkeleton";
+import { OfflineBanner } from "@/components/OfflineBanner";
+import { useBoardPictogram } from "@/hooks/useBoardPictograms";
+import { useBoards } from "@/hooks/useBoards";
+import { useSyncEngine } from "@/hooks/useSyncEngine";
 import { Ionicons } from "@expo/vector-icons";
+import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
   FlatList,
-  Image,
   ScrollView,
   Text,
   TextInput,
   TouchableOpacity,
   View,
 } from "react-native";
-import { Pictogram } from "../../../types/mock/pictogram.types";
+import { Pictogram } from "../../../types/pictogram.types";
 import { styles } from "./CommBoardScreen.styles";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function CommBoardScreen() {
+  // It starts the synchronization engine in the background and retrieves the status.
+  const { isError: isSyncError, isSyncing } = useSyncEngine();
+
   //save the selected pictogram sequence
   const [selectedPictograms, setSelectedPictograms] = useState<Pictogram[]>([]);
-  const [selectedBoardId, setSelectedBoardId] = useState<number>(
-    commBoardsMock[0].id,
+  const [selectedBoardUuid, setSelectedBoardUuid] = useState<string | null>(
+    null,
   );
   const [isSearchActive, setIsSearchActive] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+
+  const {
+    boards,
+    isLoading: isLoadingBoards,
+    refetch: refetchBoards,
+  } = useBoards();
+  const {
+    pictograms,
+    isLoading: isLoadingPics,
+    refetch: refetchPictograms,
+  } = useBoardPictogram(selectedBoardUuid || "");
+
+  // Refresh the screen once the background sync has finished saving the actual data to the cache.
+  useEffect(() => {
+    if (!isSyncing) {
+      refetchBoards();
+      refetchPictograms();
+    }
+  }, [isSyncing]);
+
+  useEffect(() => {
+    if (boards.length > 0 && !selectedBoardUuid) {
+      setSelectedBoardUuid(boards[0].uuid);
+    }
+  }, [boards]);
+
 
   //add pictograms to the list
   const handleSelect = (pictogram: Pictogram) => {
@@ -37,18 +71,15 @@ export default function CommBoardScreen() {
   };
 
   const filteredBoards = useMemo(() => {
-    return commBoardsMock.filter((board) =>
+    return boards.filter((board) =>
       board.title.toLowerCase().includes(searchQuery.toLowerCase()),
     );
-  }, [searchQuery]);
+  }, [searchQuery, boards]);
 
-  const currentBoardItems = useMemo(() => {
-    const board = commBoardsMock.find((b) => b.id === selectedBoardId);
-    return board ? board.items : [];
-  }, [selectedBoardId]);
 
   return (
     <View style={styles.container}>
+      <OfflineBanner visible={isSyncError} />
       <View style={styles.visorContainer}>
         <Text style={styles.text}>Personalize sua frase</Text>
         <View style={styles.listSelectedPictograms}>
@@ -56,11 +87,11 @@ export default function CommBoardScreen() {
           <ScrollView horizontal={true}>
             {selectedPictograms.map((pictogram, index) => (
               <View
-                key={`${pictogram.id}-${index}`}
+                key={`${pictogram.uuid}-${index}`}
                 style={styles.selectedPictogramDiv}
               >
                 <Image
-                  source={pictogram.imageUrl}
+                  source={{uri: pictogram.imageSource}}
                   style={styles.selectedPictogramImage}
                 />
                 <Text style={styles.pictogramText} numberOfLines={1}>
@@ -105,11 +136,11 @@ export default function CommBoardScreen() {
             style={styles.categoriesScroll}
           >
             {filteredBoards.map((board) => {
-              const isSelected = board.id === selectedBoardId;
+              const isSelected = board.uuid === selectedBoardUuid;
               return (
                 <TouchableOpacity
-                  key={board.id}
-                  onPress={() => setSelectedBoardId(board.id)}
+                  key={board.uuid}
+                  onPress={() => setSelectedBoardUuid(board.uuid)}
                 >
                   <View
                     style={[
@@ -121,9 +152,9 @@ export default function CommBoardScreen() {
                       colors={["#5ce1e6", "#ffb8e4"]}
                       style={styles.categoryGradient}
                     >
-                      {board.imageUrl && (
+                      {board.representativePictogram && (
                         <Image
-                          source={board.imageUrl}
+                          source={{ uri: board.representativePictogram.imageSource }}
                           style={styles.categoryImage}
                         />
                       )}
@@ -159,17 +190,17 @@ export default function CommBoardScreen() {
           <FlatList
             numColumns={4}
             showsVerticalScrollIndicator={false}
-            data={currentBoardItems}
-            keyExtractor={(item) => item.pictogram.id.toString()}
+            data={pictograms}
+            keyExtractor={(item) => item.uuid}
             renderItem={({ item }) => (
-              <TouchableOpacity onPress={() => handleSelect(item.pictogram)}>
+              <TouchableOpacity onPress={() => handleSelect(item)}>
                 <View style={styles.pictogramDiv}>
                   <Image
-                    source={item.pictogram.imageUrl}
+                    source={{uri: item.imageSource}}
                     style={styles.pictogramImage}
                   />
                   <Text style={styles.pictogramText} numberOfLines={1}>
-                    {item.pictogram.description.toUpperCase()}
+                    {item.description.toUpperCase()}
                   </Text>
                 </View>
               </TouchableOpacity>

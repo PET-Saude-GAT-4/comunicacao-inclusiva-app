@@ -5,9 +5,13 @@ import Constants from "expo-constants";
 const API_BASE_URL = Constants.expoConfig?.extra?.API_BASE_URL;
 
 export class BoardService {
-  private async request(url: string) {
+  private async request(url: string, timeoutMs = 5000) {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+
     try {
-      const response = await fetch(url);
+      const response = await fetch(url, { signal: controller.signal });
+      clearTimeout(timeoutId);
 
       if (!response.ok) {
         throw new Error(`Request failed: ${response.status}`);
@@ -15,28 +19,29 @@ export class BoardService {
 
       return response.json();
     } catch (error) {
+      clearTimeout(timeoutId);
       console.log(error);
       throw error;
     }
   }
 
   async getBoards(): Promise<Board[]> {
-    const apiBoards = await this.request(`${API_BASE_URL}/boards`);
+    const response = await this.request(`${API_BASE_URL}/public/boards`);
 
-    return apiBoards.map((board: ApiBoard) => boardAdapter.toBoard(board));
+    return response.boards.map((board: ApiBoard) => boardAdapter.toBoard(board));
   }
 
   async getBoardById(uuid: string): Promise<Board> {
-    const apiBoard = await this.request(`${API_BASE_URL}/boards/${uuid}`);
+    const response = await this.request(`${API_BASE_URL}/public/boards/${uuid}`);
 
-    return boardAdapter.toBoard(apiBoard);
+    return boardAdapter.toBoard(response.board);
   }
 
   async getBoardPictograms(uuid: string): Promise<Pictogram[]> {
-    const apiPictograms = await this.request(
-      `${API_BASE_URL}/boards/${uuid}/pictograms`,
+    const response = await this.request(
+      `${API_BASE_URL}/public/boards/${uuid}/pictograms`,
     );
-    return apiPictograms.map((pic: ApiPictogram) =>
+    return response.pictograms.map((pic: ApiPictogram) =>
       boardAdapter.toPictogram(pic),
     );
   }
