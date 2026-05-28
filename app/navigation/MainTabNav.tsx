@@ -1,6 +1,6 @@
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import React from "react";
 import { useSyncEngine } from "@/hooks/useSyncEngine";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import React, { useEffect, useState } from "react";
 
 import GlobalHeader from "@/components/GlobalHeaderComponent";
 import { Appbar } from "react-native-paper";
@@ -24,63 +24,80 @@ const MainTabs = createBottomTabNavigator();
 export default function MainTabNav() {
   // Sync runs once when the user enters the app, not per screen
   const { isError } = useSyncEngine();
+  const [bannerVisible, setBannerVisible] = useState(false);
+
+  // Show banner whenever sync reports an error
+  useEffect(() => {
+    if (isError) setBannerVisible(true);
+  }, [isError]);
 
   return (
     <View style={{ flex: 1 }}>
-      <OfflineBanner visible={isError} />
-      <MainTabs.Navigator screenOptions={{ header: GlobalHeader }}>
-      <MainTabs.Screen
-        name="CommBoardStackNav"
-        component={CommBoardStackNavigator}
-        options={{
-          title: "Prancha Livre",
-          headerRight: () => (
-            //*.*
-            <Appbar.Action icon={MORE_ICON} onPress={() => {}} />
+      <MainTabs.Navigator
+        screenOptions={{
+          header: (props) => (
+            <>
+              <GlobalHeader {...props} />
+              <OfflineBanner
+                visible={bannerVisible}
+                onClose={() => setBannerVisible(false)}
+              />
+            </>
           ),
         }}
-      />
-      <MainTabs.Screen
-        name="BoardCollection"
-        component={MyCollectionStackNav}
-        options={{
-          headerShown: false,
-          title: "Minha Coleção",
-          headerRight: () => (
-            //*.*
-            <Appbar.Action icon={MORE_ICON} onPress={() => {}} />
-          ),
-        }}
-      />
-      <MainTabs.Screen
-        name="Emergency"
-        component={EmergencyTabNav}
-        options={{
-          title: "Emergência",
-          headerRight: () => <></>,
-        }}
-      />
+      >
+        <MainTabs.Screen
+          name="CommBoardStackNav"
+          component={CommBoardStackNavigator}
+          options={{
+            title: "Prancha Livre",
+            headerRight: () => (
+              //*.*
+              <Appbar.Action icon={MORE_ICON} onPress={() => {}} />
+            ),
+          }}
+        />
+        <MainTabs.Screen
+          name="BoardCollection"
+          component={MyCollectionStackNav}
+          options={{
+            headerShown: false,
+            title: "Minha Coleção",
+            headerRight: () => (
+              //*.*
+              <Appbar.Action icon={MORE_ICON} onPress={() => {}} />
+            ),
+          }}
+        />
+        <MainTabs.Screen
+          name="Emergency"
+          component={EmergencyTabNav}
+          options={{
+            title: "Emergência",
+            headerRight: () => <></>,
+          }}
+        />
 
-      <MainTabs.Screen
-        name="Library"
-        component={LibraryTabNav}
-        options={{
-          title: "Biblioteca",
-          headerRight: () => (
-            //*.*
-            <Appbar.Action icon={MORE_ICON} onPress={() => {}} />
-          ),
-        }}
-      />
+        <MainTabs.Screen
+          name="Library"
+          component={LibraryTabNav}
+          options={{
+            title: "Biblioteca",
+            headerRight: () => (
+              //*.*
+              <Appbar.Action icon={MORE_ICON} onPress={() => {}} />
+            ),
+          }}
+        />
 
-      <MainTabs.Screen
-        name="Settings"
-        component={SettingsStackNav}
-        options={{
-          title: "Configurações",
-          headerRight: () => <></>,
-        }}
-      />
+        <MainTabs.Screen
+          name="Settings"
+          component={SettingsStackNav}
+          options={{
+            title: "Configurações",
+            headerRight: () => <></>,
+          }}
+        />
       </MainTabs.Navigator>
     </View>
   );
