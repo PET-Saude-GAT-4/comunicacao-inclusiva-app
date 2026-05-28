@@ -1,7 +1,7 @@
-import { Board } from "@/types/board.types";
-import { Pictogram } from "@/types/pictogram.types";
+import { boardAdapter } from "@/adapters/boardAdapter";
+import { ApiBoard, Board } from "@/types/board.types";
+import { ApiPictogram, Pictogram } from "@/types/pictogram.types";
 import Constants from "expo-constants";
-
 const API_BASE_URL = Constants.expoConfig?.extra?.API_BASE_URL;
 
 export class BoardService {
@@ -21,14 +21,23 @@ export class BoardService {
   }
 
   async getBoards(): Promise<Board[]> {
-    return this.request(`${API_BASE_URL}/boards`);
+    const apiBoards = await this.request(`${API_BASE_URL}/boards`);
+
+    return apiBoards.map((board: ApiBoard) => boardAdapter.toBoard(board));
   }
 
   async getBoardById(uuid: string): Promise<Board> {
-    return this.request(`${API_BASE_URL}/boards/${uuid}`);
+    const apiBoard = await this.request(`${API_BASE_URL}/boards/${uuid}`);
+
+    return boardAdapter.toBoard(apiBoard);
   }
 
   async getBoardPictograms(uuid: string): Promise<Pictogram[]> {
-    return this.request(`${API_BASE_URL}/boards/${uuid}/pictograms`);
+    const apiPictograms = await this.request(
+      `${API_BASE_URL}/boards/${uuid}/pictograms`,
+    );
+    return apiPictograms.map((pic: ApiPictogram) =>
+      boardAdapter.toPictogram(pic),
+    );
   }
 }
