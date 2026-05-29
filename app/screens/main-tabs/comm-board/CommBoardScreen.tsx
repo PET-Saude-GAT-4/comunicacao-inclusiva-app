@@ -1,3 +1,4 @@
+import { BoardSkeleton } from "@/components/BoardSkeleton";
 import { useBoardPictogram } from "@/hooks/useBoardPictograms";
 import { useBoards } from "@/hooks/useBoards";
 import { Ionicons } from "@expo/vector-icons";
@@ -166,26 +167,30 @@ export default function CommBoardScreen() {
 
         {/* FlatList to list all pictograms */}
         <View style={{ flex: 1, paddingTop: 16 }}>
-          <FlatList
-            numColumns={4}
-            showsVerticalScrollIndicator={false}
-            data={pictograms}
-            keyExtractor={(item) => item.uuid}
-            renderItem={({ item }) => (
-              <TouchableOpacity onPress={() => handleSelect(item)}>
-                <View style={styles.pictogramDiv}>
-                  <Image
-                    source={{ uri: item.imageSource }}
-                    style={styles.pictogramImage}
-                  />
-                  <Text style={styles.pictogramText} numberOfLines={1}>
-                    {item.description.toUpperCase()}
-                  </Text>
-                </View>
-              </TouchableOpacity>
-            )}
-            columnWrapperStyle={{ justifyContent: "space-between" }}
-          />
+          {isLoadingPics ? (
+            <BoardSkeleton />
+          ) : (
+            <FlatList
+              numColumns={4}
+              showsVerticalScrollIndicator={false}
+              data={pictograms}
+              keyExtractor={(item) => item.uuid}
+              renderItem={({ item }) => (
+                <TouchableOpacity onPress={() => handleSelect(item)}>
+                  <View style={styles.pictogramDiv}>
+                    <Image
+                      source={{ uri: item.imageSource }}
+                      style={styles.pictogramImage}
+                    />
+                    <Text style={styles.pictogramText} numberOfLines={1}>
+                      {item.description.toUpperCase()}
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+              )}
+              columnWrapperStyle={{ justifyContent: "space-between" }}
+            />
+          )}
         </View>
       </View>
     </View>

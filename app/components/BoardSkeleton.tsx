@@ -1,3 +1,4 @@
+import { COLORS } from "@/styles/themes";
 import { useEffect, useRef } from "react";
 import { Animated, ScrollView, StyleSheet, View } from "react-native";
 
@@ -45,7 +46,7 @@ export function BoardSkeleton() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#FFFFFF",
+    backgroundColor: COLORS.surface.secondary,
   },
   boardsContainer: {
     flexDirection: "row",
@@ -73,7 +74,7 @@ const styles = StyleSheet.create({
   pictogramImage: {
     width: "100%",
     aspectRatio: 1,
-    backgroundColor: "#E0E0E0",
+    backgroundColor: "#d9d7d7ff",
     borderRadius: 8,
     marginBottom: 8,
   },
