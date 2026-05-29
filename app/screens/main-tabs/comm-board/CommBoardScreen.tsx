@@ -1,6 +1,8 @@
 import { BoardSkeleton } from "@/components/BoardSkeleton";
 import { useBoardPictogram } from "@/hooks/useBoardPictograms";
 import { useBoards } from "@/hooks/useBoards";
+import { useSession } from "@/hooks/useSession";
+import { COLORS } from "@/styles/themes";
 import { Ionicons } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
@@ -17,6 +19,7 @@ import { Pictogram } from "../../../types/pictogram.types";
 import { styles } from "./CommBoardScreen.styles";
 
 export default function CommBoardScreen() {
+  const { currentSpeaker } = useSession();
   //save the selected pictogram sequence
   const [selectedPictograms, setSelectedPictograms] = useState<Pictogram[]>([]);
   const [selectedBoardUuid, setSelectedBoardUuid] = useState<string | null>(
@@ -59,7 +62,21 @@ export default function CommBoardScreen() {
     <View style={styles.container}>
       {/* OfflineBanner is now driven by the global SyncEngine in MainTabNav */}
       <View style={styles.visorContainer}>
-        <Text style={styles.text}>Personalize sua frase</Text>
+        <Text
+          style={[
+            styles.text,
+            {
+              color:
+                currentSpeaker === "professional"
+                  ? COLORS.primaryDark
+                  : COLORS.secondary,
+            },
+          ]}
+        >
+          {currentSpeaker === "professional"
+            ? "Interação do profissional"
+            : "Interação do paciente"}
+        </Text>
         <View style={styles.listSelectedPictograms}>
           {/* Scroll view to list all selected pictograms  */}
           <ScrollView horizontal={true}>

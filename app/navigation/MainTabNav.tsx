@@ -11,6 +11,7 @@ import SettingsStackNav from "./main-tabs/settings/SettingsStackNav";
 import { OfflineBanner } from "@/components/OfflineBanner";
 // *.*
 import { Platform, View } from "react-native";
+import { SpeakerToggleButton } from "@/components/SpeakerToggleButton";
 import LibraryTabNav from "./main-tabs/library/LibraryTabNav";
 import MyCollectionStackNav from "./main-tabs/my-collection/MyCollectionStackNav";
 const MORE_ICON = Platform.OS === "ios" ? "dots-horizontal" : "dots-vertical";
@@ -50,10 +51,12 @@ export default function MainTabNav() {
           name="CommBoardStackNav"
           component={CommBoardStackNavigator}
           options={{
-            title: "Prancha Livre",
+            title: "Prancha Pronta",
             headerRight: () => (
-              //*.*
-              <Appbar.Action icon={MORE_ICON} onPress={() => {}} />
+              <View style={{ flexDirection: "row", alignItems: "center", marginRight: 8, gap: 8 }}>
+                <SpeakerToggleButton />
+                <Appbar.Action icon={MORE_ICON} onPress={() => {}} />
+              </View>
             ),
           }}
         />
