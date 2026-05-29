@@ -1,9 +1,11 @@
+import { useBoardPictogram } from "@/hooks/useBoardPictograms";
 import { MyCollectionStackParamList } from "@/navigation/types";
+import Feather from "@expo/vector-icons/Feather";
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { RouteProp } from "@react-navigation/native";
-import { FlatList, Image, Text, View } from "react-native";
+import { Image } from "expo-image";
+import { FlatList, Text, View } from "react-native";
 import { styles } from "./BoardDetailScreen.style";
-import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import Feather from '@expo/vector-icons/Feather';
 
 type DetailsRouteProp = RouteProp<MyCollectionStackParamList, "BoardDetails">;
 
@@ -13,31 +15,41 @@ type Props = {
 
 export default function BoardDetailScreen({ route }: Props) {
   const { board } = route.params;
+
+  const { pictograms, isLoading: isLoadingPics } = useBoardPictogram(
+    board.uuid || "",
+  );
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Image source={board.imageUrl} style={styles.boardImg} />
+        <Image
+          source={board.representativePictogram.imageSource}
+          style={styles.boardImg}
+        />
         <Text style={styles.boardTitle}>{board.title}</Text>
         <View style={styles.icons}>
-        <MaterialIcons name="delete-outline" size={25} color="black"style={styles.delete} />
-        <Feather name="edit-2" size={25} color="black" style={styles.edit}/>
+          <MaterialIcons
+            name="delete-outline"
+            size={25}
+            color="black"
+            style={styles.delete}
+          />
+          <Feather name="edit-2" size={25} color="black" style={styles.edit} />
         </View>
       </View>
 
       <FlatList
-        data={board.items}
+        data={pictograms}
         numColumns={4}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.listContainer}
-        keyExtractor={(item) => item.pictogram.id.toString()}
+        keyExtractor={(item) => item.uuid}
         renderItem={({ item }) => (
           <View style={styles.pictogramDiv}>
-            <Image
-              source={item.pictogram.imageUrl}
-              style={styles.pictogramImg}
-            />
+            <Image source={item.imageSource} style={styles.pictogramImg} />
             <Text style={styles.pictogramText} numberOfLines={1}>
-              {item.pictogram.description.toUpperCase()}
+              {item.description.toUpperCase()}
             </Text>
           </View>
         )}

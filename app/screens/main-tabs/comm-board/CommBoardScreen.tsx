@@ -1,27 +1,40 @@
-import { commBoardsMock } from "@/mocks/commBoardMock";
+import { BoardSkeleton } from "@/components/BoardSkeleton";
+import { useBoardPictogram } from "@/hooks/useBoardPictograms";
+import { useBoards } from "@/hooks/useBoards";
 import { Ionicons } from "@expo/vector-icons";
+import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
   FlatList,
-  Image,
   ScrollView,
   Text,
   TextInput,
   TouchableOpacity,
   View,
 } from "react-native";
-import { Pictogram } from "../../../types/mock/pictogram.types";
+import { Pictogram } from "../../../types/pictogram.types";
 import { styles } from "./CommBoardScreen.styles";
 
 export default function CommBoardScreen() {
   //save the selected pictogram sequence
   const [selectedPictograms, setSelectedPictograms] = useState<Pictogram[]>([]);
-  const [selectedBoardId, setSelectedBoardId] = useState<number>(
-    commBoardsMock[0].id,
+  const [selectedBoardUuid, setSelectedBoardUuid] = useState<string | null>(
+    null,
   );
   const [isSearchActive, setIsSearchActive] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+
+  const { boards, isLoading: isLoadingBoards } = useBoards();
+  const { pictograms, isLoading: isLoadingPics } = useBoardPictogram(
+    selectedBoardUuid || "",
+  );
+
+  useEffect(() => {
+    if (boards.length > 0 && !selectedBoardUuid) {
+      setSelectedBoardUuid(boards[0].uuid);
+    }
+  }, [boards]);
 
   //add pictograms to the list
   const handleSelect = (pictogram: Pictogram) => {
@@ -37,18 +50,14 @@ export default function CommBoardScreen() {
   };
 
   const filteredBoards = useMemo(() => {
-    return commBoardsMock.filter((board) =>
+    return boards.filter((board) =>
       board.title.toLowerCase().includes(searchQuery.toLowerCase()),
     );
-  }, [searchQuery]);
-
-  const currentBoardItems = useMemo(() => {
-    const board = commBoardsMock.find((b) => b.id === selectedBoardId);
-    return board ? board.items : [];
-  }, [selectedBoardId]);
+  }, [searchQuery, boards]);
 
   return (
     <View style={styles.container}>
+      {/* OfflineBanner is now driven by the global SyncEngine in MainTabNav */}
       <View style={styles.visorContainer}>
         <Text style={styles.text}>Personalize sua frase</Text>
         <View style={styles.listSelectedPictograms}>
@@ -56,11 +65,11 @@ export default function CommBoardScreen() {
           <ScrollView horizontal={true}>
             {selectedPictograms.map((pictogram, index) => (
               <View
-                key={`${pictogram.id}-${index}`}
+                key={`${pictogram.uuid}-${index}`}
                 style={styles.selectedPictogramDiv}
               >
                 <Image
-                  source={pictogram.imageUrl}
+                  source={{ uri: pictogram.imageSource }}
                   style={styles.selectedPictogramImage}
                 />
                 <Text style={styles.pictogramText} numberOfLines={1}>
@@ -105,11 +114,11 @@ export default function CommBoardScreen() {
             style={styles.categoriesScroll}
           >
             {filteredBoards.map((board) => {
-              const isSelected = board.id === selectedBoardId;
+              const isSelected = board.uuid === selectedBoardUuid;
               return (
                 <TouchableOpacity
-                  key={board.id}
-                  onPress={() => setSelectedBoardId(board.id)}
+                  key={board.uuid}
+                  onPress={() => setSelectedBoardUuid(board.uuid)}
                 >
                   <View
                     style={[
@@ -121,9 +130,11 @@ export default function CommBoardScreen() {
                       colors={["#5ce1e6", "#ffb8e4"]}
                       style={styles.categoryGradient}
                     >
-                      {board.imageUrl && (
+                      {board.representativePictogram && (
                         <Image
-                          source={board.imageUrl}
+                          source={{
+                            uri: board.representativePictogram.imageSource,
+                          }}
                           style={styles.categoryImage}
                         />
                       )}
@@ -156,26 +167,30 @@ export default function CommBoardScreen() {
 
         {/* FlatList to list all pictograms */}
         <View style={{ flex: 1, paddingTop: 16 }}>
-          <FlatList
-            numColumns={4}
-            showsVerticalScrollIndicator={false}
-            data={currentBoardItems}
-            keyExtractor={(item) => item.pictogram.id.toString()}
-            renderItem={({ item }) => (
-              <TouchableOpacity onPress={() => handleSelect(item.pictogram)}>
-                <View style={styles.pictogramDiv}>
-                  <Image
-                    source={item.pictogram.imageUrl}
-                    style={styles.pictogramImage}
-                  />
-                  <Text style={styles.pictogramText} numberOfLines={1}>
-                    {item.pictogram.description.toUpperCase()}
-                  </Text>
-                </View>
-              </TouchableOpacity>
-            )}
-            columnWrapperStyle={{ justifyContent: "space-between" }}
-          />
+          {isLoadingPics ? (
+            <BoardSkeleton />
+          ) : (
+            <FlatList
+              numColumns={4}
+              showsVerticalScrollIndicator={false}
+              data={pictograms}
+              keyExtractor={(item) => item.uuid}
+              renderItem={({ item }) => (
+                <TouchableOpacity onPress={() => handleSelect(item)}>
+                  <View style={styles.pictogramDiv}>
+                    <Image
+                      source={{ uri: item.imageSource }}
+                      style={styles.pictogramImage}
+                    />
+                    <Text style={styles.pictogramText} numberOfLines={1}>
+                      {item.description.toUpperCase()}
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+              )}
+              columnWrapperStyle={{ justifyContent: "space-between" }}
+            />
+          )}
         </View>
       </View>
     </View>

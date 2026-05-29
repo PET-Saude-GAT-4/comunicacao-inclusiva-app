@@ -1,5 +1,6 @@
+import { useSyncEngine } from "@/hooks/useSyncEngine";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 import GlobalHeader from "@/components/GlobalHeaderComponent";
 import { Appbar } from "react-native-paper";
@@ -7,8 +8,9 @@ import CommBoardStackNavigator from "./main-tabs/comm-board/CommBoardStackNav";
 import EmergencyTabNav from "./main-tabs/emergency/EmergencyTabNav";
 import SettingsStackNav from "./main-tabs/settings/SettingsStackNav";
 
+import { OfflineBanner } from "@/components/OfflineBanner";
 // *.*
-import { Platform } from "react-native";
+import { Platform, View } from "react-native";
 import LibraryTabNav from "./main-tabs/library/LibraryTabNav";
 import MyCollectionStackNav from "./main-tabs/my-collection/MyCollectionStackNav";
 const MORE_ICON = Platform.OS === "ios" ? "dots-horizontal" : "dots-vertical";
@@ -20,66 +22,83 @@ const MainTabs = createBottomTabNavigator();
     in the bottom nav bar
 */
 export default function MainTabNav() {
-  /* 
-            As an example, we have this Screen leading into one of the tabs,
-        what would be "Prancha Livre", here as "Comm(unication)Board".
-            Do note, that we go from a Tab Navigator into a Stack Navigator which 
-        allows for better flow within all screens related to "Prancha Livre"
-    */
+  // Sync runs once when the user enters the app, not per screen
+  const { isError } = useSyncEngine();
+  const [bannerVisible, setBannerVisible] = useState(false);
+
+  // Show banner whenever sync reports an error
+  useEffect(() => {
+    if (isError) setBannerVisible(true);
+  }, [isError]);
+
   return (
-    <MainTabs.Navigator screenOptions={{ header: GlobalHeader }}>
-      <MainTabs.Screen
-        name="CommBoardStackNav"
-        component={CommBoardStackNavigator}
-        options={{
-          title: "Prancha Livre",
-          headerRight: () => (
-            //*.*
-            <Appbar.Action icon={MORE_ICON} onPress={() => {}} />
+    <View style={{ flex: 1 }}>
+      <MainTabs.Navigator
+        screenOptions={{
+          header: (props) => (
+            <>
+              <GlobalHeader {...props} />
+              <OfflineBanner
+                visible={bannerVisible}
+                onClose={() => setBannerVisible(false)}
+              />
+            </>
           ),
         }}
-      />
-      <MainTabs.Screen
-        name="BoardCollection"
-        component={MyCollectionStackNav}
-        options={{
-          headerShown: false,
-          title: "Minha Coleção",
-          headerRight: () => (
-            //*.*
-            <Appbar.Action icon={MORE_ICON} onPress={() => {}} />
-          ),
-        }}
-      />
-      <MainTabs.Screen
-        name="Emergency"
-        component={EmergencyTabNav}
-        options={{
-          title: "Emergência",
-          headerRight: () => <></>,
-        }}
-      />
+      >
+        <MainTabs.Screen
+          name="CommBoardStackNav"
+          component={CommBoardStackNavigator}
+          options={{
+            title: "Prancha Livre",
+            headerRight: () => (
+              //*.*
+              <Appbar.Action icon={MORE_ICON} onPress={() => {}} />
+            ),
+          }}
+        />
+        <MainTabs.Screen
+          name="BoardCollection"
+          component={MyCollectionStackNav}
+          options={{
+            headerShown: false,
+            title: "Minha Coleção",
+            headerRight: () => (
+              //*.*
+              <Appbar.Action icon={MORE_ICON} onPress={() => {}} />
+            ),
+          }}
+        />
+        <MainTabs.Screen
+          name="Emergency"
+          component={EmergencyTabNav}
+          options={{
+            title: "Emergência",
+            headerRight: () => <></>,
+          }}
+        />
 
-      <MainTabs.Screen
-        name="Library"
-        component={LibraryTabNav}
-        options={{
-          title: "Biblioteca",
-          headerRight: () => (
-            //*.*
-            <Appbar.Action icon={MORE_ICON} onPress={() => {}} />
-          ),
-        }}
-      />
+        <MainTabs.Screen
+          name="Library"
+          component={LibraryTabNav}
+          options={{
+            title: "Biblioteca",
+            headerRight: () => (
+              //*.*
+              <Appbar.Action icon={MORE_ICON} onPress={() => {}} />
+            ),
+          }}
+        />
 
-      <MainTabs.Screen
-        name="Settings"
-        component={SettingsStackNav}
-        options={{
-          title: "Configurações",
-          headerRight: () => <></>,
-        }}
-      />
-    </MainTabs.Navigator>
+        <MainTabs.Screen
+          name="Settings"
+          component={SettingsStackNav}
+          options={{
+            title: "Configurações",
+            headerRight: () => <></>,
+          }}
+        />
+      </MainTabs.Navigator>
+    </View>
   );
 }
