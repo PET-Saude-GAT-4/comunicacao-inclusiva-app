@@ -9,6 +9,7 @@ import EmergencyTabNav from "./main-tabs/emergency/EmergencyTabNav";
 import SettingsStackNav from "./main-tabs/settings/SettingsStackNav";
 
 import { OfflineBanner } from "@/components/OfflineBanner";
+import { ConsultationMenuModal } from "@/components/ConsultationMenuModal";
 // *.*
 import { Platform, View } from "react-native";
 import { SpeakerToggleButton } from "@/components/SpeakerToggleButton";
@@ -26,6 +27,7 @@ export default function MainTabNav() {
   // Sync runs once when the user enters the app, not per screen
   const { isError } = useSyncEngine();
   const [bannerVisible, setBannerVisible] = useState(false);
+  const [menuVisible, setMenuVisible] = useState(false);
 
   // Show banner whenever sync reports an error
   useEffect(() => {
@@ -55,7 +57,7 @@ export default function MainTabNav() {
             headerRight: () => (
               <View style={{ flexDirection: "row", alignItems: "center", marginRight: 8, gap: 8 }}>
                 <SpeakerToggleButton />
-                <Appbar.Action icon={MORE_ICON} onPress={() => {}} />
+                <Appbar.Action icon={MORE_ICON} onPress={() => setMenuVisible(true)} />
               </View>
             ),
           }}
@@ -68,7 +70,7 @@ export default function MainTabNav() {
             title: "Minha Coleção",
             headerRight: () => (
               //*.*
-              <Appbar.Action icon={MORE_ICON} onPress={() => {}} />
+              <Appbar.Action icon={MORE_ICON} onPress={() => setMenuVisible(true)} />
             ),
           }}
         />
@@ -88,7 +90,7 @@ export default function MainTabNav() {
             title: "Biblioteca",
             headerRight: () => (
               //*.*
-              <Appbar.Action icon={MORE_ICON} onPress={() => {}} />
+              <Appbar.Action icon={MORE_ICON} onPress={() => setMenuVisible(true)} />
             ),
           }}
         />
@@ -102,6 +104,7 @@ export default function MainTabNav() {
           }}
         />
       </MainTabs.Navigator>
+      <ConsultationMenuModal visible={menuVisible} onClose={() => setMenuVisible(false)} />
     </View>
   );
 }

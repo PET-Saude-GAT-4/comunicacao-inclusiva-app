@@ -19,10 +19,7 @@ import { Pictogram } from "../../../types/pictogram.types";
 import { styles } from "./CommBoardScreen.styles";
 
 export default function CommBoardScreen() {
-  const { currentSpeaker, startConsultation } = useSession();
-  const handleStartConsultation = () => {
-    startConsultation();
-  };
+  const { currentSpeaker, setMessages } = useSession();
   //save the selected pictogram sequence
   const [selectedPictograms, setSelectedPictograms] = useState<Pictogram[]>([]);
   const [selectedBoardUuid, setSelectedBoardUuid] = useState<string | null>(
@@ -65,34 +62,21 @@ export default function CommBoardScreen() {
     <View style={styles.container}>
       {/* OfflineBanner is now driven by the global SyncEngine in MainTabNav */}
       <View style={styles.visorContainer}>
-        <View style={styles.headerRow}>
-          <Text
-            style={[
-              styles.text,
-              {
-                color:
-                  currentSpeaker === "professional"
-                    ? COLORS.primaryDark
-                    : COLORS.secondary,
-              },
-            ]}
-          >
-            {currentSpeaker === "professional"
-              ? "Interação do profissional"
-              : "Interação do paciente"}
-          </Text>
-          {currentSpeaker === "professional" && (
-            <TouchableOpacity
-              style={styles.startConsultationButton}
-              onPress={handleStartConsultation}
-              activeOpacity={0.7}
-            >
-              <Text style={styles.startConsultationButtonText}>
-                Iniciar Consulta
-              </Text>
-            </TouchableOpacity>
-          )}
-        </View>
+        <Text
+          style={[
+            styles.text,
+            {
+              color:
+                currentSpeaker === "professional"
+                  ? COLORS.primaryDark
+                  : COLORS.secondary,
+            },
+          ]}
+        >
+          {currentSpeaker === "professional"
+            ? "Interação do profissional"
+            : "Interação do paciente"}
+        </Text>
         <View style={styles.listSelectedPictograms}>
           {/* Scroll view to list all selected pictograms  */}
           <ScrollView horizontal={true}>
@@ -120,7 +104,22 @@ export default function CommBoardScreen() {
             <Ionicons name="backspace-outline" size={32} color="#333" />
           </TouchableOpacity>
           <TouchableOpacity
-            onPress={() => console.log("Send pictograms:", selectedPictograms)}
+            onPress={() => {
+              if (selectedPictograms.length === 0) return;
+              
+              console.log("Send pictograms:", selectedPictograms);
+              
+              const newMessage = {
+                id: Date.now().toString(),
+                speaker: currentSpeaker,
+                type: "pictogram" as const,
+                pictograms: selectedPictograms.map(p => p.uuid),
+                timestamp: new Date().toISOString()
+              };
+              
+              setMessages(prev => [...prev, newMessage]);
+              setSelectedPictograms([]);
+            }}
             style={styles.sendButton}
           >
             <Ionicons name="send-outline" size={32} color="#333" />

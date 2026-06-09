@@ -82,12 +82,15 @@ export function SessionProvider({
         setMessages([]);
         setInteractions([]);
         setClosedAt(null);
+        console.log("Atendimento iniciado");
     }
 
     function endConsultation() {
         setIsInConsultation(false);
         setInteractions([]);
         setClosedAt(new Date());
+        console.log("Atendimento finalizado");
+        console.log("Mensagens da sessão:\n", JSON.stringify(messages, null, 2));
     }
 
     function addInteraction(
