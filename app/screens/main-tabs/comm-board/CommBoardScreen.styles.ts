@@ -147,4 +147,28 @@ export const styles = StyleSheet.create({
     borderColor: COLORS.outlineCommon,
     color: COLORS.text.onPrimary,
   },
+  headerRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 8,
+  },
+  startConsultationButton: {
+    backgroundColor: COLORS.primaryDark,
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    borderRadius: 20,
+    justifyContent: "center",
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.2,
+    shadowRadius: 1.41,
+    elevation: 2,
+  },
+  startConsultationButtonText: {
+    color: COLORS.text.onPrimaryDark,
+    fontSize: 12,
+    fontWeight: "bold",
+  },
 });

@@ -19,7 +19,10 @@ import { Pictogram } from "../../../types/pictogram.types";
 import { styles } from "./CommBoardScreen.styles";
 
 export default function CommBoardScreen() {
-  const { currentSpeaker } = useSession();
+  const { currentSpeaker, startConsultation } = useSession();
+  const handleStartConsultation = () => {
+    startConsultation();
+  };
   //save the selected pictogram sequence
   const [selectedPictograms, setSelectedPictograms] = useState<Pictogram[]>([]);
   const [selectedBoardUuid, setSelectedBoardUuid] = useState<string | null>(
@@ -62,21 +65,34 @@ export default function CommBoardScreen() {
     <View style={styles.container}>
       {/* OfflineBanner is now driven by the global SyncEngine in MainTabNav */}
       <View style={styles.visorContainer}>
-        <Text
-          style={[
-            styles.text,
-            {
-              color:
-                currentSpeaker === "professional"
-                  ? COLORS.primaryDark
-                  : COLORS.secondary,
-            },
-          ]}
-        >
-          {currentSpeaker === "professional"
-            ? "Interação do profissional"
-            : "Interação do paciente"}
-        </Text>
+        <View style={styles.headerRow}>
+          <Text
+            style={[
+              styles.text,
+              {
+                color:
+                  currentSpeaker === "professional"
+                    ? COLORS.primaryDark
+                    : COLORS.secondary,
+              },
+            ]}
+          >
+            {currentSpeaker === "professional"
+              ? "Interação do profissional"
+              : "Interação do paciente"}
+          </Text>
+          {currentSpeaker === "professional" && (
+            <TouchableOpacity
+              style={styles.startConsultationButton}
+              onPress={handleStartConsultation}
+              activeOpacity={0.7}
+            >
+              <Text style={styles.startConsultationButtonText}>
+                Iniciar Consulta
+              </Text>
+            </TouchableOpacity>
+          )}
+        </View>
         <View style={styles.listSelectedPictograms}>
           {/* Scroll view to list all selected pictograms  */}
           <ScrollView horizontal={true}>
