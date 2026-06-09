@@ -1,9 +1,17 @@
 import { SpeakerType } from "./interaction.types";
 
-export interface MessageEntry {
-    id: string;
-    speaker: SpeakerType;
-    type: "pictogram";
-    pictograms: string[];
-    timestamp: string;
-}
+export type MessageEntry = 
+  | {
+      id: string;
+      speaker: SpeakerType;
+      type: "pictogram";
+      pictograms: string[];
+      timestamp: string;
+    }
+  | {
+      id: string;
+      speaker: SpeakerType;
+      type: "text";
+      content: string;
+      timestamp: string;
+    };

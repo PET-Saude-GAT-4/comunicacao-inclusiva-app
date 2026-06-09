@@ -1,3 +1,4 @@
+import { AccessibilityMenu } from "@/components/AccessibilityMenu";
 import { BoardSkeleton } from "@/components/BoardSkeleton";
 import { useBoardPictogram } from "@/hooks/useBoardPictograms";
 import { useBoards } from "@/hooks/useBoards";
@@ -16,10 +17,13 @@ import {
   View,
 } from "react-native";
 import { Pictogram } from "../../../types/pictogram.types";
+import { MessageEntry } from "../../../types/message.types";
 import { styles } from "./CommBoardScreen.styles";
 
 export default function CommBoardScreen() {
   const { currentSpeaker, setMessages, isInConsultation } = useSession();
+  const [isTextMode, setIsTextMode] = useState(false);
+  const [typedText, setTypedText] = useState("");
   //save the selected pictogram sequence
   const [selectedPictograms, setSelectedPictograms] = useState<Pictogram[]>([]);
   const [selectedBoardUuid, setSelectedBoardUuid] = useState<string | null>(
@@ -105,31 +109,59 @@ export default function CommBoardScreen() {
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => {
-              if (selectedPictograms.length === 0) return;
+              if (isTextMode) {
+                if (!typedText.trim()) return;
 
-              if (!isInConsultation) {
+                if (!isInConsultation) {
+                  setTypedText("");
+                  console.log("Modo triagem: mensagem de texto não registrada.");
+                  return;
+                }
+
+                const newMessage: MessageEntry = {
+                  id: Date.now().toString(),
+                  speaker: currentSpeaker,
+                  type: "text",
+                  content: typedText.trim(),
+                  timestamp: new Date().toISOString()
+                };
+
+                console.log("Mensagem de texto enviada:", newMessage);
+                
+                setMessages(prev => {
+                  const updated = [...prev, newMessage];
+                  console.log("Mensagens da sessão:", updated);
+                  return updated;
+                });
+
+                setTypedText("");
+              } else {
+                if (selectedPictograms.length === 0) return;
+
+                if (!isInConsultation) {
+                  setSelectedPictograms([]);
+                  console.log("Modo triagem: mensagem não registrada.");
+                  return;
+                }
+                
+                const newMessage: MessageEntry = {
+                  id: Date.now().toString(),
+                  speaker: currentSpeaker,
+                  type: "pictogram",
+                  pictograms: selectedPictograms.map(p => p.description.toLowerCase()),
+                  timestamp: new Date().toISOString()
+                };
+                
+                console.log("Mensagem enviada:", newMessage);
+                
+                setMessages(prev => {
+                  const updated = [...prev, newMessage];
+                  console.log("Mensagens da sessão:", updated);
+                  return updated;
+                });
+                
                 setSelectedPictograms([]);
-                console.log("Modo triagem: mensagem não registrada.");
-                return;
               }
-              
-              const newMessage = {
-                id: Date.now().toString(),
-                speaker: currentSpeaker,
-                type: "pictogram" as const,
-                pictograms: selectedPictograms.map(p => p.description.toLowerCase()),
-                timestamp: new Date().toISOString()
-              };
-              
-              console.log("Mensagem enviada:", newMessage);
-              
-              setMessages(prev => {
-                const updated = [...prev, newMessage];
-                console.log("Mensagens da sessão:", updated);
-                return updated;
-              });
-              
-              setSelectedPictograms([]);
             }}
             style={styles.sendButton}
           >
@@ -139,6 +171,25 @@ export default function CommBoardScreen() {
       </View>
 
       <View style={styles.gridContainer}>
+        {/* Text Mode Input */}
+        {isTextMode && (
+          <View style={{ marginBottom: 16 }}>
+            <View style={styles.textModeInputContainer}>
+              <TextInput
+                style={styles.textModeInput}
+                placeholder="Digite sua frase"
+                value={typedText}
+                onChangeText={setTypedText}
+              />
+              {typedText.length > 0 && (
+                <TouchableOpacity onPress={() => setTypedText("")} style={styles.clearTextButton}>
+                  <Ionicons name="close-circle" size={24} color="#666" />
+                </TouchableOpacity>
+              )}
+            </View>
+          </View>
+        )}
+        
         {/* Categories Bar */}
         {isSearchActive && (
           <View style={{ marginBottom: 16 }}>
@@ -236,6 +287,10 @@ export default function CommBoardScreen() {
           )}
         </View>
       </View>
+      <AccessibilityMenu 
+        isTextMode={isTextMode} 
+        onToggleTextMode={() => setIsTextMode(!isTextMode)} 
+      />
     </View>
   );
 }
