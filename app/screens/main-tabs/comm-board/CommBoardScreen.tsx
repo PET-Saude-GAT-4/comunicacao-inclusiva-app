@@ -19,7 +19,7 @@ import { Pictogram } from "../../../types/pictogram.types";
 import { styles } from "./CommBoardScreen.styles";
 
 export default function CommBoardScreen() {
-  const { currentSpeaker, setMessages } = useSession();
+  const { currentSpeaker, setMessages, isInConsultation } = useSession();
   //save the selected pictogram sequence
   const [selectedPictograms, setSelectedPictograms] = useState<Pictogram[]>([]);
   const [selectedBoardUuid, setSelectedBoardUuid] = useState<string | null>(
@@ -106,18 +106,29 @@ export default function CommBoardScreen() {
           <TouchableOpacity
             onPress={() => {
               if (selectedPictograms.length === 0) return;
-              
-              console.log("Send pictograms:", selectedPictograms);
+
+              if (!isInConsultation) {
+                setSelectedPictograms([]);
+                console.log("Modo triagem: mensagem não registrada.");
+                return;
+              }
               
               const newMessage = {
                 id: Date.now().toString(),
                 speaker: currentSpeaker,
                 type: "pictogram" as const,
-                pictograms: selectedPictograms.map(p => p.uuid),
+                pictograms: selectedPictograms.map(p => p.description.toLowerCase()),
                 timestamp: new Date().toISOString()
               };
               
-              setMessages(prev => [...prev, newMessage]);
+              console.log("Mensagem enviada:", newMessage);
+              
+              setMessages(prev => {
+                const updated = [...prev, newMessage];
+                console.log("Mensagens da sessão:", updated);
+                return updated;
+              });
+              
               setSelectedPictograms([]);
             }}
             style={styles.sendButton}
