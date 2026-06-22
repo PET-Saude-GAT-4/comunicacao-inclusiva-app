@@ -43,4 +43,14 @@ export const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "bold",
   },
+  saveButton: {
+    padding: 8,
+    marginRight: 4,
+  },
+  emptyMessage: {
+    textAlign: "center",
+    marginTop: 32,
+    fontSize: 16,
+    color: COLORS.text.onPrimaryVariant,
+  },
 });

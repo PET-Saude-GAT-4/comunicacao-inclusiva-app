@@ -1,3 +1,5 @@
+import { useMyCollection } from "@/hooks/useMyCollection";
+import { COLORS } from "@/styles/themes";
 import { Board } from "@/types/board.types";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { Image } from "expo-image";
@@ -14,10 +16,16 @@ import { styles } from "./BoardListComponent.style";
 type Props = {
   boards: Board[];
   onBoardPress: (board: Board) => void;
+  emptyMessage?: string;
 };
 
-export default function BoardListComponent({ boards, onBoardPress }: Props) {
+export default function BoardListComponent({
+  boards,
+  onBoardPress,
+  emptyMessage,
+}: Props) {
   const [searchQuery, setSearchQuery] = useState("");
+  const { isSaved, toggleSaved } = useMyCollection();
 
   const filteredBoards = useMemo(() => {
     return boards.filter((board) =>
@@ -39,6 +47,11 @@ export default function BoardListComponent({ boards, onBoardPress }: Props) {
         data={filteredBoards}
         showsVerticalScrollIndicator={false}
         keyExtractor={(item) => item.uuid}
+        ListEmptyComponent={
+          emptyMessage ? (
+            <Text style={styles.emptyMessage}>{emptyMessage}</Text>
+          ) : null
+        }
         renderItem={({ item }) => (
           <TouchableOpacity onPress={() => onBoardPress(item)}>
             <View style={styles.boardBackground}>
@@ -48,6 +61,20 @@ export default function BoardListComponent({ boards, onBoardPress }: Props) {
               />
               <View style={styles.divider} />
               <Text style={styles.boradTitle}>{item.title}</Text>
+              <TouchableOpacity
+                style={styles.saveButton}
+                onPress={() => toggleSaved(item.uuid)}
+              >
+                <MaterialIcons
+                  name={isSaved(item.uuid) ? "bookmark" : "bookmark-border"}
+                  size={25}
+                  color={
+                    isSaved(item.uuid)
+                      ? COLORS.primaryDark
+                      : COLORS.text.onPrimaryVariant
+                  }
+                />
+              </TouchableOpacity>
               <MaterialIcons name="arrow-forward-ios" size={25} color="#000" />
             </View>
           </TouchableOpacity>
