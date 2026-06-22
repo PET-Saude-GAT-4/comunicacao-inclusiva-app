@@ -17,14 +17,13 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { MessageEntry } from "../../../types/message.types";
 import { Pictogram } from "../../../types/pictogram.types";
 import { styles } from "./CommBoardScreen.styles";
 
 export default function CommBoardScreen() {
   const navigation = useNavigation();
 
-  const { currentSpeaker, setMessages, isInConsultation, setCurrentSpeaker } =
+  const { currentSpeaker, isInConsultation, setCurrentSpeaker } =
     useSession();
   const [isTextMode, setIsTextMode] = useState(false);
   const [typedText, setTypedText] = useState("");
@@ -124,22 +123,6 @@ export default function CommBoardScreen() {
                   return;
                 }
 
-                const newMessage: MessageEntry = {
-                  id: Date.now().toString(),
-                  speaker: currentSpeaker,
-                  type: "text",
-                  content: typedText.trim(),
-                  timestamp: new Date().toISOString(),
-                };
-
-                console.log("Mensagem de texto enviada:", newMessage);
-
-                setMessages((prev) => {
-                  const updated = [...prev, newMessage];
-                  console.log("Mensagens da sessão:", updated);
-                  return updated;
-                });
-
                 setTypedText("");
 
                 setCurrentSpeaker(
@@ -150,7 +133,7 @@ export default function CommBoardScreen() {
 
                 navigation.navigate("FeedbackScreen", {
                   pictograms: [],
-                  message: newMessage,
+                  textContent: typedText.trim(),
                   senderSpeaker: currentSpeaker,
                 });
               } else {
@@ -162,24 +145,6 @@ export default function CommBoardScreen() {
                   return;
                 }
 
-                const newMessage: MessageEntry = {
-                  id: Date.now().toString(),
-                  speaker: currentSpeaker,
-                  type: "pictogram",
-                  pictograms: selectedPictograms.map((p) =>
-                    p.description.toLowerCase(),
-                  ),
-                  timestamp: new Date().toISOString(),
-                };
-
-                console.log("Mensagem enviada:", newMessage);
-
-                setMessages((prev) => {
-                  const updated = [...prev, newMessage];
-                  console.log("Mensagens da sessão:", updated);
-                  return updated;
-                });
-
                 setSelectedPictograms([]);
 
                 setCurrentSpeaker(
@@ -190,7 +155,6 @@ export default function CommBoardScreen() {
 
                 navigation.navigate("FeedbackScreen", {
                   pictograms: selectedPictograms,
-                  message: newMessage,
                   senderSpeaker: currentSpeaker,
                 });
               }

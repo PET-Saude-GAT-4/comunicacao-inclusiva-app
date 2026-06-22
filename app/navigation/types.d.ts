@@ -1,4 +1,3 @@
-import { MessageEntry } from "@/types/message.types";
 import { Pictogram } from "@/types/pictogram.types";
 
 /*
@@ -23,7 +22,7 @@ export type RootStackParamList = {
   MainTabNav: undefined;
   FeedbackScreen: {
     pictograms: Pictogram[];
-    message: MessageEntry;
+    textContent?: string;
     senderSpeaker: Speaker;
   };
   ReportScreen: undefined;

@@ -29,8 +29,8 @@ export const styles = StyleSheet.create({
     height: 100,
   },
   pictogramImage: {
-    width: 80,
-    height: 80,
+    width: 70,
+    height: 70,
   },
   pictogramText: {
     fontSize: 10,

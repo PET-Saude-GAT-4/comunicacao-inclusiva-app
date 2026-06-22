@@ -34,37 +34,38 @@ export default function ReportScreen() {
             : styles.bubbleProfessional;
 
           function renderContent() {
-            if (item.type === "pictogram" && Array.isArray(item.content)) {
-              return (
-                <View style={styles.pictogramScroll}>
-                  <ScrollView
-                    horizontal={true}
-                    showsHorizontalScrollIndicator={false}
-                  >
-                    {item.content.map((pictogram, index) => (
-                      <View
-                        key={`${pictogram.uuid}-${index}`}
-                        style={styles.pictogramDiv}
-                      >
-                        <Image
-                          source={{ uri: pictogram.imageSource }}
-                          style={styles.pictogramImage}
-                        />
-                        <Text style={styles.pictogramText} numberOfLines={1}>
-                          {pictogram.description.toUpperCase()}
-                        </Text>
-                      </View>
-                    ))}
-                  </ScrollView>
-                </View>
-              );
-            }
-
-            if (!item.understood) {
-              return <Text style={styles.confusionText}>❓ Não entendi</Text>;
-            }
-
-            return <Text style={styles.text}>{item.content as string}</Text>;
+            return (
+              <>
+                {item.type === "pictogram" && Array.isArray(item.content) ? (
+                  <View style={styles.pictogramScroll}>
+                    <ScrollView
+                      horizontal={true}
+                      showsHorizontalScrollIndicator={false}
+                    >
+                      {item.content.map((pictogram, index) => (
+                        <View
+                          key={`${pictogram.uuid}-${index}`}
+                          style={styles.pictogramDiv}
+                        >
+                          <Image
+                            source={{ uri: pictogram.imageSource }}
+                            style={styles.pictogramImage}
+                          />
+                          <Text style={styles.pictogramText} numberOfLines={1}>
+                            {pictogram.description.toUpperCase()}
+                          </Text>
+                        </View>
+                      ))}
+                    </ScrollView>
+                  </View>
+                ) : (
+                  <Text style={styles.text}>{item.content as string}</Text>
+                )}
+                {!item.understood && (
+                  <Text style={styles.confusionText}>❓ Não entendi</Text>
+                )}
+              </>
+            );
           }
 
           return (

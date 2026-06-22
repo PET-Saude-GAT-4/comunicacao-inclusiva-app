@@ -13,9 +13,9 @@ export default function FeedbackScreen() {
   const navigation = useNavigation();
   const { addInteraction, setCurrentSpeaker } = useSession();
 
-  const { pictograms, message, senderSpeaker } = route.params;
+  const { pictograms, textContent, senderSpeaker } = route.params;
 
-  const isTextMessage = message.type === "text";
+  const isTextMessage = !!textContent;
 
   const handleUnderstood = () => {
     // Register the interaction as successful communication
@@ -24,7 +24,7 @@ export default function FeedbackScreen() {
       speaker: senderSpeaker,
       type: isTextMessage ? "text" : "pictogram",
       content: isTextMessage
-        ? message.content
+        ? textContent!
         : pictograms,
       timestamp: new Date().toISOString(),
       understood: true,
@@ -41,7 +41,7 @@ export default function FeedbackScreen() {
       speaker: senderSpeaker,
       type: isTextMessage ? "text" : "pictogram",
       content: isTextMessage
-        ? message.content
+        ? textContent!
         : pictograms,
       timestamp: new Date().toISOString(),
       understood: false,
@@ -76,7 +76,7 @@ export default function FeedbackScreen() {
       {/* Read-only visor */}
       <View style={styles.visor}>
         {isTextMessage ? (
-          <Text style={styles.visorTextContent}>{message.content}</Text>
+          <Text style={styles.visorTextContent}>{textContent}</Text>
         ) : (
           <ScrollView
             horizontal

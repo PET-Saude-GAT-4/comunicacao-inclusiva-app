@@ -5,7 +5,6 @@ import {
 } from "react";
 
 import { InteractionEntry } from "@/types/interaction.types";
-import { MessageEntry } from "@/types/message.types";
 
 type Speaker = "patient" | "professional";
 
@@ -15,8 +14,6 @@ interface SessionContextData {
     currentSpeaker: Speaker;
 
     interactions: InteractionEntry[];
-
-    
 
     startedAt: Date | null;
 
@@ -32,7 +29,7 @@ interface SessionContextData {
         interaction: InteractionEntry
     ) => void;
 
-    setMessages: React.Dispatch<React.SetStateAction<MessageEntry[]>>;
+
 }
 
 export const SessionContext =
@@ -54,17 +51,12 @@ export function SessionProvider({
     const [
         currentSpeaker,
         setCurrentSpeaker,
-    ] = useState<Speaker>("patient");
+    ] = useState<Speaker>("professional");
 
     const [
         interactions,
         setInteractions,
     ] = useState<InteractionEntry[]>([]);
-
-    const [
-        messages,
-        setMessages,
-    ] = useState<MessageEntry[]>([]);
 
     const [
         startedAt,
@@ -79,7 +71,7 @@ export function SessionProvider({
     function startConsultation() {
         setIsInConsultation(true);
         setStartedAt(new Date());
-        setMessages([]);
+
         setInteractions([]);
         setClosedAt(null);
         console.log("Atendimento iniciado");
@@ -108,14 +100,12 @@ export function SessionProvider({
                 isInConsultation,
                 currentSpeaker,
                 interactions,
-              
                 startedAt,
                 closedAt,
                 startConsultation,
                 endConsultation,
                 setCurrentSpeaker,
                 addInteraction,
-                setMessages,
             }}
         >
             {children}
