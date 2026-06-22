@@ -60,7 +60,13 @@ export default function BoardListComponent({
                 style={styles.boardImage}
               />
               <View style={styles.divider} />
-              <Text style={styles.boradTitle}>{item.title}</Text>
+              <View style={styles.boardInfo}>
+                <Text style={styles.boradTitle}>{item.title}</Text>
+                <Text style={styles.pictogramCount}>
+                  {item.pictogramCount}{" "}
+                  {item.pictogramCount === 1 ? "pictograma" : "pictogramas"}
+                </Text>
+              </View>
               <TouchableOpacity
                 style={styles.saveButton}
                 onPress={() => toggleSaved(item.uuid)}

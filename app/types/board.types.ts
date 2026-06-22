@@ -5,6 +5,7 @@ export interface Board {
   uuid: string;
   title: string;
   representativePictogram: Pictogram;
+  pictogramCount: number;
   createdAt: string;
   updatedAt: string;
 }
@@ -14,6 +15,7 @@ export interface ApiBoard {
   uuid: string;
   title: string;
   representativePictogram: ApiPictogram;
+  pictogramCount: number;
   createdAt: string;
   updatedAt: string;
 }

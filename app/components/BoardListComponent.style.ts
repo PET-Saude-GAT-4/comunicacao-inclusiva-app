@@ -37,11 +37,20 @@ export const styles = StyleSheet.create({
     backgroundColor: COLORS.outlineCommon,
     marginHorizontal: 8,
   },
-  boradTitle: {
+  boardInfo: {
     flex: 1,
+    justifyContent: "center",
+    alignItems: "flex-start",
+  },
+  boradTitle: {
     textAlign: "center",
     fontSize: 16,
     fontWeight: "bold",
+  },
+  pictogramCount: {
+    marginTop: 4,
+    fontSize: 13,
+    color: COLORS.text.onPrimaryVariant,
   },
   saveButton: {
     padding: 8,
