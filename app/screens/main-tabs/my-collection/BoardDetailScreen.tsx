@@ -1,16 +1,13 @@
 import { useBoardPictogram } from "@/hooks/useBoardPictograms";
-import { MyCollectionStackParamList } from "@/navigation/types";
+import { Board } from "@/types/board.types";
 import Feather from "@expo/vector-icons/Feather";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
-import { RouteProp } from "@react-navigation/native";
 import { Image } from "expo-image";
 import { FlatList, Text, View } from "react-native";
 import { styles } from "./BoardDetailScreen.style";
 
-type DetailsRouteProp = RouteProp<MyCollectionStackParamList, "BoardDetails">;
-
 type Props = {
-  route: DetailsRouteProp;
+  route: { params: { board: Board } };
 };
 
 export default function BoardDetailScreen({ route }: Props) {
