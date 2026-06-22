@@ -1,4 +1,5 @@
 import GlobalHeader from "@/components/GlobalHeaderComponent";
+import FeedbackScreen from "@/screens/main-tabs/comm-board/FeedbackScreen";
 import ReportScreen from "@/screens/main-tabs/comm-board/ReportScreen";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import React from "react";
@@ -21,6 +22,15 @@ export default function RootStackNav() {
         name="MainTabNav"
         component={MainTabNavigator}
         options={{}}
+      />
+      <RootStack.Screen
+        name="FeedbackScreen"
+        component={FeedbackScreen}
+        options={{
+          headerShown: true,
+          title: "FeedBack",
+          header: (props) => <GlobalHeader {...props} />,
+        }}
       />
       <RootStack.Screen
         name="ReportScreen"

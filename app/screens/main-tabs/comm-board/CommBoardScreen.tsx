@@ -5,6 +5,7 @@ import { useBoards } from "@/hooks/useBoards";
 import { useSession } from "@/hooks/useSession";
 import { COLORS } from "@/styles/themes";
 import { Ionicons } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import React, { useEffect, useMemo, useState } from "react";
@@ -16,12 +17,15 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { Pictogram } from "../../../types/pictogram.types";
 import { MessageEntry } from "../../../types/message.types";
+import { Pictogram } from "../../../types/pictogram.types";
 import { styles } from "./CommBoardScreen.styles";
 
 export default function CommBoardScreen() {
-  const { currentSpeaker, setMessages, isInConsultation } = useSession();
+  const navigation = useNavigation();
+
+  const { currentSpeaker, setMessages, isInConsultation, setCurrentSpeaker } =
+    useSession();
   const [isTextMode, setIsTextMode] = useState(false);
   const [typedText, setTypedText] = useState("");
   //save the selected pictogram sequence
@@ -114,7 +118,9 @@ export default function CommBoardScreen() {
 
                 if (!isInConsultation) {
                   setTypedText("");
-                  console.log("Modo triagem: mensagem de texto não registrada.");
+                  console.log(
+                    "Modo triagem: mensagem de texto não registrada.",
+                  );
                   return;
                 }
 
@@ -123,18 +129,30 @@ export default function CommBoardScreen() {
                   speaker: currentSpeaker,
                   type: "text",
                   content: typedText.trim(),
-                  timestamp: new Date().toISOString()
+                  timestamp: new Date().toISOString(),
                 };
 
                 console.log("Mensagem de texto enviada:", newMessage);
-                
-                setMessages(prev => {
+
+                setMessages((prev) => {
                   const updated = [...prev, newMessage];
                   console.log("Mensagens da sessão:", updated);
                   return updated;
                 });
 
                 setTypedText("");
+
+                setCurrentSpeaker(
+                  currentSpeaker === "professional"
+                    ? "patient"
+                    : "professional",
+                );
+
+                navigation.navigate("FeedbackScreen", {
+                  pictograms: [],
+                  message: newMessage,
+                  senderSpeaker: currentSpeaker,
+                });
               } else {
                 if (selectedPictograms.length === 0) return;
 
@@ -143,24 +161,38 @@ export default function CommBoardScreen() {
                   console.log("Modo triagem: mensagem não registrada.");
                   return;
                 }
-                
+
                 const newMessage: MessageEntry = {
                   id: Date.now().toString(),
                   speaker: currentSpeaker,
                   type: "pictogram",
-                  pictograms: selectedPictograms.map(p => p.description.toLowerCase()),
-                  timestamp: new Date().toISOString()
+                  pictograms: selectedPictograms.map((p) =>
+                    p.description.toLowerCase(),
+                  ),
+                  timestamp: new Date().toISOString(),
                 };
-                
+
                 console.log("Mensagem enviada:", newMessage);
-                
-                setMessages(prev => {
+
+                setMessages((prev) => {
                   const updated = [...prev, newMessage];
                   console.log("Mensagens da sessão:", updated);
                   return updated;
                 });
-                
+
                 setSelectedPictograms([]);
+
+                setCurrentSpeaker(
+                  currentSpeaker === "professional"
+                    ? "patient"
+                    : "professional",
+                );
+
+                navigation.navigate("FeedbackScreen", {
+                  pictograms: selectedPictograms,
+                  message: newMessage,
+                  senderSpeaker: currentSpeaker,
+                });
               }
             }}
             style={styles.sendButton}
@@ -182,14 +214,17 @@ export default function CommBoardScreen() {
                 onChangeText={setTypedText}
               />
               {typedText.length > 0 && (
-                <TouchableOpacity onPress={() => setTypedText("")} style={styles.clearTextButton}>
+                <TouchableOpacity
+                  onPress={() => setTypedText("")}
+                  style={styles.clearTextButton}
+                >
                   <Ionicons name="close-circle" size={24} color="#666" />
                 </TouchableOpacity>
               )}
             </View>
           </View>
         )}
-        
+
         {/* Categories Bar */}
         {isSearchActive && (
           <View style={{ marginBottom: 16 }}>
@@ -287,9 +322,9 @@ export default function CommBoardScreen() {
           )}
         </View>
       </View>
-      <AccessibilityMenu 
-        isTextMode={isTextMode} 
-        onToggleTextMode={() => setIsTextMode(!isTextMode)} 
+      <AccessibilityMenu
+        isTextMode={isTextMode}
+        onToggleTextMode={() => setIsTextMode(!isTextMode)}
       />
     </View>
   );
