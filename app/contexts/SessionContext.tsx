@@ -16,7 +16,7 @@ interface SessionContextData {
 
     interactions: InteractionEntry[];
 
-    messages: MessageEntry[];
+    
 
     startedAt: Date | null;
 
@@ -90,7 +90,7 @@ export function SessionProvider({
         setInteractions([]);
         setClosedAt(new Date());
         console.log("Atendimento finalizado");
-        console.log("Mensagens da sessão:\n", JSON.stringify(messages, null, 2));
+        console.log("Interações da sessão:\n", JSON.stringify(interactions, null, 2));
     }
 
     function addInteraction(
@@ -108,7 +108,7 @@ export function SessionProvider({
                 isInConsultation,
                 currentSpeaker,
                 interactions,
-                messages,
+              
                 startedAt,
                 closedAt,
                 startConsultation,

@@ -3,11 +3,11 @@ import { formatDateBR, formatTimeBR } from "@/utils/dateFormatter";
 import { useNavigation } from "@react-navigation/native";
 import { Image } from "expo-image";
 import {
-    FlatList,
-    ScrollView,
-    Text,
-    TouchableOpacity,
-    View,
+  FlatList,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  View,
 } from "react-native";
 import { styles } from "./ReportScreen.styles";
 
@@ -60,7 +60,7 @@ export default function ReportScreen() {
               );
             }
 
-            if (item.type === "confusion") {
+            if (!item.understood) {
               return <Text style={styles.confusionText}>❓ Não entendi</Text>;
             }
 
