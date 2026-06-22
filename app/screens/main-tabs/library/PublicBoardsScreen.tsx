@@ -1,14 +1,14 @@
 import BoardListComponent from "@/components/BoardListComponent";
 import { useBoards } from "@/hooks/useBoards";
-import { MyCollectionStackParamList } from "@/navigation/types";
+import { LibraryBoardStackParamList } from "@/navigation/types";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import React from "react";
 
-export default function MyBoardScreen() {
+export default function PublicBoardsScreen() {
   type NavProp = NativeStackNavigationProp<
-    MyCollectionStackParamList,
-    "BoardDetails"
+    LibraryBoardStackParamList,
+    "PublicBoardDetails"
   >;
   const navigation = useNavigation<NavProp>();
 
@@ -17,7 +17,9 @@ export default function MyBoardScreen() {
   return (
     <BoardListComponent
       boards={boards}
-      onBoardPress={(board) => navigation.navigate("BoardDetails", { board })}
+      onBoardPress={(board) =>
+        navigation.navigate("PublicBoardDetails", { board })
+      }
     />
   );
 }

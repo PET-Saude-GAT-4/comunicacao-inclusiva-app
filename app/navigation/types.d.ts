@@ -44,3 +44,8 @@ export type MyCollectionStackParamList = {
 export type BoardStackParamList = {
   placeholder: undefined;
 };
+
+export type LibraryBoardStackParamList = {
+  PublicBoards: undefined;
+  PublicBoardDetails: { board: Board };
+};

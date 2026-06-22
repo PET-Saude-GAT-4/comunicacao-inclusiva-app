@@ -1,6 +1,7 @@
 import React from "react";
 
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
+import BoardLibStackNav from "./Tabs/BoardStackNav";
 
 const TopTabs = createMaterialTopTabNavigator();
 
@@ -9,7 +10,7 @@ export default function LibraryTabNav() {
         <TopTabs.Navigator>
             <TopTabs.Screen
                 name="Library-Board"
-                component={() => <></>}
+                component={BoardLibStackNav}
                 options={{ title: "Biblioteca" }}
             />
             <TopTabs.Screen
