@@ -88,7 +88,7 @@ export default function ReportScreen() {
             navigation.goBack();
           }}
         >
-          <Text style={styles.newConsultationText}>Nova Consulta</Text>
+          <Text style={styles.newConsultationText}>Finalizar atendimento</Text>
         </TouchableOpacity>
       </View>
     </View>
