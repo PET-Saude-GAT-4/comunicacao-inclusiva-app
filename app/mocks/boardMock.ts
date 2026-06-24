@@ -7,6 +7,7 @@ export const boardsMock: Board[] = [
     id: 1,
     uuid: "board-1",
     title: "Geral",
+    pictogramCount: 16,
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
     representativePictogram: {
@@ -24,6 +25,7 @@ export const boardsMock: Board[] = [
     id: 2,
     uuid: "board-2",
     title: "Ações",
+    pictogramCount: 4,
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
     representativePictogram: {
@@ -41,6 +43,7 @@ export const boardsMock: Board[] = [
     id: 3,
     uuid: "board-3",
     title: "Corpo",
+    pictogramCount: 9,
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
     representativePictogram: {
@@ -58,6 +61,7 @@ export const boardsMock: Board[] = [
     id: 4,
     uuid: "board-4",
     title: "Sentimentos",
+    pictogramCount: 3,
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
     representativePictogram: {

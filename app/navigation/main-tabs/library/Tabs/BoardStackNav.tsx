@@ -1,17 +1,24 @@
+import { LibraryBoardStackParamList } from "@/navigation/types";
+import BoardDetailScreen from "@/screens/main-tabs/my-collection/BoardDetailScreen";
+import PublicBoardsScreen from "@/screens/main-tabs/library/PublicBoardsScreen";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import React from "react";
 
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
-
-const Stack = createNativeStackNavigator();
+const Stack = createNativeStackNavigator<LibraryBoardStackParamList>();
 
 export default function BoardLibStackNav() {
-    return (
-        <Stack.Navigator>
-            <Stack.Screen
-                name="placeholder"
-                component={() => <></>}
-                options={{ headerShown: false }}
-            />
-        </Stack.Navigator>
-    );
+  return (
+    <Stack.Navigator>
+      <Stack.Screen
+        name="PublicBoards"
+        component={PublicBoardsScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="PublicBoardDetails"
+        component={BoardDetailScreen}
+        options={{ title: "Detalhes da Prancha" }}
+      />
+    </Stack.Navigator>
+  );
 }
