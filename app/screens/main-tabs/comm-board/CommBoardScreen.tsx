@@ -1,9 +1,12 @@
+import { AccessibilityMenu } from "@/components/AccessibilityMenu";
 import { BoardSkeleton } from "@/components/BoardSkeleton";
 import { useBoardPictogram } from "@/hooks/useBoardPictograms";
 import { useBoards } from "@/hooks/useBoards";
 import { useSession } from "@/hooks/useSession";
 import { COLORS } from "@/styles/themes";
 import { Ionicons } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import React, { useEffect, useMemo, useState } from "react";
@@ -16,10 +19,23 @@ import {
   View,
 } from "react-native";
 import { Pictogram } from "../../../types/pictogram.types";
+import { CommBoardStackParamList, Speaker } from "@/navigation/types";
 import { styles } from "./CommBoardScreen.styles";
 
 export default function CommBoardScreen() {
-  const { currentSpeaker } = useSession();
+  const navigation = useNavigation<NativeStackNavigationProp<CommBoardStackParamList>>();
+
+  const { currentSpeaker, isInConsultation, setCurrentSpeaker } =
+    useSession();
+  // Redirect to NoConsultationScreen when consultation ends
+  useEffect(() => {
+    if (!isInConsultation) {
+      navigation.replace("NoConsultationScreen");
+    }
+  }, [isInConsultation]);
+
+  const [isTextMode, setIsTextMode] = useState(false);
+  const [typedText, setTypedText] = useState("");
   //save the selected pictogram sequence
   const [selectedPictograms, setSelectedPictograms] = useState<Pictogram[]>([]);
   const [selectedBoardUuid, setSelectedBoardUuid] = useState<string | null>(
@@ -104,7 +120,54 @@ export default function CommBoardScreen() {
             <Ionicons name="backspace-outline" size={32} color="#333" />
           </TouchableOpacity>
           <TouchableOpacity
-            onPress={() => console.log("Send pictograms:", selectedPictograms)}
+            onPress={() => {
+              if (isTextMode) {
+                if (!typedText.trim()) return;
+
+                if (!isInConsultation) {
+                  setTypedText("");
+                  console.log(
+                    "Modo triagem: mensagem de texto não registrada.",
+                  );
+                  return;
+                }
+
+                setTypedText("");
+
+                setCurrentSpeaker(
+                  currentSpeaker === "professional"
+                    ? "patient"
+                    : "professional",
+                );
+
+                navigation.navigate("FeedbackScreen", {
+                  pictograms: [],
+                  textContent: typedText.trim(),
+                  senderSpeaker: currentSpeaker,
+                });
+              } else {
+                if (selectedPictograms.length === 0) return;
+
+                if (!isInConsultation) {
+                  setSelectedPictograms([]);
+                  console.log("Modo triagem: mensagem não registrada.");
+                  return;
+                }
+
+                setSelectedPictograms([]);
+
+                setCurrentSpeaker(
+                  currentSpeaker === "professional"
+                    ? "patient"
+                    : "professional",
+                );
+
+                navigation.navigate("FeedbackScreen", {
+                  pictograms: selectedPictograms,
+                  senderSpeaker: currentSpeaker,
+                });
+              }
+            }}
             style={styles.sendButton}
           >
             <Ionicons name="send-outline" size={32} color="#333" />
@@ -113,6 +176,28 @@ export default function CommBoardScreen() {
       </View>
 
       <View style={styles.gridContainer}>
+        {/* Text Mode Input */}
+        {isTextMode && (
+          <View style={{ marginBottom: 16 }}>
+            <View style={styles.textModeInputContainer}>
+              <TextInput
+                style={styles.textModeInput}
+                placeholder="Digite sua frase"
+                value={typedText}
+                onChangeText={setTypedText}
+              />
+              {typedText.length > 0 && (
+                <TouchableOpacity
+                  onPress={() => setTypedText("")}
+                  style={styles.clearTextButton}
+                >
+                  <Ionicons name="close-circle" size={24} color="#666" />
+                </TouchableOpacity>
+              )}
+            </View>
+          </View>
+        )}
+
         {/* Categories Bar */}
         {isSearchActive && (
           <View style={{ marginBottom: 16 }}>
@@ -210,6 +295,10 @@ export default function CommBoardScreen() {
           )}
         </View>
       </View>
+      <AccessibilityMenu
+        isTextMode={isTextMode}
+        onToggleTextMode={() => setIsTextMode(!isTextMode)}
+      />
     </View>
   );
 }

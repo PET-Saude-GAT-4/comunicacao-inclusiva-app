@@ -1,3 +1,5 @@
+import { Pictogram } from "@/types/pictogram.types";
+
 /*
         This file extends as a type safe way to ensure navigation between the right stacks
     defining exactly what params go through each stack or tab exchange, and what to do
@@ -12,13 +14,20 @@ declare global {
   }
 }
 
+export type Speaker = "patient" | "professional";
+
 // RootStackParamList is the default list of Params for useNavigation()
-type RootStackParamList = {
+export type RootStackParamList = {
   AuthNav: undefined;
   MainTabNav: undefined;
+  FeedbackScreen: {
+    pictograms: Pictogram[];
+    textContent?: string;
+    senderSpeaker: Speaker;
+  };
+  ReportScreen: undefined;
+  TutorialStackNav: undefined;
 };
-
-export type { RootStackParamList };
 
 export type AuthStackParamList = {
   Placeholder: undefined;
@@ -32,8 +41,13 @@ export type MainTabParamList = {
 };
 
 export type CommBoardStackParamList = {
-  BoardCollectionTabs: undefined;
-  BoardDetail: { item: Board };
+  NoConsultationScreen: undefined;
+  CommBoardScreen: undefined;
+  FeedbackScreen: {
+    pictograms: Pictogram[];
+    textContent?: string;
+    senderSpeaker: Speaker;
+  };
 };
 
 export type MyCollectionStackParamList = {

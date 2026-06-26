@@ -1,4 +1,5 @@
 import { useSyncEngine } from "@/hooks/useSyncEngine";
+import { useSession } from "@/hooks/useSession";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import React, { useEffect, useState } from "react";
 
@@ -9,9 +10,10 @@ import EmergencyTabNav from "./main-tabs/emergency/EmergencyTabNav";
 import SettingsStackNav from "./main-tabs/settings/SettingsStackNav";
 
 import { OfflineBanner } from "@/components/OfflineBanner";
+import { ConsultationMenuModal } from "@/components/ConsultationMenuModal";
 // *.*
-import { Platform, View } from "react-native";
 import { SpeakerToggleButton } from "@/components/SpeakerToggleButton";
+import { Platform, View } from "react-native";
 import LibraryTabNav from "./main-tabs/library/LibraryTabNav";
 import MyCollectionStackNav from "./main-tabs/my-collection/MyCollectionStackNav";
 const MORE_ICON = Platform.OS === "ios" ? "dots-horizontal" : "dots-vertical";
@@ -25,7 +27,9 @@ const MainTabs = createBottomTabNavigator();
 export default function MainTabNav() {
   // Sync runs once when the user enters the app, not per screen
   const { isError } = useSyncEngine();
+  const { isInConsultation } = useSession();
   const [bannerVisible, setBannerVisible] = useState(false);
+  const [menuVisible, setMenuVisible] = useState(false);
 
   // Show banner whenever sync reports an error
   useEffect(() => {
@@ -51,13 +55,20 @@ export default function MainTabNav() {
           name="CommBoardStackNav"
           component={CommBoardStackNavigator}
           options={{
-            title: "Prancha Pronta",
-            headerRight: () => (
-              <View style={{ flexDirection: "row", alignItems: "center", marginRight: 8, gap: 8 }}>
+            title: "Prancha Livre",
+            headerRight: () => isInConsultation ? (
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  marginRight: 8,
+                  gap: 8,
+                }}
+              >
                 <SpeakerToggleButton />
-                <Appbar.Action icon={MORE_ICON} onPress={() => {}} />
+                <Appbar.Action icon={MORE_ICON} onPress={() => setMenuVisible(true)} />
               </View>
-            ),
+            ) : null,
           }}
         />
         <MainTabs.Screen
@@ -68,7 +79,7 @@ export default function MainTabNav() {
             title: "Minha Coleção",
             headerRight: () => (
               //*.*
-              <Appbar.Action icon={MORE_ICON} onPress={() => {}} />
+              <Appbar.Action icon={MORE_ICON} onPress={() => setMenuVisible(true)} />
             ),
           }}
         />
@@ -88,7 +99,7 @@ export default function MainTabNav() {
             title: "Biblioteca",
             headerRight: () => (
               //*.*
-              <Appbar.Action icon={MORE_ICON} onPress={() => {}} />
+              <Appbar.Action icon={MORE_ICON} onPress={() => setMenuVisible(true)} />
             ),
           }}
         />
@@ -102,6 +113,7 @@ export default function MainTabNav() {
           }}
         />
       </MainTabs.Navigator>
+      <ConsultationMenuModal visible={menuVisible} onClose={() => setMenuVisible(false)} />
     </View>
   );
 }

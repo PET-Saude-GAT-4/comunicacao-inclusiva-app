@@ -147,4 +147,20 @@ export const styles = StyleSheet.create({
     borderColor: COLORS.outlineCommon,
     color: COLORS.text.onPrimary,
   },
+  textModeInputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#EAEAEA',
+    borderRadius: 24,
+    paddingHorizontal: 16,
+    height: 48,
+  },
+  textModeInput: {
+    flex: 1,
+    fontSize: 16,
+    color: '#333',
+  },
+  clearTextButton: {
+    marginLeft: 8,
+  },
 });
