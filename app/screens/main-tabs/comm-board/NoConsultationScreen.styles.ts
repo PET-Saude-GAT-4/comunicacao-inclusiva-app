@@ -24,7 +24,7 @@ export const styles = StyleSheet.create({
   },
   title: {
     fontFamily: TYPOGRAPHY.font.title,
-    fontSize: TYPOGRAPHY.sizes.heading,
+    fontSize: 25,
     fontWeight: TYPOGRAPHY.weights.bold,
     color: COLORS.primaryDark,
     textAlign: "center",

@@ -1,18 +1,17 @@
 import { useSession } from "@/hooks/useSession";
+import { CommBoardStackParamList } from "@/navigation/types";
 import { COLORS } from "@/styles/themes";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { CommBoardStackParamList } from "@/navigation/types";
 import React from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 import { styles } from "./NoConsultationScreen.styles";
 
 export default function NoConsultationScreen() {
-  const navigation = useNavigation<NativeStackNavigationProp<CommBoardStackParamList>>();
-  const { startConsultation, currentSpeaker } = useSession();
-
-  const isProfessional = currentSpeaker === "professional";
+  const navigation =
+    useNavigation<NativeStackNavigationProp<CommBoardStackParamList>>();
+  const { startConsultation } = useSession();
 
   return (
     <View style={styles.container}>
@@ -27,23 +26,19 @@ export default function NoConsultationScreen() {
 
         <Text style={styles.title}>Nenhum atendimento em andamento</Text>
         <Text style={styles.subtitle}>
-          {isProfessional
-            ? "Você precisa iniciar o atendimento para acessar a prancha livre."
-            : "Aguarde o profissional iniciar o atendimento."}
+          Você precisa iniciar o atendimento para acessar a prancha livre.
         </Text>
 
-        {isProfessional && (
-          <TouchableOpacity
-            style={styles.startButton}
-            activeOpacity={0.85}
-            onPress={() => {
-              startConsultation();
-              navigation.replace("CommBoardScreen");
-            }}
-          >
-            <Text style={styles.startButtonText}>Iniciar Atendimento</Text>
-          </TouchableOpacity>
-        )}
+        <TouchableOpacity
+          style={styles.startButton}
+          activeOpacity={0.85}
+          onPress={() => {
+            startConsultation();
+            navigation.replace("CommBoardScreen");
+          }}
+        >
+          <Text style={styles.startButtonText}>Iniciar Atendimento</Text>
+        </TouchableOpacity>
       </View>
     </View>
   );
