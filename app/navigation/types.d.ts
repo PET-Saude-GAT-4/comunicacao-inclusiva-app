@@ -41,8 +41,13 @@ export type MainTabParamList = {
 };
 
 export type CommBoardStackParamList = {
-  BoardCollectionTabs: undefined;
-  BoardDetail: { item: Board };
+  NoConsultationScreen: undefined;
+  CommBoardScreen: undefined;
+  FeedbackScreen: {
+    pictograms: Pictogram[];
+    textContent?: string;
+    senderSpeaker: Speaker;
+  };
 };
 
 export type MyCollectionStackParamList = {

@@ -1,4 +1,5 @@
 import { useSyncEngine } from "@/hooks/useSyncEngine";
+import { useSession } from "@/hooks/useSession";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import React, { useEffect, useState } from "react";
 
@@ -26,6 +27,7 @@ const MainTabs = createBottomTabNavigator();
 export default function MainTabNav() {
   // Sync runs once when the user enters the app, not per screen
   const { isError } = useSyncEngine();
+  const { isInConsultation } = useSession();
   const [bannerVisible, setBannerVisible] = useState(false);
   const [menuVisible, setMenuVisible] = useState(false);
 
@@ -54,7 +56,7 @@ export default function MainTabNav() {
           component={CommBoardStackNavigator}
           options={{
             title: "Prancha Livre",
-            headerRight: () => (
+            headerRight: () => isInConsultation ? (
               <View
                 style={{
                   flexDirection: "row",
@@ -66,7 +68,7 @@ export default function MainTabNav() {
                 <SpeakerToggleButton />
                 <Appbar.Action icon={MORE_ICON} onPress={() => setMenuVisible(true)} />
               </View>
-            ),
+            ) : null,
           }}
         />
         <MainTabs.Screen

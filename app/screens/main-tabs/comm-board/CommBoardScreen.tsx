@@ -6,6 +6,7 @@ import { useSession } from "@/hooks/useSession";
 import { COLORS } from "@/styles/themes";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import React, { useEffect, useMemo, useState } from "react";
@@ -18,13 +19,21 @@ import {
   View,
 } from "react-native";
 import { Pictogram } from "../../../types/pictogram.types";
+import { CommBoardStackParamList, Speaker } from "@/navigation/types";
 import { styles } from "./CommBoardScreen.styles";
 
 export default function CommBoardScreen() {
-  const navigation = useNavigation();
+  const navigation = useNavigation<NativeStackNavigationProp<CommBoardStackParamList>>();
 
   const { currentSpeaker, isInConsultation, setCurrentSpeaker } =
     useSession();
+  // Redirect to NoConsultationScreen when consultation ends
+  useEffect(() => {
+    if (!isInConsultation) {
+      navigation.replace("NoConsultationScreen");
+    }
+  }, [isInConsultation]);
+
   const [isTextMode, setIsTextMode] = useState(false);
   const [typedText, setTypedText] = useState("");
   //save the selected pictogram sequence

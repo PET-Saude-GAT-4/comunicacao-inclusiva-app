@@ -38,6 +38,7 @@ export function ConsultationMenuModal({ visible, onClose }: Props) {
     >
       <View style={styles.overlay}>
         <View style={styles.modalContainer}>
+          {/* It can be removed, NoCnsultationScreen already validates this */}
           {currentSpeaker === "professional" &&
             (!isInConsultation ? (
               <TouchableOpacity
