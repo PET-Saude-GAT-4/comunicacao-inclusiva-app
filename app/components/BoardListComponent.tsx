@@ -17,12 +17,14 @@ type Props = {
   boards: Board[];
   onBoardPress: (board: Board) => void;
   emptyMessage?: string;
+  showSaveButton?: boolean;
 };
 
 export default function BoardListComponent({
   boards,
   onBoardPress,
   emptyMessage,
+  showSaveButton = true,
 }: Props) {
   const [searchQuery, setSearchQuery] = useState("");
   const { isSaved, toggleSaved } = useMyCollection();
@@ -67,20 +69,22 @@ export default function BoardListComponent({
                   {item.pictogramCount === 1 ? "pictograma" : "pictogramas"}
                 </Text>
               </View>
-              <TouchableOpacity
-                style={styles.saveButton}
-                onPress={() => toggleSaved(item.uuid)}
-              >
-                <MaterialIcons
-                  name={isSaved(item.uuid) ? "bookmark" : "bookmark-border"}
-                  size={25}
-                  color={
-                    isSaved(item.uuid)
-                      ? COLORS.primaryDark
-                      : COLORS.text.onPrimaryVariant
-                  }
-                />
-              </TouchableOpacity>
+              {showSaveButton && (
+                <TouchableOpacity
+                  style={styles.saveButton}
+                  onPress={() => toggleSaved(item.uuid)}
+                >
+                  <MaterialIcons
+                    name={isSaved(item.uuid) ? "bookmark" : "bookmark-border"}
+                    size={25}
+                    color={
+                      isSaved(item.uuid)
+                        ? COLORS.primaryDark
+                        : COLORS.text.onPrimaryVariant
+                    }
+                  />
+                </TouchableOpacity>
+              )}
               <MaterialIcons name="arrow-forward-ios" size={25} color="#000" />
             </View>
           </TouchableOpacity>
