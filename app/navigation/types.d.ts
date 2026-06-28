@@ -63,3 +63,8 @@ export type LibraryBoardStackParamList = {
   PublicBoards: undefined;
   PublicBoardDetails: { board: Board };
 };
+
+export type EmergencyStackParamList = {
+  Categories: undefined;
+  ModuleVisualization: { board: Board };
+};
