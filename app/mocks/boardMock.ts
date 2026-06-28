@@ -2,81 +2,6 @@ import { Board } from "@/types/board.types";
 import { Pictogram } from "@/types/pictogram.types";
 import { Image } from "react-native";
 
-export const boardsMock: Board[] = [
-  {
-    id: 1,
-    uuid: "board-1",
-    title: "Geral",
-    pictogramCount: 16,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-    representativePictogram: {
-      id: 1,
-      uuid: "pic-1",
-      description: "Andar",
-      imageSource: Image.resolveAssetSource(
-        require("../../assets/images/andar.png"),
-      ).uri,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    },
-  },
-  {
-    id: 2,
-    uuid: "board-2",
-    title: "Ações",
-    pictogramCount: 4,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-    representativePictogram: {
-      id: 5,
-      uuid: "pic-5",
-      description: "Correr",
-      imageSource: Image.resolveAssetSource(
-        require("../../assets/images/correr.png"),
-      ).uri,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    },
-  },
-  {
-    id: 3,
-    uuid: "board-3",
-    title: "Corpo",
-    pictogramCount: 9,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-    representativePictogram: {
-      id: 2,
-      uuid: "pic-2",
-      description: "Cabeça",
-      imageSource: Image.resolveAssetSource(
-        require("../../assets/images/cabeca.png"),
-      ).uri,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    },
-  },
-  {
-    id: 4,
-    uuid: "board-4",
-    title: "Sentimentos",
-    pictogramCount: 3,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-    representativePictogram: {
-      id: 7,
-      uuid: "pic-7",
-      description: "Feliz",
-      imageSource: Image.resolveAssetSource(
-        require("../../assets/images/feliz.png"),
-      ).uri,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    },
-  },
-];
-
 export const pictogramsMock: Record<string, Pictogram[]> = {
   "board-1": [
     {
@@ -406,4 +331,199 @@ export const pictogramsMock: Record<string, Pictogram[]> = {
       updatedAt: new Date().toISOString(),
     },
   ],
+  "board-5": [
+    {
+      id: 0,
+      uuid: "pic-0",
+      description: "prototype",
+      imageSource: Image.resolveAssetSource(
+        require("../../assets/images/alert.png"),
+      ).uri,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    },
+    {
+      id: 0,
+      uuid: "pic-0",
+      description: "prototype",
+      imageSource: Image.resolveAssetSource(
+        require("../../assets/images/alert.png"),
+      ).uri,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    },
+    {
+      id: 0,
+      uuid: "pic-0",
+      description: "prototype",
+      imageSource: Image.resolveAssetSource(
+        require("../../assets/images/alert.png"),
+      ).uri,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    },
+    {
+      id: 0,
+      uuid: "pic-0",
+      description: "prototype",
+      imageSource: Image.resolveAssetSource(
+        require("../../assets/images/alert.png"),
+      ).uri,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    },
+    {
+      id: 0,
+      uuid: "pic-0",
+      description: "prototype",
+      imageSource: Image.resolveAssetSource(
+        require("../../assets/images/alert.png"),
+      ).uri,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    },
+    {
+      id: 0,
+      uuid: "pic-0",
+      description: "prototype",
+      imageSource: Image.resolveAssetSource(
+        require("../../assets/images/alert.png"),
+      ).uri,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    },
+    {
+      id: 0,
+      uuid: "pic-0",
+      description: "prototype",
+      imageSource: Image.resolveAssetSource(
+        require("../../assets/images/alert.png"),
+      ).uri,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    },
+    {
+      id: 0,
+      uuid: "pic-0",
+      description: "prototype",
+      imageSource: Image.resolveAssetSource(
+        require("../../assets/images/alert.png"),
+      ).uri,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    },
+  ],
 };
+
+export const boardsMock: Board[] = [
+  {
+    id: 1,
+    uuid: "board-1",
+    title: "Geral",
+    pictogramCount: 16,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+    representativePictogram: {
+      id: 1,
+      uuid: "pic-1",
+      description: "Andar",
+      imageSource: Image.resolveAssetSource(
+        require("../../assets/images/andar.png"),
+      ).uri,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    },
+  },
+  {
+    id: 2,
+    uuid: "board-2",
+    title: "Ações",
+    pictogramCount: 4,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+    representativePictogram: {
+      id: 5,
+      uuid: "pic-5",
+      description: "Correr",
+      imageSource: Image.resolveAssetSource(
+        require("../../assets/images/correr.png"),
+      ).uri,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    },
+  },
+  {
+    id: 3,
+    uuid: "board-3",
+    title: "Corpo",
+    pictogramCount: 9,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+    representativePictogram: {
+      id: 2,
+      uuid: "pic-2",
+      description: "Cabeça",
+      imageSource: Image.resolveAssetSource(
+        require("../../assets/images/cabeca.png"),
+      ).uri,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    },
+  },
+  {
+    id: 4,
+    uuid: "board-4",
+    title: "Sentimentos",
+    pictogramCount: 3,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+    representativePictogram: {
+      id: 7,
+      uuid: "pic-7",
+      description: "Feliz",
+      imageSource: Image.resolveAssetSource(
+        require("../../assets/images/feliz.png"),
+      ).uri,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    },
+  },
+
+  // Emergency mock
+  {
+    id: 5,
+    uuid: "module-board-5",
+    title: "Cardiologia",
+    pictogramCount: 8,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+    representativePictogram: pictogramsMock["board-5"][0],
+  },
+  {
+    id: 6,
+    uuid: "module-board-6",
+    title: "Neurologia",
+    pictogramCount: 8,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+    representativePictogram: pictogramsMock["board-5"][0],
+  },
+  {
+    id: 7,
+    uuid: "module-board-7",
+    title: "Ortopedia",
+    pictogramCount: 8,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+    representativePictogram: pictogramsMock["board-5"][0],
+  },
+  {
+    id: 8,
+    uuid: "module-board-8",
+    title: "Geral",
+    pictogramCount: 8,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+    representativePictogram: pictogramsMock["board-5"][0],
+  },
+];
