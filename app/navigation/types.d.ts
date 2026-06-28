@@ -65,6 +65,6 @@ export type LibraryBoardStackParamList = {
 };
 
 export type EmergencyStackParamList = {
-  Categories: undefined;
+  EmergencyTab: undefined;
   ModuleVisualization: { board: Board };
 };
