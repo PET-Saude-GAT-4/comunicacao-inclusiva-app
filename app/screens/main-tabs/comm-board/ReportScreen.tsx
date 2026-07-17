@@ -1,8 +1,10 @@
 import { useSession } from "@/hooks/useSession";
 import { formatDateBR, formatTimeBR } from "@/utils/dateFormatter";
 import { useNavigation } from "@react-navigation/native";
+import * as Clipboard from "expo-clipboard";
 import { Image } from "expo-image";
 import {
+  Alert,
   FlatList,
   ScrollView,
   Text,
@@ -10,6 +12,8 @@ import {
   View,
 } from "react-native";
 import { styles } from "./ReportScreen.styles";
+import { useClipboard } from "@/hooks/useClipboard";
+import Ionicons from '@expo/vector-icons/Ionicons';
 
 export default function ReportScreen() {
   const navigation = useNavigation();
@@ -19,6 +23,14 @@ export default function ReportScreen() {
     interactions.length > 0
       ? formatDateBR(interactions[0].timestamp)
       : formatDateBR(new Date().toISOString());
+
+
+  const text = useClipboard(interactions);
+  const copyToClipboard = async () => {
+    console.log("Relatorio copiado")
+    await Clipboard.setStringAsync(text);
+    Alert.alert("Sucesso", "Relatório copiado para a área de transferência.")
+  };
 
   return (
     <View style={styles.container}>
@@ -90,6 +102,17 @@ export default function ReportScreen() {
         >
           <Text style={styles.newConsultationText}>Finalizar atendimento</Text>
         </TouchableOpacity>
+        
+        <TouchableOpacity
+          style={styles.clipboardButton}
+          onPress={copyToClipboard}
+        >
+          <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
+            <Ionicons name="copy-outline" size={20} color="black" />
+            <Text style={styles.clipboardText}>Copiar</Text>
+          </View>
+        </TouchableOpacity>
+
       </View>
     </View>
   );
