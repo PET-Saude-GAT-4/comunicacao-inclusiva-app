@@ -10,7 +10,7 @@ const MORE_ICON = Platform.OS === "ios" ? "dots-horizontal" : "dots-vertical";
 
 export default function EmergencyStackNav() {
   const Stack = createNativeStackNavigator<EmergencyStackParamList>();
-
+  
   return (
     <Stack.Navigator
       screenOptions={{ header: (props) => <GlobalHeader {...props} /> }}

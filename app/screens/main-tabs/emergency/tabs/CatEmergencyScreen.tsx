@@ -1,5 +1,5 @@
 import BoardListComponent from "@/components/BoardListComponent";
-import { useBoards } from "@/hooks/useBoards";
+import { useEmergency } from "@/hooks/useEmergency";
 import { EmergencyStackParamList } from "@/navigation/types";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
@@ -14,7 +14,7 @@ export function CatEmergencyScreen() {
   const navigation = useNavigation<NavProp>();
   const searchQuery = "module";
 
-  const { boards } = useBoards();
+  const { boards } = useEmergency();
 
   const filteredBoards = useMemo(() => {
     return boards.filter((board) =>
