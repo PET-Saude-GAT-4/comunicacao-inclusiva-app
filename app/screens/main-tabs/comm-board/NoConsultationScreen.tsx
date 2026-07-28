@@ -11,7 +11,7 @@ import { styles } from "./NoConsultationScreen.styles";
 export default function NoConsultationScreen() {
   const navigation =
     useNavigation<NativeStackNavigationProp<CommBoardStackParamList>>();
-  const { startConsultation } = useSession();
+
 
   return (
     <View style={styles.container}>
@@ -33,7 +33,6 @@ export default function NoConsultationScreen() {
           style={styles.startButton}
           activeOpacity={0.85}
           onPress={() => {
-            startConsultation();
             navigation.navigate("SelectProfessionScreen");
           }}
         >

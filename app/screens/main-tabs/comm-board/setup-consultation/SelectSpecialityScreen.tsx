@@ -2,7 +2,6 @@ import { RadioOption } from "@/components/setup-consultation/RadioOption";
 import { StepProgressBar } from "@/components/setup-consultation/StepProgressBar";
 import { useSpecialities } from "@/hooks/useSpecialities";
 import { CommBoardStackParamList } from "@/navigation/types";
-import { Profession } from "@/types/Profession.types";
 import { Speciality } from "@/types/speciality.types";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp, NativeStackScreenProps } from "@react-navigation/native-stack";
