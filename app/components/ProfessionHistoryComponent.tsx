@@ -1,10 +1,14 @@
 import { useProfessionHistory } from "@/hooks/useProfessionHistory";
-import { View, Text, FlatList, TouchableOpacity, StyleSheet } from "react-native";
-import { MaterialCommunityIcons } from '@expo/vector-icons'; 
+import { CommBoardStackParamList } from "@/navigation/types";
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { useNavigation } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { FlatList, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+
 export function ProfessionHistory() {
   const { history } = useProfessionHistory();
+  const navigation = useNavigation<NativeStackNavigationProp<CommBoardStackParamList>>();
 
- 
   if (history.length === 0) return null;
 
   return (
@@ -18,7 +22,17 @@ export function ProfessionHistory() {
         contentContainerStyle={styles.listContainer}
         keyExtractor={(item, index) => index.toString()}
         renderItem={({ item }) => (
-          <TouchableOpacity style={styles.card} activeOpacity={0.7}>
+          <TouchableOpacity 
+            style={styles.card} 
+            activeOpacity={0.7}
+            onPress={() => {
+              // Navega direto para a tela de Confirmação com a dupla do histórico
+              navigation.navigate("ConfirmConsultationScreen", {
+                profession: item.profession,
+                speciality: item.speciality,
+              });
+            }}
+          >
             <View style={styles.iconContainer}>
               <MaterialCommunityIcons name="history" size={24} color="#6366f1" />
             </View>
