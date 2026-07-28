@@ -1,4 +1,5 @@
 import { useSession } from "@/hooks/useSession";
+import { CommBoardStackParamList } from "@/navigation/types";
 import CommBoardScreen from "@/screens/main-tabs/comm-board/CommBoardScreen";
 import NoConsultationScreen from "@/screens/main-tabs/comm-board/NoConsultationScreen";
 import ConfirmConsultationScreen from "@/screens/main-tabs/comm-board/setup-consultation/ConfirmConsultationScreen";
@@ -6,7 +7,7 @@ import SelectProfessionScreen from "@/screens/main-tabs/comm-board/setup-consult
 import SelectSpecialityScreen from "@/screens/main-tabs/comm-board/setup-consultation/SelectSpecialityScreen";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
-const Stack = createNativeStackNavigator();
+const Stack = createNativeStackNavigator<CommBoardStackParamList>();
 
 export default function CommBoardStackNav() {
   const { isInConsultation } = useSession();

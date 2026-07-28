@@ -46,7 +46,7 @@ export type CommBoardStackParamList = {
   CommBoardScreen: undefined;
   SelectProfessionScreen: undefined;
   SelectSpecialityScreen: { profession: Profession };
-  ConfirmConsultationScreen: undefined;
+  ConfirmConsultationScreen:  { profession: Profession, speciality: Speciality };
   FeedbackScreen: {
     pictograms: Pictogram[];
     textContent?: string;
