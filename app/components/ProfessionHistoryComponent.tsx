@@ -13,7 +13,7 @@ export function ProfessionHistory() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Acessos Recentes</Text>
+      <Text style={styles.title}>Últimas Escolhas</Text>
       
       <FlatList 
         data={history}

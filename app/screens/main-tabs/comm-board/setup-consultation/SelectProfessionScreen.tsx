@@ -42,9 +42,9 @@ export default function SelectProfessionScreen() {
                 onSelect={() => setSelectedProfession(item)}
               />
             )}
-            ListFooterComponent={<ProfessionHistory />}
             contentContainerStyle={styles.flatListContent}
           />
+          <ProfessionHistory />
         </View>
 
         <View style={styles.footer}>
