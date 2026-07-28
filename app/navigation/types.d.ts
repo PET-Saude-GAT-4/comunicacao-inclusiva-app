@@ -1,4 +1,5 @@
 import { Pictogram } from "@/types/pictogram.types";
+import { Profession } from "@/types/Profession.types";
 
 /*
         This file extends as a type safe way to ensure navigation between the right stacks
@@ -43,6 +44,9 @@ export type MainTabParamList = {
 export type CommBoardStackParamList = {
   NoConsultationScreen: undefined;
   CommBoardScreen: undefined;
+  SelectProfessionScreen: undefined;
+  SelectSpecialityScreen: { profession: Profession };
+  ConfirmConsultationScreen: undefined;
   FeedbackScreen: {
     pictograms: Pictogram[];
     textContent?: string;

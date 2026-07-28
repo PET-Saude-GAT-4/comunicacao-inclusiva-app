@@ -34,7 +34,7 @@ export default function NoConsultationScreen() {
           activeOpacity={0.85}
           onPress={() => {
             startConsultation();
-            navigation.replace("CommBoardScreen");
+            navigation.navigate("SelectProfessionScreen");
           }}
         >
           <Text style={styles.startButtonText}>Iniciar Atendimento</Text>
