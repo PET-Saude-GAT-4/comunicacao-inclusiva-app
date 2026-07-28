@@ -20,6 +20,21 @@ export default function SelectSpecialityScreen({ route }: Props) {
   const navigation =
     useNavigation<NativeStackNavigationProp<CommBoardStackParamList>>();
 
+  const defaultSpeciality: Speciality = {
+    id: 0,
+    name: "Não especificada",
+    code: "GERAL",
+    professionId: profession.id,
+    createdAt: new Date().toISOString(),
+    updatedAt: new  Date().toISOString(),
+  };
+
+  // if the list of specialities is empty
+  const displaySpecialities =
+    specialities && specialities.length > 0
+      ? specialities
+      : [defaultSpeciality];
+
   return (
     <SafeAreaProvider style={styles.safeArea}>
       <View style={styles.container}>
@@ -35,7 +50,7 @@ export default function SelectSpecialityScreen({ route }: Props) {
         <View style={styles.listContainer}>
           <FlatList
             showsVerticalScrollIndicator={false}
-            data={specialities}
+            data={displaySpecialities}
             keyExtractor={(item) => item.id.toString()}
             renderItem={({ item }) => (
               <RadioOption
