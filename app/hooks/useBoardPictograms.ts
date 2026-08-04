@@ -1,3 +1,4 @@
+import { pictogramsCacheKey } from "@/constants/cache";
 import { pictogramsMock } from "@/mocks/boardMock";
 import { Pictogram } from "@/types/pictogram.types";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -7,7 +8,7 @@ export function useBoardPictogram(uuid: string) {
   const [pictograms, setPictograms] = useState<Pictogram[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
-  const CACHE_KEY = `@pictograms_cache${uuid}`;
+  const CACHE_KEY = pictogramsCacheKey(uuid);
 
   const loadPictograms = async () => {
     if (!uuid) return;
