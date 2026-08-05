@@ -28,4 +28,15 @@ export class BoardService {
       boardAdapter.toPictogram(pic),
     );
   }
+
+  async getNextBoards(uuid: string): Promise<Board[]> {
+    const response = await request(
+      `${API_BASE_URL}/public/boards/${uuid}/next-boards`,
+    );
+
+    // The API already returns the boards in the order they should be suggested.
+    return response.boards.map((board: ApiBoard) =>
+      boardAdapter.toBoard(board),
+    );
+  }
 }

@@ -1,5 +1,6 @@
 import {
   BOARDS_CACHE_KEY,
+  nextBoardsCacheKey,
   PHRASES_CACHE_KEY,
   pictogramsCacheKey,
 } from "@/constants/cache";
@@ -44,7 +45,7 @@ export class SyncService {
       await AsyncStorage.setItem(BOARDS_CACHE_KEY, JSON.stringify(boards));
       console.log("Synchronized boards saved in the cache.");
 
-      // 2. For each board, download its pictograms
+      // 2. For each board, download its pictograms and its next boards
       for (const board of boards) {
         try {
           const pictograms = await boardService.getBoardPictograms(board.uuid);
@@ -57,6 +58,19 @@ export class SyncService {
         } catch (picError) {
           // Catches isolated error from a specific board to avoid stopping the entire loop
           console.log(`Failed to sync pictograms for board: ${board.uuid}`);
+        }
+
+        try {
+          const nextBoards = await boardService.getNextBoards(board.uuid);
+
+          // Having no next boards is a valid state, so the empty list is cached
+          // as well. Otherwise it would be indistinguishable from a board that
+          // has never been synced.
+          const cacheKey = nextBoardsCacheKey(board.uuid);
+          await AsyncStorage.setItem(cacheKey, JSON.stringify(nextBoards));
+          console.log(`Next boards synced for board: ${board.title}`);
+        } catch (chainError) {
+          console.log(`Failed to sync next boards for board: ${board.uuid}`);
         }
       }
 
