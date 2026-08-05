@@ -77,6 +77,12 @@ export const boardsMock: Board[] = [
   },
 ];
 
+export const nextBoardsMock: Record<string, Board[]> = {
+  "board-1": [boardsMock[1], boardsMock[2]],
+  "board-2": [boardsMock[3]],
+  "board-3": [boardsMock[3]],
+};
+
 export const pictogramsMock: Record<string, Pictogram[]> = {
   "board-1": [
     {
