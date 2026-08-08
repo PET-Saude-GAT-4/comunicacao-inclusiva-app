@@ -17,10 +17,15 @@ export class ProfessionService{
         );
     }
 
-    async getSpecilities(uuid: string): Promise<Speciality[]> {
-        const response = await fetchJson(`${API_BASE_URL}/public/professions/${uuid}/specialities`);
+    async getSpecilities(professionCode: string): Promise<Speciality[]> {
+        console.log(professionCode);
+        const response = await fetchJson(`${API_BASE_URL}/public/professions/${professionCode}/specialities`);
+        
+        const list: ApiSpeciality[] = Array.isArray(response)
+          ? response
+          : response.specialities || response.specilities || response.content || [];
 
-        return response.specilities.map((speciality: ApiSpeciality) =>
+        return list.map((speciality: ApiSpeciality) =>
             specialityAdapter.toSpeciality(speciality),
         );
     }

@@ -46,12 +46,15 @@ export class SyncService {
 
       //2. For each Professions, download its specilities
       for (const profession of professions) {
+        console.log(`profissão: ${profession}`)
         try {
-          const professionUuid = profession.id.toString();
-          const specialities = await professionService.getSpecilities(professionUuid);
+          const professionCode = profession.code;
+          const specialities = await professionService.getSpecilities(professionCode);
+
+          console.log(`Especialidades aqui: ${specialities}`)
 
           if (specialities && specialities.length > 0) {
-            const cacheKey = `@specialities_cache_${professionUuid}`;
+            const cacheKey = `@specialities_cache_${professionCode}`;
             await AsyncStorage.setItem(cacheKey, JSON.stringify(specialities));
           }
         } catch (specError) {

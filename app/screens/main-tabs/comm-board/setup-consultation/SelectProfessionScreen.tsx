@@ -34,11 +34,11 @@ export default function SelectProfessionScreen() {
           <FlatList
             showsVerticalScrollIndicator={false}
             data={professions}
-            keyExtractor={(item) => item.id.toString()}
+            keyExtractor={(item) => item.code}
             renderItem={({ item }) => (
               <RadioOption
                 label={item.name}
-                selected={selectedProfession?.id === item.id}
+                selected={selectedProfession?.code === item.code}
                 onSelect={() => setSelectedProfession(item)}
               />
             )}

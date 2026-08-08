@@ -3,6 +3,7 @@ export type ApiSpeciality = {
   name: string;
   code: string;
   professionId: number;
+  professionCode?: string;
   createdAt: string;
   updatedAt: string;
 };
@@ -12,6 +13,7 @@ export type Speciality = {
   name: string;
   code: string;
   professionId: number;
+  professionCode?: string;
   createdAt: string;
   updatedAt: string;
 };

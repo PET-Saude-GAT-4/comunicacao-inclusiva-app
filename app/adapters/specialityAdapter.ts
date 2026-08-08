@@ -7,6 +7,7 @@ export const specialityAdapter = {
       name: apiData.name,
       code: apiData.code,
       professionId: apiData.professionId,
+      professionCode: apiData.professionCode,
       createdAt: apiData.createdAt,
       updatedAt: apiData.updatedAt,
     };

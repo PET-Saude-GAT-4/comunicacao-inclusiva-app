@@ -14,7 +14,7 @@ type Props = NativeStackScreenProps<CommBoardStackParamList, "SelectSpecialitySc
 
 export default function SelectSpecialityScreen({ route }: Props) {
   const { profession } = route.params;
-  const { specialities } = useSpecialities(profession.id);
+  const { specialities } = useSpecialities(profession.code);
   const [selectedSpeciality, setSelectedSpeciality] = useState<Speciality>();
 
   const navigation =
@@ -51,11 +51,11 @@ export default function SelectSpecialityScreen({ route }: Props) {
           <FlatList
             showsVerticalScrollIndicator={false}
             data={displaySpecialities}
-            keyExtractor={(item) => item.id.toString()}
+            keyExtractor={(item) => item.code}
             renderItem={({ item }) => (
               <RadioOption
                 label={item.name}
-                selected={selectedSpeciality?.id === item.id}
+                selected={selectedSpeciality?.code === item.code}
                 onSelect={() => setSelectedSpeciality(item)}
               />
             )}
