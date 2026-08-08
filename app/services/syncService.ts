@@ -14,7 +14,7 @@ export class SyncService {
   async syncAll(): Promise<boolean> {
     try {
       console.log("Starting background synchronization...");
-      
+
       // 1. Sync professions and Specilities
       await this.syncProfessions();
 
@@ -25,7 +25,9 @@ export class SyncService {
       return true;
     } catch (error) {
       // Silent failure. We don't pass 'error' to avoid freezing the React Native console.
-      console.log("Sync failed (API offline or server error). Using current cache.");
+      console.log(
+        "Sync failed (API offline or server error). Using current cache.",
+      );
       return false;
     }
   }
@@ -41,17 +43,18 @@ export class SyncService {
       }
 
       // Save professions to cache
-      await AsyncStorage.setItem("@professions_cache", JSON.stringify(professions));
+      await AsyncStorage.setItem(
+        "@professions_cache",
+        JSON.stringify(professions),
+      );
       console.log("Synchronized professions saved in the cache.");
 
       //2. For each Professions, download its specilities
       for (const profession of professions) {
-        console.log(`profissão: ${profession}`)
         try {
           const professionCode = profession.code;
-          const specialities = await professionService.getSpecilities(professionCode);
-
-          console.log(`Especialidades aqui: ${specialities}`)
+          const specialities =
+            await professionService.getSpecilities(professionCode);
 
           if (specialities && specialities.length > 0) {
             const cacheKey = `@specialities_cache_${professionCode}`;
@@ -59,7 +62,9 @@ export class SyncService {
           }
         } catch (specError) {
           // Catches isolated error from a specific profession to avoid stopping the entire loop
-          console.log(`Failed to sync specialities of Profession: ${profession.id}`);
+          console.log(
+            `Failed to sync specialities of Profession: ${profession.id}`,
+          );
         }
       }
     } catch (error) {

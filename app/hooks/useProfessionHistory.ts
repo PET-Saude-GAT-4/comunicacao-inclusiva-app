@@ -11,16 +11,26 @@ type HistoryEntry = {
 const HISTORIC_KEY = "@profession_history";
 const MAX_HISTORY = 5;
 
-export function useProfessionHistory() {
+export function useProfessionHistory(avaliableProfessions?: Profession[]) {
   const [history, setHistory] = useState<HistoryEntry[]>([]);
 
   useEffect(() => {
     AsyncStorage.getItem(HISTORIC_KEY).then((data) => {
       if (data) {
+        const parsedHistory: HistoryEntry[] = JSON.parse(data);
         setHistory(JSON.parse(data));
+
+        if (avaliableProfessions && avaliableProfessions.length > 0) {
+          const validHistory = parsedHistory.filter((item) =>
+            avaliableProfessions.some((p) => p.code === item.profession.code),
+          );
+          setHistory(validHistory);
+        }else{
+        setHistory(parsedHistory);
+        }
       }
     });
-  }, []);
+  }, [avaliableProfessions]);
 
   const addHistoryEntry = async (
     profession: Profession,
@@ -31,8 +41,8 @@ export function useProfessionHistory() {
     const removeDuplicate = history.filter(
       (item) =>
         !(
-          item.profession.id === profession.id &&
-          item.speciality.id === speciality.id
+          item.profession.code === profession.code &&
+          item.speciality.code === speciality.code
         ),
     );
 

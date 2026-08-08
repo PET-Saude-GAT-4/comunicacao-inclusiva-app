@@ -18,7 +18,6 @@ export class ProfessionService{
     }
 
     async getSpecilities(professionCode: string): Promise<Speciality[]> {
-        console.log(professionCode);
         const response = await fetchJson(`${API_BASE_URL}/public/professions/${professionCode}/specialities`);
         
         const list: ApiSpeciality[] = Array.isArray(response)

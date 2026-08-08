@@ -44,7 +44,7 @@ export default function SelectProfessionScreen() {
             )}
             contentContainerStyle={styles.flatListContent}
           />
-          <ProfessionHistory />
+          <ProfessionHistory professions={professions}/>
         </View>
 
         <View style={styles.footer}>
