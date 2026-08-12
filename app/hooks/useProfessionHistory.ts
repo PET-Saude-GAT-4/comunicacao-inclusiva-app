@@ -1,0 +1,56 @@
+import { PROFESSIONS_HISTORIC_KEY } from "@/constants/cache";
+import { Profession } from "@/types/Profession.types";
+import { Speciality } from "@/types/speciality.types";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useEffect, useState } from "react";
+
+type HistoryEntry = {
+  profession: Profession;
+  speciality: Speciality;
+};
+
+const MAX_HISTORY = 5;
+
+export function useProfessionHistory(avaliableProfessions?: Profession[]) {
+  const [history, setHistory] = useState<HistoryEntry[]>([]);
+
+  useEffect(() => {
+    AsyncStorage.getItem(PROFESSIONS_HISTORIC_KEY).then((data) => {
+      if (data) {
+        const parsedHistory: HistoryEntry[] = JSON.parse(data);
+        setHistory(JSON.parse(data));
+
+        if (avaliableProfessions && avaliableProfessions.length > 0) {
+          const validHistory = parsedHistory.filter((item) =>
+            avaliableProfessions.some((p) => p.code === item.profession.code),
+          );
+          setHistory(validHistory);
+        }else{
+        setHistory(parsedHistory);
+        }
+      }
+    });
+  }, [avaliableProfessions]);
+
+  const addHistoryEntry = async (
+    profession: Profession,
+    speciality: Speciality,
+  ) => {
+    const newEntry = { profession, speciality };
+
+    const removeDuplicate = history.filter(
+      (item) =>
+        !(
+          item.profession.code === profession.code &&
+          item.speciality.code === speciality.code
+        ),
+    );
+
+    const newHistory = [newEntry, ...removeDuplicate].slice(0, MAX_HISTORY);
+    setHistory(newHistory);
+
+    await AsyncStorage.setItem(PROFESSIONS_HISTORIC_KEY, JSON.stringify(newHistory));
+  };
+
+  return { history, addHistoryEntry };
+}

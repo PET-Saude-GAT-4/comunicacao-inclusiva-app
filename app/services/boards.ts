@@ -1,8 +1,9 @@
 import { boardAdapter } from "@/adapters/boardAdapter";
-import { request } from "@/services/http";
 import { ApiBoard, Board } from "@/types/board.types";
 import { ApiPictogram, Pictogram } from "@/types/pictogram.types";
+import { request } from "@/utils/apiUtils";
 import Constants from "expo-constants";
+
 const API_BASE_URL = Constants.expoConfig?.extra?.API_BASE_URL;
 
 export class BoardService {

@@ -1,5 +1,5 @@
 import { phraseAdapter } from "@/adapters/phraseAdapter";
-import { request } from "@/services/http";
+import { request } from "@/utils/apiUtils";
 import { ApiPhrase, Phrase } from "@/types/phrase.types";
 import Constants from "expo-constants";
 const API_BASE_URL = Constants.expoConfig?.extra?.API_BASE_URL;

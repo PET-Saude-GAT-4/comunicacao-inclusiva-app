@@ -3,13 +3,17 @@ import {
   nextBoardsCacheKey,
   PHRASES_CACHE_KEY,
   pictogramsCacheKey,
+  PROFESSIONS_CACHE_KEY,
+  specialitiesCacheKey,
 } from "@/constants/cache";
 import { BoardService } from "@/services/boards";
 import { PhraseService } from "@/services/phrases";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { ProfessionService } from "./ProfessionService";
 
 const boardService = new BoardService();
 const phraseService = new PhraseService();
+const professionService = new ProfessionService();
 
 export class SyncService {
   /**
@@ -21,14 +25,67 @@ export class SyncService {
   async syncAll(): Promise<boolean> {
     console.log("Starting background synchronization...");
 
+    const professionsOk = await this.syncProfessions();
     const boardsOk = await this.syncBoards();
     const phrasesOk = await this.syncPhrases();
 
-    if (boardsOk && phrasesOk) {
+    const allOk = professionsOk && boardsOk && phrasesOk;
+
+    if (allOk) {
       console.log("Sync completed successfully!");
+    } else {
+      console.log(
+        "Sync finished with some errors. Using current cache for failed items.",
+      );
     }
 
-    return boardsOk && phrasesOk;
+    return allOk;
+  }
+
+  private async syncProfessions(): Promise<boolean> {
+    try {
+      //1. Download All Professions
+      const professions = await professionService.getProfessions();
+
+      if (!professions || professions.length === 0) {
+        console.log("No professions found in the API.");
+        return true;
+      }
+
+      // Save professions to cache
+      await AsyncStorage.setItem(
+        PROFESSIONS_CACHE_KEY,
+        JSON.stringify(professions),
+      );
+      console.log("Synchronized professions saved in the cache.");
+
+      //2. For each Professions, download its specilities
+      for (const profession of professions) {
+        try {
+          const professionCode = profession.code;
+          const specialities =
+            await professionService.getSpecilities(professionCode);
+
+          if (specialities && specialities.length > 0) {
+            const cacheKey = specialitiesCacheKey(professionCode);
+            await AsyncStorage.setItem(cacheKey, JSON.stringify(specialities));
+          }
+        } catch (specError) {
+          // Catches isolated error from a specific profession to avoid stopping the entire loop
+          console.log(
+            `Failed to sync specialities of Profession: ${profession.id}`,
+          );
+        }
+      }
+
+      return true;
+    } catch (error) {
+      // Silent failure. We don't pass 'error' to avoid freezing the React Native console.
+      console.log(
+        "Professions sync failed (API offline or server error). Using current cache.",
+      );
+      return false;
+    }
   }
 
   private async syncBoards(): Promise<boolean> {
