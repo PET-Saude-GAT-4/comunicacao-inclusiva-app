@@ -1,9 +1,10 @@
+import { PROFESSIONS_CACHE_KEY } from "@/constants/cache";
 import { professionMock } from "@/mocks/professionMock";
 import { Profession } from "@/types/Profession.types";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useEffect, useState } from "react";
 
-const CACHE_KEY = "@professions_cache";
+
 export function useProfessions() {
   const [professions, setProfessions] = useState<Profession[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -11,7 +12,7 @@ export function useProfessions() {
   const loadProfessions = async () => {
     try {
       // 1. Try to read from cache (where SyncEngine saves data)
-      const cacheData = await AsyncStorage.getItem(CACHE_KEY);
+      const cacheData = await AsyncStorage.getItem(PROFESSIONS_CACHE_KEY);
 
       if (cacheData) {
         setProfessions(JSON.parse(cacheData));

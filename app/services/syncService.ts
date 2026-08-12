@@ -3,6 +3,8 @@ import {
   nextBoardsCacheKey,
   PHRASES_CACHE_KEY,
   pictogramsCacheKey,
+  PROFESSIONS_CACHE_KEY,
+  specialitiesCacheKey,
 } from "@/constants/cache";
 import { BoardService } from "@/services/boards";
 import { PhraseService } from "@/services/phrases";
@@ -39,7 +41,6 @@ export class SyncService {
 
     return allOk;
   }
-  
 
   private async syncProfessions(): Promise<boolean> {
     try {
@@ -53,7 +54,7 @@ export class SyncService {
 
       // Save professions to cache
       await AsyncStorage.setItem(
-        "@professions_cache",
+        PROFESSIONS_CACHE_KEY,
         JSON.stringify(professions),
       );
       console.log("Synchronized professions saved in the cache.");
@@ -66,7 +67,7 @@ export class SyncService {
             await professionService.getSpecilities(professionCode);
 
           if (specialities && specialities.length > 0) {
-            const cacheKey = `@specialities_cache_${professionCode}`;
+            const cacheKey = specialitiesCacheKey(professionCode);
             await AsyncStorage.setItem(cacheKey, JSON.stringify(specialities));
           }
         } catch (specError) {
