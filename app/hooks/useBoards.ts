@@ -1,9 +1,8 @@
+import { BOARDS_CACHE_KEY } from "@/constants/cache";
 import { boardsMock } from "@/mocks/boardMock";
 import { Board } from "@/types/board.types";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useEffect, useState } from "react";
-
-const CACHE_KEY = "@boards_cache";
 
 export function useBoards() {
   const [boards, setBoards] = useState<Board[]>([]);
@@ -12,7 +11,7 @@ export function useBoards() {
   const loadBoards = async () => {
     try {
       // 1. Try to read from cache (where SyncEngine saves data)
-      const cacheData = await AsyncStorage.getItem(CACHE_KEY);
+      const cacheData = await AsyncStorage.getItem(BOARDS_CACHE_KEY);
 
       if (cacheData) {
         setBoards(JSON.parse(cacheData));
