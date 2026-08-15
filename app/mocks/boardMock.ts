@@ -412,4 +412,86 @@ export const pictogramsMock: Record<string, Pictogram[]> = {
       updatedAt: new Date().toISOString(),
     },
   ],
+  "board-5": [
+    {
+      id: 0,
+      uuid: "pic-0",
+      description: "prototype",
+      imageSource: Image.resolveAssetSource(
+        require("../../assets/images/alert.png"),
+      ).uri,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    },
+    {
+      id: 0,
+      uuid: "pic-0",
+      description: "prototype",
+      imageSource: Image.resolveAssetSource(
+        require("../../assets/images/alert.png"),
+      ).uri,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    },
+    {
+      id: 0,
+      uuid: "pic-0",
+      description: "prototype",
+      imageSource: Image.resolveAssetSource(
+        require("../../assets/images/alert.png"),
+      ).uri,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    },
+    {
+      id: 0,
+      uuid: "pic-0",
+      description: "prototype",
+      imageSource: Image.resolveAssetSource(
+        require("../../assets/images/alert.png"),
+      ).uri,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    },
+    {
+      id: 0,
+      uuid: "pic-0",
+      description: "prototype",
+      imageSource: Image.resolveAssetSource(
+        require("../../assets/images/alert.png"),
+      ).uri,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    },
+    {
+      id: 0,
+      uuid: "pic-0",
+      description: "prototype",
+      imageSource: Image.resolveAssetSource(
+        require("../../assets/images/alert.png"),
+      ).uri,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    },
+    {
+      id: 0,
+      uuid: "pic-0",
+      description: "prototype",
+      imageSource: Image.resolveAssetSource(
+        require("../../assets/images/alert.png"),
+      ).uri,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    },
+    {
+      id: 0,
+      uuid: "pic-0",
+      description: "prototype",
+      imageSource: Image.resolveAssetSource(
+        require("../../assets/images/alert.png"),
+      ).uri,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    },
+  ],
 };
