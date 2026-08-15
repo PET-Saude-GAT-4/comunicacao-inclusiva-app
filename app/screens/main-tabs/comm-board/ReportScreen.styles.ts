@@ -89,6 +89,7 @@ export const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
+    gap: 12,
     paddingHorizontal: 16,
     paddingVertical: 10,
     borderTopWidth: 1,
@@ -97,11 +98,12 @@ export const styles = StyleSheet.create({
   },
 
   newConsultationButton: {
-    borderWidth: 1,
+    flex: 1,
+    borderWidth: 1.5,
     borderColor: COLORS.primaryDark,
     borderRadius: CONTAINERS.radius.full,
-    paddingVertical: 8,
-    paddingHorizontal: 20,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
     alignItems: "center",
   },
 
@@ -109,5 +111,22 @@ export const styles = StyleSheet.create({
     color: COLORS.primaryDark,
     fontSize: TYPOGRAPHY.sizes.body,
     fontWeight: TYPOGRAPHY.weights.medium,
+  },
+
+  clipboardButton: {
+    flex: 1,
+    borderWidth: 1.5,
+    borderColor: COLORS.primaryDark,
+    borderRadius: CONTAINERS.radius.full,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    alignItems: "center",
+  },
+
+  clipboardText: {
+    color: COLORS.primaryDark,
+    fontSize: TYPOGRAPHY.sizes.bodyEmph,
+    fontWeight: TYPOGRAPHY.weights.medium,
+    letterSpacing: 0.3,
   },
 });
