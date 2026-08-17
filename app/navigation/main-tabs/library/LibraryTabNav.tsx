@@ -15,7 +15,7 @@ export default function LibraryTabNav() {
       <TopTabs.Screen
         name="Library-Board"
         component={BoardLibStackNav}
-        options={{ title: "Biblioteca" }}
+        options={{ title: "Pranchas" }}
       />
       <TopTabs.Screen
         name="Library-Interactions"
