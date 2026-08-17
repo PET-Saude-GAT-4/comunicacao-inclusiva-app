@@ -25,7 +25,7 @@ export default function LibraryTabNav() {
       <TopTabs.Screen
         name="Library-Emergency-Modules"
         component={() => <></>}
-        options={{ title: "Detalhes da Prancha" }}
+        options={{ title: "Módulos" }}
       />
     </TopTabs.Navigator>
   );
