@@ -1,6 +1,9 @@
 import { useSession } from "@/hooks/useSession";
 import { useSyncEngine } from "@/hooks/useSyncEngine";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import {
+  BottomTabBar,
+  createBottomTabNavigator,
+} from "@react-navigation/bottom-tabs";
 import React, { useEffect, useState } from "react";
 
 import GlobalHeader from "@/components/GlobalHeaderComponent";
@@ -10,28 +13,23 @@ import SettingsStackNav from "./main-tabs/settings/SettingsStackNav";
 
 import { ConsultationMenuModal } from "@/components/ConsultationMenuModal";
 import { OfflineBanner } from "@/components/OfflineBanner";
-// *.*
 import { SpeakerToggleButton } from "@/components/SpeakerToggleButton";
+import { COLORS } from "@/styles/themes";
 import { Platform, View } from "react-native";
 import EmergencyStackNav from "./main-tabs/emergency/EmergencyStackNav";
-import LibraryTabNav from "./main-tabs/library/LibraryTabNav";
+import LibraryStackNav from "./main-tabs/library/LibraryStackNav";
 import MyCollectionStackNav from "./main-tabs/my-collection/MyCollectionStackNav";
+
 const MORE_ICON = Platform.OS === "ios" ? "dots-horizontal" : "dots-vertical";
 
 const MainTabs = createBottomTabNavigator();
 
-/* 
-        This tab navigator is going to lead into the stack navigator of each tab located
-    in the bottom nav bar
-*/
 export default function MainTabNav() {
-  // Sync runs once when the user enters the app, not per screen
   const { isError } = useSyncEngine();
   const { isInConsultation } = useSession();
   const [bannerVisible, setBannerVisible] = useState(false);
   const [menuVisible, setMenuVisible] = useState(false);
 
-  // Show banner whenever sync reports an error
   useEffect(() => {
     if (isError) setBannerVisible(true);
   }, [isError]);
@@ -40,16 +38,18 @@ export default function MainTabNav() {
     <View style={{ flex: 1 }}>
       <MainTabs.Navigator
         screenOptions={{
-          header: (props) => (
-            <>
-              <GlobalHeader {...props} />
-              <OfflineBanner
-                visible={bannerVisible}
-                onClose={() => setBannerVisible(false)}
-              />
-            </>
-          ),
+          sceneStyle: { backgroundColor: COLORS.background },
+          header: (props) => <GlobalHeader {...props} />,
         }}
+        tabBar={(props) => (
+          <>
+            <OfflineBanner
+              visible={bannerVisible}
+              onClose={() => setBannerVisible(false)}
+            />
+            <BottomTabBar {...props} />
+          </>
+        )}
       >
         <MainTabs.Screen
           name="CommBoardStackNav"
@@ -68,6 +68,7 @@ export default function MainTabNav() {
                 >
                   <SpeakerToggleButton />
                   <Appbar.Action
+                    iconColor={COLORS.text.onPrimary}
                     icon={MORE_ICON}
                     onPress={() => setMenuVisible(true)}
                   />
@@ -82,8 +83,8 @@ export default function MainTabNav() {
             headerShown: false,
             title: "Minha Coleção",
             headerRight: () => (
-              //*.*
               <Appbar.Action
+                iconColor={COLORS.text.onPrimary}
                 icon={MORE_ICON}
                 onPress={() => setMenuVisible(true)}
               />
@@ -99,22 +100,15 @@ export default function MainTabNav() {
             headerRight: () => <></>,
           }}
         />
-
         <MainTabs.Screen
           name="Library"
-          component={LibraryTabNav}
+          component={LibraryStackNav}
           options={{
-            title: "Biblioteca",
-            headerRight: () => (
-              //*.*
-              <Appbar.Action
-                icon={MORE_ICON}
-                onPress={() => setMenuVisible(true)}
-              />
-            ),
+            headerShown: false,
+            title: "Emergência",
+            headerRight: () => <></>,
           }}
         />
-
         <MainTabs.Screen
           name="Settings"
           component={SettingsStackNav}
@@ -124,6 +118,7 @@ export default function MainTabNav() {
           }}
         />
       </MainTabs.Navigator>
+
       <ConsultationMenuModal
         visible={menuVisible}
         onClose={() => setMenuVisible(false)}
