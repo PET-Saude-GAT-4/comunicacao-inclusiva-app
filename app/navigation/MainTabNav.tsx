@@ -20,6 +20,10 @@ import EmergencyStackNav from "./main-tabs/emergency/EmergencyStackNav";
 import LibraryStackNav from "./main-tabs/library/LibraryStackNav";
 import MyCollectionStackNav from "./main-tabs/my-collection/MyCollectionStackNav";
 
+import { MaterialIcons } from "@expo/vector-icons";
+
+import { screenOptions } from "./MainTab.style";
+
 const MORE_ICON = Platform.OS === "ios" ? "dots-horizontal" : "dots-vertical";
 
 const MainTabs = createBottomTabNavigator();
@@ -38,6 +42,7 @@ export default function MainTabNav() {
     <View style={{ flex: 1 }}>
       <MainTabs.Navigator
         screenOptions={{
+          ...screenOptions,
           sceneStyle: { backgroundColor: COLORS.background },
           header: (props) => <GlobalHeader {...props} />,
         }}
@@ -74,6 +79,13 @@ export default function MainTabNav() {
                   />
                 </View>
               ) : null,
+            tabBarIcon: ({ color, size, focused }) => (
+              <MaterialIcons
+                name={focused ? "content-paste-search" : "content-paste-search"}
+                size={size}
+                color={color}
+              />
+            ),
           }}
         />
         <MainTabs.Screen
@@ -89,6 +101,13 @@ export default function MainTabNav() {
                 onPress={() => setMenuVisible(true)}
               />
             ),
+            tabBarIcon: ({ color, size, focused }) => (
+              <MaterialIcons
+                name={focused ? "content-paste" : "content-paste"}
+                size={size}
+                color={color}
+              />
+            ),
           }}
         />
         <MainTabs.Screen
@@ -98,6 +117,13 @@ export default function MainTabNav() {
             headerShown: false,
             title: "Emergência",
             headerRight: () => <></>,
+            tabBarIcon: ({ color, size, focused }) => (
+              <MaterialIcons
+                name={focused ? "warning" : "warning"}
+                size={size}
+                color={color}
+              />
+            ),
           }}
         />
         <MainTabs.Screen
@@ -105,8 +131,15 @@ export default function MainTabNav() {
           component={LibraryStackNav}
           options={{
             headerShown: false,
-            title: "Emergência",
+            title: "Biblioteca",
             headerRight: () => <></>,
+            tabBarIcon: ({ color, size, focused }) => (
+              <MaterialIcons
+                name={focused ? "library-books" : "library-books"}
+                size={size}
+                color={color}
+              />
+            ),
           }}
         />
         <MainTabs.Screen
@@ -115,6 +148,13 @@ export default function MainTabNav() {
           options={{
             title: "Configurações",
             headerRight: () => <></>,
+            tabBarIcon: ({ color, size, focused }) => (
+              <MaterialIcons
+                name={focused ? "settings" : "settings"}
+                size={size}
+                color={color}
+              />
+            ),
           }}
         />
       </MainTabs.Navigator>
