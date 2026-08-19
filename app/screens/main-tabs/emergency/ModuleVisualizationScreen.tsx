@@ -2,6 +2,7 @@ import { COLORS, CONTAINERS, TYPOGRAPHY } from "@/styles/themes";
 
 import { useModuleBoardPictogram } from "@/hooks/useModulePictograms";
 import { EmergencyStackParamList } from "@/navigation/types";
+import { Board } from "@/types/board.types";
 import { Pictogram } from "@/types/pictogram.types";
 import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
 import { Image } from "expo-image";
@@ -18,10 +19,14 @@ type ModuleVisualizationRouteProp = RouteProp<
   "ModuleVisualization"
 >;
 
-export default function ModuleVisualizationScreen() {
+type Props = {
+  board?: Board;
+};
+
+export default function ModuleVisualizationScreen({ board: boardProp }: Props) {
   const navigation = useNavigation();
   const route = useRoute<ModuleVisualizationRouteProp>();
-  const { board } = route.params;
+  const board = boardProp ?? route.params?.board;
 
   const { pictograms, isLoading: isLoadingPics } = useModuleBoardPictogram(
     board.uuid || "",
