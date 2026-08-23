@@ -1,8 +1,12 @@
 import { AccessibilityMenu } from "@/components/AccessibilityMenu";
 import { BoardSkeleton } from "@/components/BoardSkeleton";
+import { PainScaleTray } from "@/components/pain-scale/PainScaleTray";
+import { PainScaleTrigger } from "@/components/pain-scale/PainScaleTrigger";
+import type { PainScaleSubmission } from "@/components/pain-scale/types";
 import { useBoardPictogram } from "@/hooks/useBoardPictograms";
 import { useBoards } from "@/hooks/useBoards";
 import { useSession } from "@/hooks/useSession";
+import { CommBoardStackParamList } from "@/navigation/types";
 import { COLORS } from "@/styles/themes";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
@@ -19,14 +23,13 @@ import {
   View,
 } from "react-native";
 import { Pictogram } from "../../../types/pictogram.types";
-import { CommBoardStackParamList, Speaker } from "@/navigation/types";
 import { styles } from "./CommBoardScreen.styles";
 
 export default function CommBoardScreen() {
-  const navigation = useNavigation<NativeStackNavigationProp<CommBoardStackParamList>>();
+  const navigation =
+    useNavigation<NativeStackNavigationProp<CommBoardStackParamList>>();
 
-  const { currentSpeaker, isInConsultation, setCurrentSpeaker } =
-    useSession();
+  const { currentSpeaker, isInConsultation, setCurrentSpeaker } = useSession();
   // Redirect to NoConsultationScreen when consultation ends
   useEffect(() => {
     if (!isInConsultation) {
@@ -43,6 +46,14 @@ export default function CommBoardScreen() {
   );
   const [isSearchActive, setIsSearchActive] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [isPainScaleVisible, setIsPainScaleVisible] = useState(false);
+
+  // TODO: record the intensity through SessionContext once an interaction type
+  // exists for it.
+  const handlePainScaleSubmit = async (submission: PainScaleSubmission) => {
+    await new Promise((resolve) => setTimeout(resolve, 100));
+    console.log("Intensidade enviada:", submission);
+  };
 
   const { boards, isLoading: isLoadingBoards } = useBoards();
   const { pictograms, isLoading: isLoadingPics } = useBoardPictogram(
@@ -298,6 +309,14 @@ export default function CommBoardScreen() {
       <AccessibilityMenu
         isTextMode={isTextMode}
         onToggleTextMode={() => setIsTextMode(!isTextMode)}
+      />
+      {currentSpeaker === "patient" && (
+        <PainScaleTrigger onPress={() => setIsPainScaleVisible(true)} />
+      )}
+      <PainScaleTray
+        visible={isPainScaleVisible}
+        onClose={() => setIsPainScaleVisible(false)}
+        onSubmit={handlePainScaleSubmit}
       />
     </View>
   );
