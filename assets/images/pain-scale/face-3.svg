@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" role="img" aria-label="Face da escala de dor: intensa">
+  <circle cx="100" cy="100" r="82" fill="#E8912D" stroke="#333333" stroke-width="11"/>
+  <circle cx="73" cy="82" r="9.5" fill="#333333"/>
+  <circle cx="127" cy="82" r="9.5" fill="#333333"/>
+  <path d="M 70 136 Q 100 114 130 136" fill="none" stroke="#333333" stroke-width="10" stroke-linecap="round"/>
+</svg>
