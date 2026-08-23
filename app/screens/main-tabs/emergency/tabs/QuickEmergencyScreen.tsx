@@ -1,21 +1,13 @@
 import { useEmergency } from "@/hooks/useEmergency";
-import { useModuleBoardPictogram } from "@/hooks/useModulePictograms";
-import { COLORS, CONTAINERS, TYPOGRAPHY } from "@/styles/themes";
-import { Pictogram } from "@/types/pictogram.types";
-import { Image } from "expo-image";
-import { useMemo } from "react";
-import {
-  FlatList,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { Board } from "@/types/board.types";
+import { useMemo, useState } from "react";
+import { View } from "react-native";
+import { Gesture, GestureDetector } from "react-native-gesture-handler";
+import { runOnJS } from "react-native-reanimated";
 import ModuleVisualizationScreen from "../ModuleVisualizationScreen";
 
 export function QuickEmergencyScreen() {
-  const searchQuery = "module";
-
+  const searchQuery = "module-board-quick-emergency";
   const { boards } = useEmergency();
 
   const filteredBoards = useMemo(() => {
@@ -24,18 +16,35 @@ export function QuickEmergencyScreen() {
     );
   }, [searchQuery, boards]);
 
-  const board = filteredBoards.find((item) => item.uuid === "module-board-8");
+  const [activeIndex, setActiveIndex] = useState(0);
 
-  const { pictograms } = useModuleBoardPictogram(board?.uuid || "");
-
-  function onTap(pictogram: Pictogram) {
-    console.log(pictogram.description);
+  function goToNext() {
+    setActiveIndex((prev) => Math.min(prev + 1, filteredBoards.length - 1));
   }
 
+  function goToPrevious() {
+    setActiveIndex((prev) => Math.max(prev - 1, 0));
+  }
+
+  const SWIPE_THRESHOLD = 40; // px of vertical movement before it counts
+
+  const panGesture = Gesture.Pan().onEnd((event) => {
+    if (event.translationY < -SWIPE_THRESHOLD) {
+      // dragged upward -> next board
+      runOnJS(goToNext)();
+    } else if (event.translationY > SWIPE_THRESHOLD) {
+      // dragged downward -> previous board
+      runOnJS(goToPrevious)();
+    }
+  });
+
+  const selectedBoard: Board | undefined = filteredBoards[activeIndex];
+
   return (
-    <View style={{flex: 1}}>
-      {board && <ModuleVisualizationScreen board={board} />}
-    </View>
+    <GestureDetector gesture={panGesture}>
+      <View style={{ flex: 1 }}>
+        {selectedBoard && <ModuleVisualizationScreen board={selectedBoard} />}
+      </View>
+    </GestureDetector>
   );
 }
-

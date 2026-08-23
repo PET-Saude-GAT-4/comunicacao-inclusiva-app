@@ -52,6 +52,7 @@ export default function ModuleVisualizationScreen({ board: boardProp }: Props) {
         style={{ padding: CONTAINERS.spacings.lg }}
         data={pictograms}
         numColumns={2}
+        scrollEnabled={false}
         showsVerticalScrollIndicator={false}
         columnWrapperStyle={styles.row}
         contentContainerStyle={styles.listContent}
