@@ -1,77 +1,81 @@
+import { PhraseItem } from "@/types/item.types";
 import { Phrase } from "@/types/phrase.types";
+import { Pictogram } from "@/types/pictogram.types";
+import { SignWriting } from "@/types/signWriting.types";
 import { Image } from "react-native";
+
+const now = new Date().toISOString();
+
+function img(asset: any): string {
+  return Image.resolveAssetSource(asset).uri;
+}
+
+const timestamp = () => ({ createdAt: now, updatedAt: now });
+
+const assets = {
+  cabeca: require("../../assets/images/cabeca.png"),
+  comer: require("../../assets/images/comer.png"),
+  feliz: require("../../assets/images/feliz.png"),
+  triste: require("../../assets/images/triste.png"),
+  logo: require("../../assets/images/logo.png"),
+} as const;
+
+function createPhraseItem(
+  id: number,
+  uuidSuffix: string,
+  description: string,
+  asset: any,
+): PhraseItem {
+  const pictogram: Pictogram = {
+    id,
+    uuid: `pic-${uuidSuffix}`,
+    description,
+    imageSource: img(asset),
+    ...timestamp(),
+  };
+
+  const signWriting: SignWriting = {
+    id,
+    uuid: `sw-${uuidSuffix}`,
+    description,
+    imageSource: img(assets.logo),
+    ...timestamp(),
+  };
+
+  return {
+    description,
+    pictogram,
+    signWriting,
+  };
+}
 
 export const phrasesMock: Phrase[] = [
   {
     uuid: "phrase-1",
     description: "Estou com dor de cabeça",
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-    pictograms: [
-      {
-        id: 2,
-        uuid: "pic-2",
-        description: "Cabeça",
-        imageSource: Image.resolveAssetSource(
-          require("../../assets/images/cabeca.png"),
-        ).uri,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      },
-    ],
+    createdAt: now,
+    updatedAt: now,
+    items: [createPhraseItem(2, "2", "Cabeça", assets.cabeca)],
   },
   {
     uuid: "phrase-2",
     description: "Estou com fome",
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-    pictograms: [
-      {
-        id: 4,
-        uuid: "pic-4",
-        description: "Comer",
-        imageSource: Image.resolveAssetSource(
-          require("../../assets/images/comer.png"),
-        ).uri,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      },
-    ],
+    createdAt: now,
+    updatedAt: now,
+    items: [createPhraseItem(4, "4", "Comer", assets.comer)],
   },
   {
     uuid: "phrase-3",
     description: "Estou feliz",
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-    pictograms: [
-      {
-        id: 7,
-        uuid: "pic-7",
-        description: "Feliz",
-        imageSource: Image.resolveAssetSource(
-          require("../../assets/images/feliz.png"),
-        ).uri,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      },
-    ],
+    createdAt: now,
+    updatedAt: now,
+    items: [createPhraseItem(7, "7", "Feliz", assets.feliz)],
   },
   {
     uuid: "phrase-4",
     description: "Estou triste",
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-    pictograms: [
-      {
-        id: 11,
-        uuid: "pic-11",
-        description: "Triste",
-        imageSource: Image.resolveAssetSource(
-          require("../../assets/images/triste.png"),
-        ).uri,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      },
-    ],
+    createdAt: now,
+    updatedAt: now,
+    items: [createPhraseItem(11, "11", "Triste", assets.triste)],
   },
 ];

@@ -1,16 +1,16 @@
-import { pictogramsCacheKey } from "@/constants/cache";
-import { pictogramsMock } from "@/mocks/boardMock";
-import { Pictogram } from "@/types/pictogram.types";
+import { boardItemsCacheKey } from "@/constants/cache";
+import { boardItemsMock } from "@/mocks/boardMock";
+import { BoardItem } from "@/types/item.types";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useEffect, useState } from "react";
 
-export function useBoardPictogram(uuid: string) {
-  const [pictograms, setPictograms] = useState<Pictogram[]>([]);
+export function useBoardItems(uuid: string) {
+  const [items, setItems] = useState<BoardItem[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
-  const CACHE_KEY = pictogramsCacheKey(uuid);
+  const CACHE_KEY = boardItemsCacheKey(uuid);
 
-  const loadPictograms = async () => {
+  const loadItems = async () => {
     if (!uuid) return;
 
     setIsLoading(true);
@@ -20,22 +20,22 @@ export function useBoardPictogram(uuid: string) {
       const cacheData = await AsyncStorage.getItem(CACHE_KEY);
 
       if (cacheData) {
-        setPictograms(JSON.parse(cacheData));
+        setItems(JSON.parse(cacheData));
       } else {
         // 2. If not in cache, fall back to emergency Mock
-        setPictograms(pictogramsMock[uuid] || []);
+        setItems(boardItemsMock[uuid] || []);
       }
     } catch (error) {
       console.log(`Failed to load cache for UUID: ${uuid}. Using Mock.`);
-      setPictograms(pictogramsMock[uuid] || []);
+      setItems(boardItemsMock[uuid] || []);
     } finally {
       setIsLoading(false);
     }
   };
 
   useEffect(() => {
-    loadPictograms();
+    loadItems();
   }, [uuid]);
 
-  return { pictograms, isLoading, refetch: loadPictograms };
+  return { items, isLoading, refetch: loadItems };
 }

@@ -1,4 +1,4 @@
-import { useBoardPictogram } from "@/hooks/useBoardPictograms";
+import { useBoardPictogram } from "@/hooks/useBoardItems";
 import { Board } from "@/types/board.types";
 import Feather from "@expo/vector-icons/Feather";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";

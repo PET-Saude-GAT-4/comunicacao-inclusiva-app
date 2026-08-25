@@ -3,7 +3,7 @@ import { BoardSkeleton } from "@/components/BoardSkeleton";
 import { PainScaleTray } from "@/components/pain-scale/PainScaleTray";
 import { PainScaleTrigger } from "@/components/pain-scale/PainScaleTrigger";
 import type { PainScaleSubmission } from "@/components/pain-scale/types";
-import { useBoardPictogram } from "@/hooks/useBoardPictograms";
+import { useBoardPictogram } from "@/hooks/useBoardItems";
 import { useBoards } from "@/hooks/useBoards";
 import { useSession } from "@/hooks/useSession";
 import { CommBoardStackParamList } from "@/navigation/types";

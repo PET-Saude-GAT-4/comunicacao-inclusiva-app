@@ -3,7 +3,7 @@ import { ApiPhraseItem, PhraseItem } from "./item.types";
 export interface Phrase {
   uuid: string;
   description: string;
-  slots: PhraseItem[];
+  items: PhraseItem[];
   createdAt: string;
   updatedAt: string;
 }
@@ -11,7 +11,7 @@ export interface Phrase {
 export interface ApiPhrase {
   uuid: string;
   description: string;
-  slots: ApiPhraseItem[];
+  items: ApiPhraseItem[];
   createdAt: string;
   updatedAt: string;
 }
