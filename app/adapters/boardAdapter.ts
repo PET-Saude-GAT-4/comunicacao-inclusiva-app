@@ -1,5 +1,7 @@
 import { ApiBoard, Board } from "@/types/board.types";
+import { ApiBoardItem, BoardItem } from "@/types/item.types";
 import { ApiPictogram, Pictogram } from "@/types/pictogram.types";
+import { ApiSignWriting, SignWriting } from "@/types/signWriting.types";
 import Constants from "expo-constants";
 
 const API_BASE_URL =
@@ -25,7 +27,26 @@ function resolveFileUrl(fileUrl: string): string {
 }
 
 export const boardAdapter = {
+  toBoardItem(apiData: ApiBoardItem): BoardItem {
+    return {
+      description: apiData.description,
+      pictogram: this.toPictogram(apiData.pictogram),
+      signWriting: this.toSignWriting(apiData.signWriting),
+    };
+  },
+
   toPictogram(apiData: ApiPictogram): Pictogram {
+    return {
+      id: apiData.id,
+      uuid: apiData.uuid,
+      description: apiData.description,
+      imageSource: resolveFileUrl(apiData.fileUrl),
+      createdAt: apiData.createdAt,
+      updatedAt: apiData.updatedAt,
+    };
+  },
+
+  toSignWriting(apiData: ApiSignWriting): SignWriting {
     return {
       id: apiData.id,
       uuid: apiData.uuid,

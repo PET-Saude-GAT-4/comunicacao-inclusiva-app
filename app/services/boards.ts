@@ -1,5 +1,6 @@
 import { boardAdapter } from "@/adapters/boardAdapter";
 import { ApiBoard, Board } from "@/types/board.types";
+import { ApiBoardItem, BoardItem } from "@/types/item.types";
 import { ApiPictogram, Pictogram } from "@/types/pictogram.types";
 import { request } from "@/utils/apiUtils";
 import Constants from "expo-constants";
@@ -21,12 +22,12 @@ export class BoardService {
     return boardAdapter.toBoard(response.board);
   }
 
-  async getBoardPictograms(uuid: string): Promise<Pictogram[]> {
+  async getBoardItems(uuid: string): Promise<BoardItem[]> {
     const response = await request(
-      `${API_BASE_URL}/public/boards/${uuid}/pictograms`,
+      `${API_BASE_URL}/public/boards/${uuid}/slots`,
     );
-    return response.pictograms.map((pic: ApiPictogram) =>
-      boardAdapter.toPictogram(pic),
+    return response.pictograms.map((slot: ApiBoardItem) =>
+      boardAdapter.toBoardItem(slot),
     );
   }
 

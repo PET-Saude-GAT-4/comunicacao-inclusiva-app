@@ -1,17 +1,17 @@
-import { ApiPhraseItem, PhraseItem } from "./item.types";
-
-export interface Phrase {
+export interface SignWriting {
+  id: number;
   uuid: string;
   description: string;
-  slots: PhraseItem[];
+  imageSource: string;
   createdAt: string;
   updatedAt: string;
 }
 
-export interface ApiPhrase {
+export interface ApiSignWriting {
+  id: number;
   uuid: string;
   description: string;
-  slots: ApiPhraseItem[];
+  fileUrl: string;
   createdAt: string;
   updatedAt: string;
 }
