@@ -9,7 +9,7 @@ export const PROFESSIONS_HISTORIC_KEY = "@profession_history";
 export const specialitiesCacheKey = (professionCode: string) =>
   `@specialities_cache_${professionCode}`;
 
-export const boardItemsCacheKey = (uuid: string) => `@board_items:${uuid}`;
+export const boardTermsCacheKey = (uuid: string) => `@board_terms:${uuid}`;
 
 export const nextBoardsCacheKey = (uuid: string) =>
   `@next_boards_cache:${uuid}`;

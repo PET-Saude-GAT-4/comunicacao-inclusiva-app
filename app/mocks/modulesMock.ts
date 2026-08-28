@@ -1,8 +1,8 @@
 import { Board } from "@/types/board.types";
-import { BoardItem } from "@/types/item.types";
 import { Pictogram } from "@/types/pictogram.types";
-import { SignWriting } from "@/types/signWriting.types";
-import { Image } from "react-native";
+ import { SignWriting } from "@/types/signWriting.types";
+ import { Term } from "@/types/term.types";
+ import { Image } from "react-native";
 
 const now = new Date().toISOString();
 
@@ -33,12 +33,12 @@ const assets = {
   logo: require("../../assets/images/logo.png"),
 } as const;
 
-function createItem(
+function createTerm(
   id: number,
   uuidSuffix: string,
   description: string,
   asset: any,
-): BoardItem {
+): Term {
   const pictogram: Pictogram = {
     id,
     uuid: `pic-${uuidSuffix}`,
@@ -62,30 +62,32 @@ function createItem(
   };
 }
 
+const createItem = createTerm;
+
 const ITEMS = {
-  andar: createItem(1, "1", "Andar", assets.andar),
-  cabeca: createItem(2, "2", "Cabeça", assets.cabeca),
-  com_raiva: createItem(3, "3", "Com Raiva", assets.com_raiva),
-  comer: createItem(4, "4", "Comer", assets.comer),
-  correr: createItem(5, "5", "Correr", assets.correr),
-  escrever: createItem(6, "6", "Escrever", assets.escrever),
-  feliz: createItem(7, "7", "Feliz", assets.feliz),
-  nariz: createItem(8, "8", "Nariz", assets.nariz),
-  olho: createItem(9, "9", "Olho", assets.olho),
-  orelha: createItem(10, "10", "Orelha", assets.orelha),
-  triste: createItem(11, "11", "Triste", assets.triste),
-  boca: createItem(12, "12", "Boca", assets.boca),
-  coracao: createItem(13, "13", "Coração", assets.coracao),
-  dente: createItem(14, "14", "Dente", assets.dente),
-  mao: createItem(15, "15", "Mão", assets.mao),
-  rins: createItem(16, "16", "Rins", assets.rins),
+  andar: createTerm(1, "1", "Andar", assets.andar),
+  cabeca: createTerm(2, "2", "Cabeça", assets.cabeca),
+  com_raiva: createTerm(3, "3", "Com Raiva", assets.com_raiva),
+  comer: createTerm(4, "4", "Comer", assets.comer),
+  correr: createTerm(5, "5", "Correr", assets.correr),
+  escrever: createTerm(6, "6", "Escrever", assets.escrever),
+  feliz: createTerm(7, "7", "Feliz", assets.feliz),
+  nariz: createTerm(8, "8", "Nariz", assets.nariz),
+  olho: createTerm(9, "9", "Olho", assets.olho),
+  orelha: createTerm(10, "10", "Orelha", assets.orelha),
+  triste: createTerm(11, "11", "Triste", assets.triste),
+  boca: createTerm(12, "12", "Boca", assets.boca),
+  coracao: createTerm(13, "13", "Coração", assets.coracao),
+  dente: createTerm(14, "14", "Dente", assets.dente),
+  mao: createTerm(15, "15", "Mão", assets.mao),
+  rins: createTerm(16, "16", "Rins", assets.rins),
 };
 
-const prototypeItems: BoardItem[] = Array.from({ length: 8 }, (_, i) =>
-  createItem(i, `proto-${i}`, "prototype", assets.alert),
+const prototypeItems: Term[] = Array.from({ length: 8 }, (_, i) =>
+  createTerm(i, `proto-${i}`, "prototype", assets.alert),
 );
 
-export const boardItemsMock: Record<string, BoardItem[]> = {
+export const boardTermsMock: Record<string, Term[]> = {
   "board-1": Object.values(ITEMS),
   "board-2": [ITEMS.andar, ITEMS.comer, ITEMS.correr, ITEMS.escrever],
   "board-3": [
@@ -119,7 +121,7 @@ function board(
   id: number,
   uuid: string,
   title: string,
-  items: BoardItem[],
+  items: Term[],
 ): Board {
   return {
     id,
@@ -133,10 +135,10 @@ function board(
 
 export const boardsMock: Board[] = [
   // Fallback cache boards
-  board(1, "board-1", "Geral", boardItemsMock["board-1"]),
-  board(2, "board-2", "Ações", boardItemsMock["board-2"]),
-  board(3, "board-3", "Corpo", boardItemsMock["board-3"]),
-  board(4, "board-4", "Sentimentos", boardItemsMock["board-4"]),
+  board(1, "board-1", "Geral", boardTermsMock["board-1"]),
+  board(2, "board-2", "Ações", boardTermsMock["board-2"]),
+  board(3, "board-3", "Corpo", boardTermsMock["board-3"]),
+  board(4, "board-4", "Sentimentos", boardTermsMock["board-4"]),
 
   // Emergency modules
   board(5, "module-board-5", "Cardiologia", prototypeItems),

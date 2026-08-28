@@ -1,5 +1,5 @@
 import { Pictogram } from "@/types/pictogram.types";
-import { Profession } from "@/types/Profession.types";
+import { Profession } from "@/types/profession.types";
 
 /*
         This file extends as a type safe way to ensure navigation between the right stacks

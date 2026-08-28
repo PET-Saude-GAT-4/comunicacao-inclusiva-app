@@ -1,6 +1,6 @@
 import { PROFESSIONS_CACHE_KEY } from "@/constants/cache";
 import { professionMock } from "@/mocks/professionMock";
-import { Profession } from "@/types/Profession.types";
+import { ApiProfession, Profession } from "@/types/profession.types";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useEffect, useState } from "react";
 

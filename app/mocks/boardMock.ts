@@ -1,5 +1,5 @@
 import { Board } from "@/types/board.types";
-import { BoardItem } from "@/types/item.types";
+import { Term } from "@/types/term.types";
 import { Image } from "react-native";
 
 const defaultSignWritingSource = Image.resolveAssetSource(
@@ -88,15 +88,15 @@ export const nextBoardsMock: Record<string, Board[]> = {
 };
 
 // Helper sem id/uuid na raiz do item
-const createBoardItem = (
+const createTerm = (
   id: number,
   uuid: string,
   description: string,
   imageRequire: any,
-): BoardItem => {
+): Term => {
   const now = new Date().toISOString();
   return {
-    description, // Descrição que vem do Slot
+    description, // Descrição que vem do Term
     pictogram: {
       id,
       uuid: `pic-${uuid}`,
@@ -116,75 +116,75 @@ const createBoardItem = (
   };
 };
 
-export const boardItemsMock: Record<string, BoardItem[]> = {
+export const boardTermsMock: Record<string, Term[]> = {
   "board-1": [
-    createBoardItem(1, "1", "Andar", require("../../assets/images/andar.png")),
-    createBoardItem(
+    createTerm(1, "1", "Andar", require("../../assets/images/andar.png")),
+    createTerm(
       2,
       "2",
       "Cabeça",
       require("../../assets/images/cabeca.png"),
     ),
-    createBoardItem(
+    createTerm(
       3,
       "3",
       "Com Raiva",
       require("../../assets/images/com_raiva.png"),
     ),
-    createBoardItem(4, "4", "Comer", require("../../assets/images/comer.png")),
-    createBoardItem(
+    createTerm(4, "4", "Comer", require("../../assets/images/comer.png")),
+    createTerm(
       5,
       "5",
       "Correr",
       require("../../assets/images/correr.png"),
     ),
-    createBoardItem(
+    createTerm(
       6,
       "6",
       "Escrever",
       require("../../assets/images/escrever.png"),
     ),
-    createBoardItem(7, "7", "Feliz", require("../../assets/images/feliz.png")),
-    createBoardItem(8, "8", "Nariz", require("../../assets/images/nariz.png")),
-    createBoardItem(9, "9", "Olho", require("../../assets/images/olho.png")),
-    createBoardItem(
+    createTerm(7, "7", "Feliz", require("../../assets/images/feliz.png")),
+    createTerm(8, "8", "Nariz", require("../../assets/images/nariz.png")),
+    createTerm(9, "9", "Olho", require("../../assets/images/olho.png")),
+    createTerm(
       10,
       "10",
       "Orelha",
       require("../../assets/images/orelha.png"),
     ),
-    createBoardItem(
+    createTerm(
       11,
       "11",
       "Triste",
       require("../../assets/images/triste.png"),
     ),
-    createBoardItem(12, "12", "Boca", require("../../assets/images/boca.png")),
-    createBoardItem(
+    createTerm(12, "12", "Boca", require("../../assets/images/boca.png")),
+    createTerm(
       13,
       "13",
       "Coração",
       require("../../assets/images/coracao.png"),
     ),
-    createBoardItem(
+    createTerm(
       14,
       "14",
       "Dente",
       require("../../assets/images/dente.png"),
     ),
-    createBoardItem(15, "15", "Mão", require("../../assets/images/mao.png")),
-    createBoardItem(16, "16", "Rins", require("../../assets/images/rins.png")),
+    createTerm(15, "15", "Mão", require("../../assets/images/mao.png")),
+    createTerm(16, "16", "Rins", require("../../assets/images/rins.png")),
   ],
   "board-2": [
-    createBoardItem(1, "1", "Andar", require("../../assets/images/andar.png")),
-    createBoardItem(4, "4", "Comer", require("../../assets/images/comer.png")),
-    createBoardItem(
+    createTerm(1, "1", "Andar", require("../../assets/images/andar.png")),
+    createTerm(4, "4", "Comer", require("../../assets/images/comer.png")),
+    createTerm(
       5,
       "5",
       "Correr",
       require("../../assets/images/correr.png"),
     ),
-    createBoardItem(
+    createTerm(
       6,
       "6",
       "Escrever",
@@ -192,45 +192,45 @@ export const boardItemsMock: Record<string, BoardItem[]> = {
     ),
   ],
   "board-3": [
-    createBoardItem(
+    createTerm(
       2,
       "2",
       "Cabeça",
       require("../../assets/images/cabeca.png"),
     ),
-    createBoardItem(8, "8", "Nariz", require("../../assets/images/nariz.png")),
-    createBoardItem(9, "9", "Olho", require("../../assets/images/olho.png")),
-    createBoardItem(
+    createTerm(8, "8", "Nariz", require("../../assets/images/nariz.png")),
+    createTerm(9, "9", "Olho", require("../../assets/images/olho.png")),
+    createTerm(
       10,
       "10",
       "Orelha",
       require("../../assets/images/orelha.png"),
     ),
-    createBoardItem(12, "12", "Boca", require("../../assets/images/boca.png")),
-    createBoardItem(
+    createTerm(12, "12", "Boca", require("../../assets/images/boca.png")),
+    createTerm(
       13,
       "13",
       "Coração",
       require("../../assets/images/coracao.png"),
     ),
-    createBoardItem(
+    createTerm(
       14,
       "14",
       "Dente",
       require("../../assets/images/dente.png"),
     ),
-    createBoardItem(15, "15", "Mão", require("../../assets/images/mao.png")),
-    createBoardItem(16, "16", "Rins", require("../../assets/images/rins.png")),
+    createTerm(15, "15", "Mão", require("../../assets/images/mao.png")),
+    createTerm(16, "16", "Rins", require("../../assets/images/rins.png")),
   ],
   "board-4": [
-    createBoardItem(
+    createTerm(
       3,
       "3",
       "Com Raiva",
       require("../../assets/images/com_raiva.png"),
     ),
-    createBoardItem(7, "7", "Feliz", require("../../assets/images/feliz.png")),
-    createBoardItem(
+    createTerm(7, "7", "Feliz", require("../../assets/images/feliz.png")),
+    createTerm(
       11,
       "11",
       "Triste",
@@ -238,49 +238,49 @@ export const boardItemsMock: Record<string, BoardItem[]> = {
     ),
   ],
   "board-5": [
-    createBoardItem(
+    createTerm(
       0,
       "0",
       "prototype",
       require("../../assets/images/alert.png"),
     ),
-    createBoardItem(
+    createTerm(
       0,
       "0",
       "prototype",
       require("../../assets/images/alert.png"),
     ),
-    createBoardItem(
+    createTerm(
       0,
       "0",
       "prototype",
       require("../../assets/images/alert.png"),
     ),
-    createBoardItem(
+    createTerm(
       0,
       "0",
       "prototype",
       require("../../assets/images/alert.png"),
     ),
-    createBoardItem(
+    createTerm(
       0,
       "0",
       "prototype",
       require("../../assets/images/alert.png"),
     ),
-    createBoardItem(
+    createTerm(
       0,
       "0",
       "prototype",
       require("../../assets/images/alert.png"),
     ),
-    createBoardItem(
+    createTerm(
       0,
       "0",
       "prototype",
       require("../../assets/images/alert.png"),
     ),
-    createBoardItem(
+    createTerm(
       0,
       "0",
       "prototype",

@@ -1,7 +1,7 @@
-import { PhraseItem } from "@/types/item.types";
 import { Phrase } from "@/types/phrase.types";
 import { Pictogram } from "@/types/pictogram.types";
 import { SignWriting } from "@/types/signWriting.types";
+import { Term } from "@/types/term.types";
 import { Image } from "react-native";
 
 const now = new Date().toISOString();
@@ -20,12 +20,12 @@ const assets = {
   logo: require("../../assets/images/logo.png"),
 } as const;
 
-function createPhraseItem(
+function createTerm(
   id: number,
   uuidSuffix: string,
   description: string,
   asset: any,
-): PhraseItem {
+): Term {
   const pictogram: Pictogram = {
     id,
     uuid: `pic-${uuidSuffix}`,
@@ -55,27 +55,27 @@ export const phrasesMock: Phrase[] = [
     description: "Estou com dor de cabeça",
     createdAt: now,
     updatedAt: now,
-    items: [createPhraseItem(2, "2", "Cabeça", assets.cabeca)],
+    terms: [createTerm(2, "2", "Cabeça", assets.cabeca)],
   },
   {
     uuid: "phrase-2",
     description: "Estou com fome",
     createdAt: now,
     updatedAt: now,
-    items: [createPhraseItem(4, "4", "Comer", assets.comer)],
+    terms: [createTerm(4, "4", "Comer", assets.comer)],
   },
   {
     uuid: "phrase-3",
     description: "Estou feliz",
     createdAt: now,
     updatedAt: now,
-    items: [createPhraseItem(7, "7", "Feliz", assets.feliz)],
+    terms: [createTerm(7, "7", "Feliz", assets.feliz)],
   },
   {
     uuid: "phrase-4",
     description: "Estou triste",
     createdAt: now,
     updatedAt: now,
-    items: [createPhraseItem(11, "11", "Triste", assets.triste)],
+    terms: [createTerm(11, "11", "Triste", assets.triste)],
   },
 ];

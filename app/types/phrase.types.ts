@@ -1,9 +1,9 @@
-import { ApiPhraseItem, PhraseItem } from "./item.types";
+import { ApiTerm, Term } from "./term.types";
 
 export interface Phrase {
   uuid: string;
   description: string;
-  items: PhraseItem[];
+  terms: Term[];
   createdAt: string;
   updatedAt: string;
 }
@@ -11,7 +11,7 @@ export interface Phrase {
 export interface ApiPhrase {
   uuid: string;
   description: string;
-  items: ApiPhraseItem[];
+  terms: ApiTerm[];
   createdAt: string;
   updatedAt: string;
 }

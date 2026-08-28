@@ -1,6 +1,6 @@
 import { COLORS, CONTAINERS, TYPOGRAPHY } from "@/styles/themes";
 
-import { useModuleBoardPictogram } from "@/hooks/useModuleBoardItems";
+import { useModuleBoardPictogram } from "@/hooks/useModuleBoardTerms";
 import { EmergencyStackParamList } from "@/navigation/types";
 import { Pictogram } from "@/types/pictogram.types";
 import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";

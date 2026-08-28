@@ -1,7 +1,6 @@
 import { boardAdapter } from "@/adapters/boardAdapter";
 import { ApiBoard, Board } from "@/types/board.types";
-import { ApiBoardItem, BoardItem } from "@/types/item.types";
-import { ApiPictogram, Pictogram } from "@/types/pictogram.types";
+import { ApiTerm, Term } from "@/types/term.types";
 import { request } from "@/utils/apiUtils";
 import Constants from "expo-constants";
 
@@ -22,12 +21,12 @@ export class BoardService {
     return boardAdapter.toBoard(response.board);
   }
 
-  async getBoardItems(uuid: string): Promise<BoardItem[]> {
+  async getBoardTerms(uuid: string): Promise<Term[]> {
     const response = await request(
-      `${API_BASE_URL}/public/boards/${uuid}/slots`,
+      `${API_BASE_URL}/public/boards/${uuid}/terms`,
     );
-    return response.pictograms.map((slot: ApiBoardItem) =>
-      boardAdapter.toBoardItem(slot),
+    return (response.terms ?? response.pictograms ?? []).map((term: ApiTerm) =>
+      boardAdapter.toTerm(term),
     );
   }
 

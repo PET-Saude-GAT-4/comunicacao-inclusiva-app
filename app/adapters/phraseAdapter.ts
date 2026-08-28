@@ -1,22 +1,18 @@
 import { boardAdapter } from "@/adapters/boardAdapter";
-import { ApiPhraseItem, PhraseItem } from "@/types/item.types";
 import { ApiPhrase, Phrase } from "@/types/phrase.types";
+import { ApiTerm, Term } from "@/types/term.types";
 
 export const phraseAdapter = {
-  toPhraseItem(apiData: ApiPhraseItem): PhraseItem {
-    return {
-      description: apiData.description,
-      pictogram: boardAdapter.toPictogram(apiData.pictogram),
-      signWriting: boardAdapter.toSignWriting(apiData.signWriting),
-    };
+  toTerm(apiData: ApiTerm): Term {
+    return boardAdapter.toTerm(apiData);
   },
 
   toPhrase(apiData: ApiPhrase): Phrase {
     return {
       uuid: apiData.uuid,
       description: apiData.description,
-      // The API already returns the pictograms in the order they should be read.
-      items: (apiData.items ?? []).map((item) => this.toPhraseItem(item)),
+      // The API already returns the terms in the order they should be read.
+      terms: (apiData.terms ?? []).map((term) => boardAdapter.toTerm(term)),
       createdAt: apiData.createdAt,
       updatedAt: apiData.updatedAt,
     };
