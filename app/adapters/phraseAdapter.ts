@@ -16,7 +16,7 @@ export const phraseAdapter = {
       uuid: apiData.uuid,
       description: apiData.description,
       // The API already returns the pictograms in the order they should be read.
-      slots: (apiData.slots ?? []).map((slot) => this.toPhraseItem(slot)),
+      items: (apiData.items ?? []).map((item) => this.toPhraseItem(item)),
       createdAt: apiData.createdAt,
       updatedAt: apiData.updatedAt,
     };

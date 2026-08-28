@@ -4,6 +4,7 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { PaperProvider, useTheme } from "react-native-paper";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { MyCollectionProvider } from "./app/contexts/MyCollectionContext";
+import { PreferencesProvider } from "./app/contexts/PreferencesContext";
 import { SessionProvider } from "./app/contexts/SessionContext";
 import RootStackNavigator from "./app/navigation/RootStackNav";
 
@@ -18,13 +19,15 @@ export default function App() {
         <PaperProvider>
           <SessionProvider>
             <MyCollectionProvider>
-              <NavigationContainer>
-                <StatusBar
-                  barStyle={theme.dark ? "light-content" : "dark-content"}
-                  backgroundColor={theme.colors.background}
-                />
-                <RootStackNavigator />
-              </NavigationContainer>
+              <PreferencesProvider>
+                <NavigationContainer>
+                  <StatusBar
+                    barStyle={theme.dark ? "light-content" : "dark-content"}
+                    backgroundColor={theme.colors.background}
+                  />
+                  <RootStackNavigator />
+                </NavigationContainer>
+              </PreferencesProvider>
             </MyCollectionProvider>
           </SessionProvider>
         </PaperProvider>
