@@ -1,6 +1,5 @@
 import { LibraryPhraseStackParamList } from "@/navigation/types";
 import PhrasesScreen from "@/screens/main-tabs/library/PhrasesScreen";
-import PhraseDetailScreen from "@/screens/main-tabs/library/PhraseDetailScreen";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import React from "react";
 
@@ -13,11 +12,6 @@ export default function PhraseLibStackNav() {
         name="PublicPhrases"
         component={PhrasesScreen}
         options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name="PublicPhraseDetails"
-        component={PhraseDetailScreen}
-        options={{ title: "Detalhes da Frase" }}
       />
     </Stack.Navigator>
   );

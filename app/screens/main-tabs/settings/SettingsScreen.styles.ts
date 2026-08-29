@@ -4,14 +4,7 @@ import { StyleSheet } from "react-native";
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: COLORS.background,
     padding: CONTAINERS.spacings.lg,
-  },
-  headerTitle: {
-    fontSize: TYPOGRAPHY.sizes.title,
-    fontWeight: "bold",
-    color: COLORS.text.onPrimary,
-    marginBottom: CONTAINERS.spacings.xl,
   },
   section: {
     backgroundColor: "#fff",

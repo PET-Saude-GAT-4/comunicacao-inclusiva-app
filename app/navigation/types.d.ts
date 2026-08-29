@@ -60,7 +60,6 @@ export type CommBoardStackParamList = {
 export type MyCollectionStackParamList = {
   BoardCollectionTab: undefined;
   BoardDetails: { board: Board };
-  PhraseDetails: { phrase: import("@/types/phrase.types").Phrase };
 };
 
 export type BoardStackParamList = {
@@ -74,7 +73,6 @@ export type LibraryBoardStackParamList = {
 
 export type LibraryPhraseStackParamList = {
   PublicPhrases: undefined;
-  PublicPhraseDetails: { phrase: import("@/types/phrase.types").Phrase };
 };
 
 export type EmergencyStackParamList = {

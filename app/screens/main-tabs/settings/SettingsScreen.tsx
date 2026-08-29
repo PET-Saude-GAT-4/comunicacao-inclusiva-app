@@ -10,8 +10,6 @@ export default function SettingsScreen() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.headerTitle}>Configurações</Text>
-      
       <View style={styles.section}>
         <View style={styles.settingRow}>
           <View style={styles.settingTextContainer}>

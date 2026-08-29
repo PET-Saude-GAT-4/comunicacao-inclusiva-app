@@ -28,11 +28,6 @@ const Stack = createNativeStackNavigator<MyCollectionStackParamList>();
         component={BoardDetailScreen}
         options={{ title: "Detalhes da Prancha" }}
       />
-      <Stack.Screen
-        name="PhraseDetails"
-        component={require("@/screens/main-tabs/library/PhraseDetailScreen").default}
-        options={{ title: "Detalhes da Interação" }}
-      />
     </Stack.Navigator>
   )
 }

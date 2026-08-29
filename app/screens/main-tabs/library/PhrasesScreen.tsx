@@ -1,36 +1,24 @@
 import { BoardSkeleton } from "@/components/BoardSkeleton";
-import { usePreferences } from "@/hooks/usePreferences";
-import { usePhrases } from "@/hooks/usePhrases";
-import { LibraryPhraseStackParamList } from "@/navigation/types";
+import { PhraseCard } from "@/components/PhraseCard";
+import { SearchBar } from "@/components/SearchBar";
 import { useMyCollection } from "@/hooks/useMyCollection";
-import { Phrase } from "@/types/phrase.types";
-import { Term } from "@/types/term.types";
-import { resolveTermDisplay } from "@/utils/resolveTermDisplay";
-import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import { usePhrases } from "@/hooks/usePhrases";
 import { COLORS } from "@/styles/themes";
-import { useNavigation } from "@react-navigation/native";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { Image } from "expo-image";
-import React from "react";
-import {
-  FlatList,
-  ScrollView,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import React, { useMemo, useState } from "react";
+import { FlatList, Text, TouchableOpacity, View } from "react-native";
 import { styles } from "./PhrasesScreen.styles";
 
-type NavProp = NativeStackNavigationProp<
-  LibraryPhraseStackParamList,
-  "PublicPhraseDetails"
->;
-
 export default function PhrasesScreen() {
-  const navigation = useNavigation<NavProp>();
+  const [searchQuery, setSearchQuery] = useState("");
   const { phrases, isLoading } = usePhrases();
-  const { displayMode } = usePreferences();
   const { isSaved, toggleSaved } = useMyCollection();
+
+  const filteredPhrases = useMemo(() => {
+    return phrases.filter((phrase) =>
+      phrase.description.toLowerCase().includes(searchQuery.toLowerCase()),
+    );
+  }, [searchQuery, phrases]);
 
   if (isLoading) {
     return (
@@ -42,29 +30,32 @@ export default function PhrasesScreen() {
 
   return (
     <View style={styles.container}>
+      <View style={styles.searchContainer}>
+        <SearchBar
+          value={searchQuery}
+          onChangeText={setSearchQuery}
+          placeholder="Busque uma frase pronta..."
+        />
+      </View>
       <FlatList
-        data={phrases}
+        data={filteredPhrases}
         keyExtractor={(item) => item.uuid}
         contentContainerStyle={styles.listContent}
+        showsVerticalScrollIndicator={false}
         ListEmptyComponent={
           <View style={styles.emptyContainer}>
             <Text style={styles.emptyText}>
-              Nenhuma frase disponível no momento.
+              Nenhuma frase encontrada.
             </Text>
           </View>
         }
         renderItem={({ item }) => (
-          <TouchableOpacity
-            style={styles.card}
-            activeOpacity={0.7}
-            onPress={() =>
-              navigation.navigate("PublicPhraseDetails", { phrase: item })
-            }
-          >
-            <View style={styles.cardHeader}>
-              <Text style={styles.cardTitle}>{item.description}</Text>
+          <PhraseCard
+            phrase={item}
+            actionElement={
               <TouchableOpacity
                 style={styles.saveButton}
+                activeOpacity={0.7}
                 onPress={() => toggleSaved(item.uuid)}
               >
                 <MaterialIcons
@@ -77,31 +68,8 @@ export default function PhrasesScreen() {
                   }
                 />
               </TouchableOpacity>
-            </View>
-            <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              contentContainerStyle={styles.visorScrollContent}
-            >
-              {item.terms.map((term: Term, index: number) => {
-                const display = resolveTermDisplay(term, displayMode);
-                return (
-                  <View
-                    key={`${term.pictogram.uuid}-${index}`}
-                    style={styles.termItem}
-                  >
-                    <Image
-                      source={{ uri: display.imageSource }}
-                      style={styles.termImage}
-                    />
-                    <Text style={styles.termText} numberOfLines={1}>
-                      {display.label}
-                    </Text>
-                  </View>
-                );
-              })}
-            </ScrollView>
-          </TouchableOpacity>
+            }
+          />
         )}
       />
     </View>
