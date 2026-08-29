@@ -15,7 +15,12 @@ export function useEmergency() {
       const cacheData = await AsyncStorage.getItem(CACHE_KEY);
 
       if (cacheData) {
-        setBoards(JSON.parse(cacheData));
+        const parsed = JSON.parse(cacheData);
+        if (parsed.length > 0) {
+          setBoards(parsed);
+        } else {
+          setBoards(boardsMock);
+        }
       } else {
         // 2. If cache is completely empty, fall back to Mock
         setBoards(boardsMock);

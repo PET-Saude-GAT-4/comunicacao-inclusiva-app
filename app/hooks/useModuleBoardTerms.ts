@@ -20,7 +20,12 @@ export function useModuleBoardTerms(uuid: string) {
       const cacheData = await AsyncStorage.getItem(CACHE_KEY);
 
       if (cacheData) {
-        setTerms(JSON.parse(cacheData));
+        const parsed = JSON.parse(cacheData);
+        if (parsed.length > 0) {
+          setTerms(parsed);
+        } else {
+          setTerms(boardTermsMock[uuid] || []);
+        }
       } else {
         // 2. If not in cache, fall back to emergency Mock
         setTerms(boardTermsMock[uuid] || []);
