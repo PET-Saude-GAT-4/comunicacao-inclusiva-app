@@ -2,6 +2,7 @@ import React from "react";
 
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import BoardLibStackNav from "./Tabs/BoardStackNav";
+import PhraseLibStackNav from "./Tabs/PhraseLibStackNav";
 
 const TopTabs = createMaterialTopTabNavigator();
 
@@ -15,7 +16,7 @@ export default function LibraryTabNav() {
             />
             <TopTabs.Screen
                 name="Library-Interactions"
-                component={() => <></>}
+                component={PhraseLibStackNav}
                 options={{ title: "Interações" }}
             />
             <TopTabs.Screen
