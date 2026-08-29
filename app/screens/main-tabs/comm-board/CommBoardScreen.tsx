@@ -1,6 +1,7 @@
 import { AccessibilityMenu } from "@/components/AccessibilityMenu";
 import { BoardSkeleton } from "@/components/BoardSkeleton";
 import { PainScaleTray } from "@/components/pain-scale/PainScaleTray";
+import { SearchBar } from "@/components/SearchBar";
 import { PainScaleTrigger } from "@/components/pain-scale/PainScaleTrigger";
 import type { PainScaleSubmission } from "@/components/pain-scale/types";
 import { usePreferences } from "@/hooks/usePreferences";
@@ -221,11 +222,10 @@ export default function CommBoardScreen() {
         {/* Categories Bar */}
         {isSearchActive && (
           <View style={{ marginBottom: 16 }}>
-            <TextInput
-              style={styles.searchInput}
-              placeholder="Buscar prancha..."
+            <SearchBar
               value={searchQuery}
               onChangeText={setSearchQuery}
+              placeholder="Buscar prancha..."
             />
           </View>
         )}
