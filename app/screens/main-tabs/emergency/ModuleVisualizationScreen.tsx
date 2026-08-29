@@ -1,8 +1,9 @@
 import { COLORS, CONTAINERS, TYPOGRAPHY } from "@/styles/themes";
-
-import { useModuleBoardPictogram } from "@/hooks/useModuleBoardTerms";
+import { usePreferences } from "@/hooks/usePreferences";
+import { useModuleBoardTerms } from "@/hooks/useModuleBoardTerms";
 import { EmergencyStackParamList } from "@/navigation/types";
-import { Pictogram } from "@/types/pictogram.types";
+import { Term } from "@/types/term.types";
+import { resolveTermDisplay } from "@/utils/resolveTermDisplay";
 import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
 import { Image } from "expo-image";
 import { useEffect } from "react";
@@ -13,6 +14,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+
 type ModuleVisualizationRouteProp = RouteProp<
   EmergencyStackParamList,
   "ModuleVisualization"
@@ -22,15 +24,16 @@ export default function ModuleVisualizationScreen() {
   const navigation = useNavigation();
   const route = useRoute<ModuleVisualizationRouteProp>();
   const { board } = route.params;
+  const { displayMode } = usePreferences();
 
-  const { pictograms, isLoading: isLoadingPics } = useModuleBoardPictogram(
+  const { terms, isLoading: isLoadingTerms } = useModuleBoardTerms(
     board.uuid || "",
   );
 
-  function onTap(pictogram: Pictogram) {
+  function onTap(term: Term) {
     // Supposedly leads to communication board, with the context of such, meaning each
-    // of the pictograms housed here are linked to a context somehow
-    console.log(pictogram.description);
+    // of the terms housed here are linked to a context somehow
+    console.log(term.description);
   }
 
   useEffect(() => {
@@ -45,20 +48,23 @@ export default function ModuleVisualizationScreen() {
 
       <FlatList
         style={{ padding: CONTAINERS.spacings.lg }}
-        data={pictograms}
+        data={terms}
         numColumns={2}
         showsVerticalScrollIndicator={false}
         columnWrapperStyle={styles.row}
         contentContainerStyle={styles.listContent}
-        keyExtractor={(item) => item.uuid}
-        renderItem={({ item }) => (
-          <TouchableOpacity style={styles.card} onPress={() => onTap(item)}>
-            <Image source={item.imageSource} style={styles.image} />
-            <Text style={styles.label} numberOfLines={2}>
-              {item.description.toUpperCase()}
-            </Text>
-          </TouchableOpacity>
-        )}
+        keyExtractor={(item: Term) => item.pictogram.uuid}
+        renderItem={({ item }: { item: Term }) => {
+          const display = resolveTermDisplay(item, displayMode);
+          return (
+            <TouchableOpacity style={styles.card} onPress={() => onTap(item)}>
+              <Image source={{ uri: display.imageSource }} style={styles.image} />
+              <Text style={styles.label} numberOfLines={2}>
+                {display.label}
+              </Text>
+            </TouchableOpacity>
+          );
+        }}
       />
     </View>
   );

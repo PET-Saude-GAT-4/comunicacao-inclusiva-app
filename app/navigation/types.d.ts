@@ -1,5 +1,6 @@
 import { Pictogram } from "@/types/pictogram.types";
 import { Profession } from "@/types/profession.types";
+import { Term } from "@/types/term.types";
 
 /*
         This file extends as a type safe way to ensure navigation between the right stacks
@@ -22,9 +23,10 @@ export type RootStackParamList = {
   AuthNav: undefined;
   MainTabNav: undefined;
   FeedbackScreen: {
-    pictograms: Pictogram[];
+    terms: Term[];
     textContent?: string;
     senderSpeaker: Speaker;
+    displayMode?: import("@/contexts/PreferencesContext").DisplayMode;
   };
   ReportScreen: undefined;
   TutorialStackNav: undefined;
@@ -46,11 +48,12 @@ export type CommBoardStackParamList = {
   CommBoardScreen: undefined;
   SelectProfessionScreen: undefined;
   SelectSpecialityScreen: { profession: Profession };
-  ConfirmConsultationScreen:  { profession: Profession, speciality: Speciality };
+  ConfirmConsultationScreen: { profession: Profession; speciality: Speciality };
   FeedbackScreen: {
-    pictograms: Pictogram[];
+    terms: Term[];
     textContent?: string;
     senderSpeaker: Speaker;
+    displayMode?: import("@/contexts/PreferencesContext").DisplayMode;
   };
 };
 
