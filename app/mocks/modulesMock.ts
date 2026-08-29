@@ -30,7 +30,6 @@ const assets = {
   mao: require("../../assets/images/mao.png"),
   rins: require("../../assets/images/rins.png"),
   alert: require("../../assets/images/alert.png"),
-  logo: require("../../assets/images/logo.png"),
 } as const;
 
 function createTerm(
@@ -51,7 +50,7 @@ function createTerm(
     id,
     uuid: `sw-${uuidSuffix}`,
     description,
-    imageSource: img(assets.logo),
+    imageSource: img(assets.olho),
     ...timestamp(),
   };
 

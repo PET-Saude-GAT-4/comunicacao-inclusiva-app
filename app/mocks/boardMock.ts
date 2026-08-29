@@ -3,7 +3,7 @@ import { Term } from "@/types/term.types";
 import { Image } from "react-native";
 
 const defaultSignWritingSource = Image.resolveAssetSource(
-  require("../../assets/images/logo.png"),
+  require("../../assets/images/olho.png"),
 ).uri;
 
 export const boardsMock: Board[] = [

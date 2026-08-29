@@ -17,7 +17,6 @@ const assets = {
   comer: require("../../assets/images/comer.png"),
   feliz: require("../../assets/images/feliz.png"),
   triste: require("../../assets/images/triste.png"),
-  logo: require("../../assets/images/logo.png"),
 } as const;
 
 function createTerm(
@@ -38,7 +37,7 @@ function createTerm(
     id,
     uuid: `sw-${uuidSuffix}`,
     description,
-    imageSource: img(assets.logo),
+    imageSource: img(assets.cabeca),
     ...timestamp(),
   };
 
@@ -62,7 +61,7 @@ export const phrasesMock: Phrase[] = [
     description: "Estou com fome",
     createdAt: now,
     updatedAt: now,
-    terms: [createTerm(4, "4", "Comer", assets.comer)],
+    terms: [createTerm(4, "4", "Comer", assets.comer), createTerm(4, "4", "Comer", assets.comer)],
   },
   {
     uuid: "phrase-3",
