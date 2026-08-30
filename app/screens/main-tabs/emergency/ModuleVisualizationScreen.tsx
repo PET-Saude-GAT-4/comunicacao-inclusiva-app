@@ -21,9 +21,13 @@ type ModuleVisualizationRouteProp = RouteProp<
 
 type Props = {
   board?: Board;
+  onPictogramPress?: (pictogram: Pictogram) => void;
 };
 
-export default function ModuleVisualizationScreen({ board: boardProp }: Props) {
+export default function ModuleVisualizationScreen({
+  board: boardProp,
+  onPictogramPress,
+}: Props) {
   const navigation = useNavigation();
   const route = useRoute<ModuleVisualizationRouteProp>();
   const board = boardProp ?? route.params?.board;
@@ -33,9 +37,11 @@ export default function ModuleVisualizationScreen({ board: boardProp }: Props) {
   );
 
   function onTap(pictogram: Pictogram) {
-    // Supposedly leads to communication board, with the context of such, meaning each
-    // of the pictograms housed here are linked to a context somehow
-    console.log(pictogram.description);
+    if (onPictogramPress) {
+      onPictogramPress(pictogram);
+    } else {
+      console.log(pictogram.description);
+    }
   }
 
   useEffect(() => {

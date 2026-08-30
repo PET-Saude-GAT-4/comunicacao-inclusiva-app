@@ -39,6 +39,10 @@ export type AuthStackParamList = {
 
 export type MainTabParamList = {
   CommBoardStackNav: undefined;
+  BoardCollection: undefined;
+  Emergency: undefined;
+  Library: undefined;
+  Settings: undefined;
 };
 
 export type CommBoardStackParamList = {
@@ -73,3 +77,14 @@ export type EmergencyStackParamList = {
   EmergencyTab: undefined;
   ModuleVisualization: { board: Board };
 };
+
+export type EmergencyTabParamList = {
+  QuickEmergency: undefined;
+  CatEmergency: undefined;
+};
+
+export type QuickEmergencyStackParamList = {
+  QuickEmergency: undefined;
+  UrgencyResponse: { pictogram: Pictogram };
+};
+

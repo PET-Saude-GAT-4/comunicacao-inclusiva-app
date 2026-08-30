@@ -1,6 +1,9 @@
 import { useEmergency } from "@/hooks/useEmergency";
+import { QuickEmergencyStackParamList } from "@/navigation/types";
 import { ScrollIndicator } from "@/screens/main-tabs/components/ScrollIndicator/ScrollIndicator";
 import { Board } from "@/types/board.types";
+import { useNavigation } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useMemo, useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
@@ -8,6 +11,13 @@ import { runOnJS } from "react-native-reanimated";
 import ModuleVisualizationScreen from "../../ModuleVisualizationScreen";
 
 export function QuickEmergencyScreen() {
+  const navigation =
+    useNavigation<
+      NativeStackNavigationProp<
+        QuickEmergencyStackParamList,
+        "QuickEmergency"
+      >
+    >();
   const searchQuery = "module-board-quick-emergency";
   const { boards } = useEmergency();
 
@@ -42,7 +52,14 @@ export function QuickEmergencyScreen() {
   return (
     <GestureDetector gesture={panGesture}>
       <View style={{ flex: 1 }}>
-        {selectedBoard && <ModuleVisualizationScreen board={selectedBoard} />}
+        {selectedBoard && (
+          <ModuleVisualizationScreen
+            board={selectedBoard}
+            onPictogramPress={(pictogram) => {
+              navigation.navigate("UrgencyResponse", { pictogram });
+            }}
+          />
+        )}
         <View style={styles.indicatorWrapper}>
           <ScrollIndicator
             count={filteredBoards.length}
