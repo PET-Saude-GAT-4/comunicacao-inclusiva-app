@@ -4,15 +4,35 @@ import { styles as phraseCardStyles } from "@/components/PhraseCard.styles";
 import { SearchBar } from "@/components/SearchBar";
 import { useMyCollection } from "@/hooks/useMyCollection";
 import { usePhrases } from "@/hooks/usePhrases";
+import { useSession } from "@/hooks/useSession";
+import { Phrase } from "@/types/phrase.types";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import { useNavigation } from "@react-navigation/native";
 import React, { useMemo, useState } from "react";
-import { FlatList, Text, View } from "react-native";
+import { FlatList, Text, TouchableOpacity, View } from "react-native";
 import { styles } from "@/screens/main-tabs/library/PhrasesScreen.styles";
 
 export default function MyPhraseScreen() {
   const [searchQuery, setSearchQuery] = useState("");
   const { phrases, isLoading } = usePhrases();
   const { savedUuids } = useMyCollection();
+  const { isInConsultation } = useSession();
+  const navigation = useNavigation();
+
+  const handleUsePhrase = (phrase: Phrase) => {
+    if (!isInConsultation) {
+      navigation.navigate("CommBoardStackNav" as any, {
+        screen: "NoConsultationScreen",
+        params: { showPhrasePrompt: true },
+      });
+      return;
+    }
+
+    navigation.navigate("CommBoardStackNav" as any, {
+      screen: "CommBoardScreen",
+      params: { initialTerms: phrase.terms },
+    });
+  };
 
   const savedPhrases = useMemo(() => {
     return phrases
@@ -55,14 +75,18 @@ export default function MyPhraseScreen() {
           <PhraseCard
             phrase={item}
             actionElement={
-              <View style={phraseCardStyles.iconButton}>
+              <TouchableOpacity
+                style={phraseCardStyles.iconButton}
+                activeOpacity={0.7}
+                onPress={() => handleUsePhrase(item)}
+              >
                 <MaterialIcons
                   name="arrow-forward-ios"
                   size={20}
                   color="#6F7976"
                   style={{ marginLeft: 2 }}
                 />
-              </View>
+              </TouchableOpacity>
             }
           />
         )}

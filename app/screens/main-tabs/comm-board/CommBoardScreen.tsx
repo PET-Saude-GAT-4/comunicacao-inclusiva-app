@@ -13,7 +13,7 @@ import { COLORS } from "@/styles/themes";
 import { Term } from "@/types/term.types";
 import { resolveTermDisplay } from "@/utils/resolveTermDisplay";
 import { Ionicons } from "@expo/vector-icons";
-import { useNavigation } from "@react-navigation/native";
+import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
@@ -31,6 +31,8 @@ import { styles } from "./CommBoardScreen.styles";
 export default function CommBoardScreen() {
   const navigation =
     useNavigation<NativeStackNavigationProp<CommBoardStackParamList>>();
+  const route =
+    useRoute<RouteProp<CommBoardStackParamList, "CommBoardScreen">>();
 
   const { currentSpeaker, isInConsultation, setCurrentSpeaker } = useSession();
   const { displayMode } = usePreferences();
@@ -52,6 +54,15 @@ export default function CommBoardScreen() {
   const [isSearchActive, setIsSearchActive] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [isPainScaleVisible, setIsPainScaleVisible] = useState(false);
+
+  // Load pre-filled terms from a ready-made phrase
+  useEffect(() => {
+    const incoming = route.params?.initialTerms;
+    if (incoming && incoming.length > 0) {
+      setSelectedTerms(incoming);
+      navigation.setParams({ initialTerms: undefined });
+    }
+  }, [route.params?.initialTerms]);
 
   // TODO: record the intensity through SessionContext once an interaction type
   // exists for it.
@@ -89,7 +100,6 @@ export default function CommBoardScreen() {
       board.title.toLowerCase().includes(searchQuery.toLowerCase()),
     );
   }, [searchQuery, boards]);
-
   return (
     <View style={styles.container}>
       {/* OfflineBanner is now driven by the global SyncEngine in MainTabNav */}

@@ -40,12 +40,19 @@ export type AuthStackParamList = {
 };
 
 export type MainTabParamList = {
-  CommBoardStackNav: undefined;
+  CommBoardStackNav: {
+    screen?: keyof CommBoardStackParamList;
+    params?: any;
+  } | undefined;
+  BoardCollection: undefined;
+  Emergency: undefined;
+  Library: undefined;
+  Settings: undefined;
 };
 
 export type CommBoardStackParamList = {
-  NoConsultationScreen: undefined;
-  CommBoardScreen: undefined;
+  NoConsultationScreen: { showPhrasePrompt?: boolean } | undefined;
+  CommBoardScreen: { initialTerms?: Term[] } | undefined;
   SelectProfessionScreen: undefined;
   SelectSpecialityScreen: { profession: Profession };
   ConfirmConsultationScreen: { profession: Profession; speciality: Speciality };
