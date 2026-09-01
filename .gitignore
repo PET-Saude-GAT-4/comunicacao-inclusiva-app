@@ -52,3 +52,5 @@ app-example
 .env
 .env.*
 !.env.example
+
+jon.md

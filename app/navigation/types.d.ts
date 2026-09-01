@@ -43,7 +43,7 @@ export type MainTabParamList = {
 
 export type CommBoardStackParamList = {
   NoConsultationScreen: undefined;
-  CommBoardScreen: undefined;
+  CommBoardScreen: { mode?: "bodyMap" } | undefined;
   SelectProfessionScreen: undefined;
   SelectSpecialityScreen: { profession: Profession };
   ConfirmConsultationScreen:  { profession: Profession, speciality: Speciality };

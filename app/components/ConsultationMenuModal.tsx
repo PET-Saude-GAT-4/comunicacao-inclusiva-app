@@ -1,9 +1,10 @@
 import { useSession } from "@/hooks/useSession";
 import { COLORS, CONTAINERS, TYPOGRAPHY } from "@/styles/themes";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, NavigationProp } from "@react-navigation/native";
 import React from "react";
 import { Modal, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { RootStackParamList } from "@/navigation/types";
 
 interface Props {
   visible: boolean;
@@ -11,7 +12,7 @@ interface Props {
 }
 
 export function ConsultationMenuModal({ visible, onClose }: Props) {
-  const navigation = useNavigation();
+  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
   const {
     startConsultation,
@@ -84,7 +85,7 @@ export function ConsultationMenuModal({ visible, onClose }: Props) {
               styles.optionButton,
               { backgroundColor: COLORS.surface.secondary },
             ]}
-            onPress={() => {}}
+            onPress={() => { }}
           >
             <Text style={styles.optionText}>Prancha de Frequência</Text>
             <MaterialCommunityIcons
@@ -99,7 +100,17 @@ export function ConsultationMenuModal({ visible, onClose }: Props) {
               styles.optionButton,
               { backgroundColor: COLORS.surface.secondary },
             ]}
-            onPress={() => {}}
+            onPress={() => {
+              onClose();
+              // @ts-ignore - bypassing strict type for nested nav
+              navigation.navigate("MainTabNav", {
+                screen: "CommBoardStackNav",
+                params: {
+                  screen: "CommBoardScreen",
+                  params: { mode: "bodyMap" }
+                }
+              });
+            }}
           >
             <Text style={styles.optionText}>Localização de Sintoma</Text>
             <MaterialCommunityIcons
@@ -114,7 +125,7 @@ export function ConsultationMenuModal({ visible, onClose }: Props) {
               styles.optionButton,
               { backgroundColor: COLORS.surface.secondary },
             ]}
-            onPress={() => {}}
+            onPress={() => { }}
           >
             <Text style={styles.optionText}>Coleção de Pranchas</Text>
             <MaterialCommunityIcons

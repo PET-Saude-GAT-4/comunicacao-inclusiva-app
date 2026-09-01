@@ -7,10 +7,12 @@ import { useBoardPictogram } from "@/hooks/useBoardPictograms";
 import { useBoards } from "@/hooks/useBoards";
 import { useSession } from "@/hooks/useSession";
 import { CommBoardStackParamList } from "@/navigation/types";
-import { COLORS } from "@/styles/themes";
+import { COLORS, CONTAINERS } from "@/styles/themes";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { useRoute, RouteProp } from "@react-navigation/native";
+import { BodyMap } from "@/components/body-map/BodyMap";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import React, { useEffect, useMemo, useState } from "react";
@@ -28,8 +30,9 @@ import { styles } from "./CommBoardScreen.styles";
 export default function CommBoardScreen() {
   const navigation =
     useNavigation<NativeStackNavigationProp<CommBoardStackParamList>>();
+  const route = useRoute<RouteProp<CommBoardStackParamList, "CommBoardScreen">>();
 
-  const { currentSpeaker, isInConsultation, setCurrentSpeaker } = useSession();
+  const { currentSpeaker, isInConsultation, setCurrentSpeaker, addInteraction } = useSession();
   // Redirect to NoConsultationScreen when consultation ends
   useEffect(() => {
     if (!isInConsultation) {
@@ -38,6 +41,7 @@ export default function CommBoardScreen() {
   }, [isInConsultation]);
 
   const [isTextMode, setIsTextMode] = useState(false);
+  const [isBodyMapMode, setIsBodyMapMode] = useState(false);
   const [typedText, setTypedText] = useState("");
   //save the selected pictogram sequence
   const [selectedPictograms, setSelectedPictograms] = useState<Pictogram[]>([]);
@@ -65,6 +69,16 @@ export default function CommBoardScreen() {
       setSelectedBoardUuid(boards[0].uuid);
     }
   }, [boards]);
+
+  // Activate BodyMapMode via route param from ConsultationMenuModal
+  useEffect(() => {
+    if (route.params?.mode === "bodyMap") {
+      setIsBodyMapMode(true);
+      setIsTextMode(false);
+      // Reset param so it doesn't trigger again on re-focus if unmounted
+      navigation.setParams({ mode: undefined });
+    }
+  }, [route.params?.mode]);
 
   //add pictograms to the list
   const handleSelect = (pictogram: Pictogram) => {
@@ -187,7 +201,33 @@ export default function CommBoardScreen() {
       </View>
 
       <View style={styles.gridContainer}>
-        {/* Text Mode Input */}
+        {isBodyMapMode ? (
+          <View style={{ flex: 1, width: "100%", backgroundColor: COLORS.surface.primary, borderRadius: CONTAINERS.radius.md, overflow: "hidden" }}>
+             {/* Componente independente BodyMap */}
+             <BodyMap
+               onSend={(regionsText) => {
+                 if (!isInConsultation) {
+                   console.log("Modo triagem: bodyMap não registrado.", regionsText);
+                   setIsBodyMapMode(false);
+                   return;
+                 }
+                 addInteraction({
+                   id: Math.random().toString(36).substr(2, 9),
+                   speaker: currentSpeaker,
+                   type: "bodyMap",
+                   content: regionsText,
+                   timestamp: new Date().toISOString(),
+                   understood: false,
+                 });
+                 // Alterna quem fala e sai do mapa
+                 setCurrentSpeaker(currentSpeaker === "professional" ? "patient" : "professional");
+                 setIsBodyMapMode(false);
+               }}
+             />
+          </View>
+        ) : (
+          <>
+            {/* Text Mode Input */}
         {isTextMode && (
           <View style={{ marginBottom: 16 }}>
             <View style={styles.textModeInputContainer}>
@@ -305,10 +345,15 @@ export default function CommBoardScreen() {
             />
           )}
         </View>
+          </>
+        )}
       </View>
       <AccessibilityMenu
         isTextMode={isTextMode}
-        onToggleTextMode={() => setIsTextMode(!isTextMode)}
+        onToggleTextMode={() => {
+          setIsTextMode(!isTextMode);
+          setIsBodyMapMode(false);
+        }}
       />
       {currentSpeaker === "patient" && (
         <PainScaleTrigger onPress={() => setIsPainScaleVisible(true)} />
