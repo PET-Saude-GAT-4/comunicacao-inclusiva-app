@@ -94,7 +94,6 @@ export function ConsultationMenuModal({ visible, onClose }: Props) {
               color="#000"
             />
           </TouchableOpacity>
-
           <TouchableOpacity
             style={[
               styles.optionButton,
@@ -119,7 +118,6 @@ export function ConsultationMenuModal({ visible, onClose }: Props) {
               color="#000"
             />
           </TouchableOpacity>
-
           <TouchableOpacity
             style={[
               styles.optionButton,

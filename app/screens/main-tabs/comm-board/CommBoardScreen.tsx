@@ -102,103 +102,105 @@ export default function CommBoardScreen() {
   return (
     <View style={styles.container}>
       {/* OfflineBanner is now driven by the global SyncEngine in MainTabNav */}
-      <View style={styles.visorContainer}>
-        <Text
-          style={[
-            styles.text,
-            {
-              color:
-                currentSpeaker === "professional"
-                  ? COLORS.primaryDark
-                  : COLORS.secondary,
-            },
-          ]}
-        >
-          {currentSpeaker === "professional"
-            ? "Interação do profissional"
-            : "Interação do paciente"}
-        </Text>
-        <View style={styles.listSelectedPictograms}>
-          {/* Scroll view to list all selected pictograms  */}
-          <ScrollView horizontal={true}>
-            {selectedPictograms.map((pictogram, index) => (
-              <View
-                key={`${pictogram.uuid}-${index}`}
-                style={styles.selectedPictogramDiv}
-              >
-                <Image
-                  source={{ uri: pictogram.imageSource }}
-                  style={styles.selectedPictogramImage}
-                />
-                <Text style={styles.pictogramText} numberOfLines={1}>
-                  {pictogram.description.toUpperCase()}
-                </Text>
-              </View>
-            ))}
-          </ScrollView>
-        </View>
-        <View style={styles.actionsContainer}>
-          <TouchableOpacity
-            onPress={handleDeleteLast}
-            style={styles.deleteButton}
+      {!isBodyMapMode && (
+        <View style={styles.visorContainer}>
+          <Text
+            style={[
+              styles.text,
+              {
+                color:
+                  currentSpeaker === "professional"
+                    ? COLORS.primaryDark
+                    : COLORS.secondary,
+              },
+            ]}
           >
-            <Ionicons name="backspace-outline" size={32} color="#333" />
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => {
-              if (isTextMode) {
-                if (!typedText.trim()) return;
+            {currentSpeaker === "professional"
+              ? "Interação do profissional"
+              : "Interação do paciente"}
+          </Text>
+          <View style={styles.listSelectedPictograms}>
+            {/* Scroll view to list all selected pictograms  */}
+            <ScrollView horizontal={true}>
+              {selectedPictograms.map((pictogram, index) => (
+                <View
+                  key={`${pictogram.uuid}-${index}`}
+                  style={styles.selectedPictogramDiv}
+                >
+                  <Image
+                    source={{ uri: pictogram.imageSource }}
+                    style={styles.selectedPictogramImage}
+                  />
+                  <Text style={styles.pictogramText} numberOfLines={1}>
+                    {pictogram.description.toUpperCase()}
+                  </Text>
+                </View>
+              ))}
+            </ScrollView>
+          </View>
+          <View style={styles.actionsContainer}>
+            <TouchableOpacity
+              onPress={handleDeleteLast}
+              style={styles.deleteButton}
+            >
+              <Ionicons name="backspace-outline" size={32} color="#333" />
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => {
+                if (isTextMode) {
+                  if (!typedText.trim()) return;
 
-                if (!isInConsultation) {
+                  if (!isInConsultation) {
+                    setTypedText("");
+                    console.log(
+                      "Modo triagem: mensagem de texto não registrada.",
+                    );
+                    return;
+                  }
+
                   setTypedText("");
-                  console.log(
-                    "Modo triagem: mensagem de texto não registrada.",
+
+                  setCurrentSpeaker(
+                    currentSpeaker === "professional"
+                      ? "patient"
+                      : "professional",
                   );
-                  return;
-                }
 
-                setTypedText("");
+                  navigation.navigate("FeedbackScreen", {
+                    pictograms: [],
+                    textContent: typedText.trim(),
+                    senderSpeaker: currentSpeaker,
+                  });
+                } else {
+                  if (selectedPictograms.length === 0) return;
 
-                setCurrentSpeaker(
-                  currentSpeaker === "professional"
-                    ? "patient"
-                    : "professional",
-                );
+                  if (!isInConsultation) {
+                    setSelectedPictograms([]);
+                    console.log("Modo triagem: mensagem não registrada.");
+                    return;
+                  }
 
-                navigation.navigate("FeedbackScreen", {
-                  pictograms: [],
-                  textContent: typedText.trim(),
-                  senderSpeaker: currentSpeaker,
-                });
-              } else {
-                if (selectedPictograms.length === 0) return;
-
-                if (!isInConsultation) {
                   setSelectedPictograms([]);
-                  console.log("Modo triagem: mensagem não registrada.");
-                  return;
+
+                  setCurrentSpeaker(
+                    currentSpeaker === "professional"
+                      ? "patient"
+                      : "professional",
+                  );
+
+                  navigation.navigate("FeedbackScreen", {
+                    pictograms: selectedPictograms,
+                    senderSpeaker: currentSpeaker,
+                  });
                 }
-
-                setSelectedPictograms([]);
-
-                setCurrentSpeaker(
-                  currentSpeaker === "professional"
-                    ? "patient"
-                    : "professional",
-                );
-
-                navigation.navigate("FeedbackScreen", {
-                  pictograms: selectedPictograms,
-                  senderSpeaker: currentSpeaker,
-                });
-              }
-            }}
-            style={styles.sendButton}
-          >
-            <Ionicons name="send-outline" size={32} color="#333" />
-          </TouchableOpacity>
+              }}
+              style={styles.sendButton}
+            >
+              <Ionicons name="send-outline" size={32} color="#333" />
+            </TouchableOpacity>
+          </View>
         </View>
-      </View>
+      )}
 
       <View style={styles.gridContainer}>
         {isBodyMapMode ? (

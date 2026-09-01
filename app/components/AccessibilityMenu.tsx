@@ -39,6 +39,8 @@ export function AccessibilityMenu({ isTextMode, onToggleTextMode }: Props) {
             </Text>
           </TouchableOpacity>
 
+
+
           {/* Modo Libras */}
           <TouchableOpacity style={styles.optionPill} onPress={() => {}}>
             <MaterialCommunityIcons name="sign-language" size={20} color="#FFF" />

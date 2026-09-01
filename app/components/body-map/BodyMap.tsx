@@ -34,40 +34,46 @@ export function BodyMap({ onSend }: Props) {
 
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
+      <View style={styles.mapBorder}>
+        {/* Flip Button */}
         <TouchableOpacity
-          style={styles.toggleButton}
+          style={styles.flipButton}
           onPress={() => setIsFrontView((prev) => !prev)}
         >
-          <MaterialCommunityIcons name="sync" size={24} color={COLORS.primary} />
+          <MaterialCommunityIcons name="sync" size={28} color={COLORS.secondary} />
         </TouchableOpacity>
-        <Text style={styles.helperText}>Toque no local do sintoma</Text>
-      </View>
 
-      <View style={styles.mapContainer}>
-        {isFrontView ? (
-          <BodyFrontView
-            selectedRegions={selectedRegions}
-            onRegionPress={handleRegionPress}
-          />
-        ) : (
-          <BodyBackView
-            selectedRegions={selectedRegions}
-            onRegionPress={handleRegionPress}
-          />
-        )}
-      </View>
+        {/* Tooltip Badge */}
+        <View style={styles.tooltipBadge}>
+          <MaterialCommunityIcons name="gesture-tap" size={24} color={COLORS.text.onPrimary} />
+          <Text style={styles.helperText}>Toque no{"\n"}local do{"\n"}sintoma</Text>
+        </View>
 
-      <TouchableOpacity
-        style={[
-          styles.sendButton,
-          selectedRegions.length === 0 && styles.sendButtonDisabled,
-        ]}
-        onPress={handleSend}
-        disabled={selectedRegions.length === 0}
-      >
-        <Text style={styles.sendButtonText}>Enviar</Text>
-      </TouchableOpacity>
+        <View style={styles.mapWrapper}>
+          {isFrontView ? (
+            <BodyFrontView
+              selectedRegions={selectedRegions}
+              onRegionPress={handleRegionPress}
+            />
+          ) : (
+            <BodyBackView
+              selectedRegions={selectedRegions}
+              onRegionPress={handleRegionPress}
+            />
+          )}
+        </View>
+
+        <TouchableOpacity
+          style={[
+            styles.sendButton,
+            selectedRegions.length === 0 && styles.sendButtonDisabled,
+          ]}
+          onPress={handleSend}
+          disabled={selectedRegions.length === 0}
+        >
+          <Text style={styles.sendButtonText}>Enviar Seleção</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 }
@@ -75,41 +81,70 @@ export function BodyMap({ onSend }: Props) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: COLORS.background,
+    backgroundColor: COLORS.surface.primary,
     padding: CONTAINERS.spacings.md,
   },
-  header: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: CONTAINERS.spacings.md,
+  mapBorder: {
+    flex: 1,
+    borderWidth: 1,
+    borderColor: COLORS.outlineCommon,
+    borderRadius: CONTAINERS.radius.lg,
+    backgroundColor: COLORS.surface.primary,
+    position: "relative",
+    marginTop: CONTAINERS.spacings.md, // para dar espaço pro tooltip
   },
-  toggleButton: {
-    padding: 8,
+  flipButton: {
+    position: "absolute",
+    top: CONTAINERS.spacings.md,
+    left: CONTAINERS.spacings.md,
+    padding: CONTAINERS.spacings.xs,
+    zIndex: 10,
     borderRadius: CONTAINERS.radius.full,
+    backgroundColor: "transparent",
+  },
+  tooltipBadge: {
+    position: "absolute",
+    top: -CONTAINERS.spacings.sm, // faz o badge flutuar um pouco pra fora da borda
+    right: CONTAINERS.spacings.sm,
+    flexDirection: "row",
+    alignItems: "center",
     backgroundColor: COLORS.surface.secondary,
+    paddingHorizontal: CONTAINERS.spacings.sm,
+    paddingVertical: CONTAINERS.spacings.xs,
+    borderRadius: CONTAINERS.radius.md,
+    gap: CONTAINERS.spacings.xs,
+    zIndex: 10,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+    elevation: 3,
   },
   helperText: {
-    fontSize: TYPOGRAPHY.sizes.body,
-    color: COLORS.text.secondary,
+    fontSize: TYPOGRAPHY.sizes.small,
+    color: COLORS.text.onPrimary,
+    fontWeight: "bold",
+    textAlign: "center",
   },
-  mapContainer: {
+  mapWrapper: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+    padding: CONTAINERS.spacings.xl,
   },
   sendButton: {
-    backgroundColor: COLORS.primary,
+    backgroundColor: COLORS.secondary, // roxo
     padding: CONTAINERS.spacings.md,
-    borderRadius: CONTAINERS.radius.sm,
+    borderRadius: CONTAINERS.radius.md,
     alignItems: "center",
-    marginTop: CONTAINERS.spacings.md,
+    marginHorizontal: CONTAINERS.spacings.md,
+    marginBottom: CONTAINERS.spacings.md,
   },
   sendButtonDisabled: {
-    backgroundColor: COLORS.surface.disabled,
+    backgroundColor: COLORS.surface.secondary,
   },
   sendButtonText: {
-    color: COLORS.text.onPrimary,
+    color: "#fff",
     fontSize: TYPOGRAPHY.sizes.bodyEmph,
     fontWeight: "bold",
   },
