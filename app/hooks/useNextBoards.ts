@@ -22,8 +22,13 @@ export function useNextBoards(uuid: string) {
       const cacheData = await AsyncStorage.getItem(cacheKey);
 
       if (cacheData) {
+        const parsed = JSON.parse(cacheData);
         // The cache preserves the ranking order returned by the API.
-        setNextBoards(JSON.parse(cacheData));
+        if (parsed.length > 0) {
+          setNextBoards(parsed);
+        } else {
+          setNextBoards(nextBoardsMock[uuid] || []);
+        }
       } else {
         // 2. If not in cache, fall back to Mock
         setNextBoards(nextBoardsMock[uuid] || []);

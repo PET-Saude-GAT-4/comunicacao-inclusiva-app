@@ -3,7 +3,7 @@ import { RadioOption } from "@/components/setup-consultation/RadioOption";
 import { StepProgressBar } from "@/components/setup-consultation/StepProgressBar";
 import { useProfessions } from "@/hooks/useProfession";
 import { CommBoardStackParamList } from "@/navigation/types";
-import { Profession } from "@/types/Profession.types";
+import { Profession } from "@/types/profession.types";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useState } from "react";

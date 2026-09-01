@@ -1,15 +1,19 @@
 import { AccessibilityMenu } from "@/components/AccessibilityMenu";
 import { BoardSkeleton } from "@/components/BoardSkeleton";
 import { PainScaleTray } from "@/components/pain-scale/PainScaleTray";
+import { SearchBar } from "@/components/SearchBar";
 import { PainScaleTrigger } from "@/components/pain-scale/PainScaleTrigger";
 import type { PainScaleSubmission } from "@/components/pain-scale/types";
-import { useBoardPictogram } from "@/hooks/useBoardPictograms";
+import { usePreferences } from "@/hooks/usePreferences";
+import { useBoardTerms } from "@/hooks/useBoardTerms";
 import { useBoards } from "@/hooks/useBoards";
 import { useSession } from "@/hooks/useSession";
 import { CommBoardStackParamList } from "@/navigation/types";
 import { COLORS } from "@/styles/themes";
+import { Term } from "@/types/term.types";
+import { resolveTermDisplay } from "@/utils/resolveTermDisplay";
 import { Ionicons } from "@expo/vector-icons";
-import { useNavigation } from "@react-navigation/native";
+import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
@@ -22,14 +26,17 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { Pictogram } from "../../../types/pictogram.types";
 import { styles } from "./CommBoardScreen.styles";
 
 export default function CommBoardScreen() {
   const navigation =
     useNavigation<NativeStackNavigationProp<CommBoardStackParamList>>();
+  const route =
+    useRoute<RouteProp<CommBoardStackParamList, "CommBoardScreen">>();
 
   const { currentSpeaker, isInConsultation, setCurrentSpeaker } = useSession();
+  const { displayMode } = usePreferences();
+
   // Redirect to NoConsultationScreen when consultation ends
   useEffect(() => {
     if (!isInConsultation) {
@@ -39,14 +46,23 @@ export default function CommBoardScreen() {
 
   const [isTextMode, setIsTextMode] = useState(false);
   const [typedText, setTypedText] = useState("");
-  //save the selected pictogram sequence
-  const [selectedPictograms, setSelectedPictograms] = useState<Pictogram[]>([]);
+  // save the selected term sequence
+  const [selectedTerms, setSelectedTerms] = useState<Term[]>([]);
   const [selectedBoardUuid, setSelectedBoardUuid] = useState<string | null>(
     null,
   );
   const [isSearchActive, setIsSearchActive] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [isPainScaleVisible, setIsPainScaleVisible] = useState(false);
+
+  // Load pre-filled terms from a ready-made phrase
+  useEffect(() => {
+    const incoming = route.params?.initialTerms;
+    if (incoming && incoming.length > 0) {
+      setSelectedTerms(incoming);
+      navigation.setParams({ initialTerms: undefined });
+    }
+  }, [route.params?.initialTerms]);
 
   // TODO: record the intensity through SessionContext once an interaction type
   // exists for it.
@@ -56,7 +72,7 @@ export default function CommBoardScreen() {
   };
 
   const { boards, isLoading: isLoadingBoards } = useBoards();
-  const { pictograms, isLoading: isLoadingPics } = useBoardPictogram(
+  const { terms, isLoading: isLoadingTerms } = useBoardTerms(
     selectedBoardUuid || "",
   );
 
@@ -66,17 +82,17 @@ export default function CommBoardScreen() {
     }
   }, [boards]);
 
-  //add pictograms to the list
-  const handleSelect = (pictogram: Pictogram) => {
-    setSelectedPictograms((prev) => [...prev, pictogram]);
+  // add terms to the visor list
+  const handleSelect = (term: Term) => {
+    setSelectedTerms((prev) => [...prev, term]);
   };
 
   const handleDeleteLast = () => {
-    setSelectedPictograms((prev) => prev.slice(0, -1));
+    setSelectedTerms((prev) => prev.slice(0, -1));
   };
 
   const handleClear = () => {
-    setSelectedPictograms([]);
+    setSelectedTerms([]);
   };
 
   const filteredBoards = useMemo(() => {
@@ -84,7 +100,6 @@ export default function CommBoardScreen() {
       board.title.toLowerCase().includes(searchQuery.toLowerCase()),
     );
   }, [searchQuery, boards]);
-
   return (
     <View style={styles.container}>
       {/* OfflineBanner is now driven by the global SyncEngine in MainTabNav */}
@@ -105,22 +120,25 @@ export default function CommBoardScreen() {
             : "Interação do paciente"}
         </Text>
         <View style={styles.listSelectedPictograms}>
-          {/* Scroll view to list all selected pictograms  */}
+          {/* Visor: scroll list of selected terms */}
           <ScrollView horizontal={true}>
-            {selectedPictograms.map((pictogram, index) => (
-              <View
-                key={`${pictogram.uuid}-${index}`}
-                style={styles.selectedPictogramDiv}
-              >
-                <Image
-                  source={{ uri: pictogram.imageSource }}
-                  style={styles.selectedPictogramImage}
-                />
-                <Text style={styles.pictogramText} numberOfLines={1}>
-                  {pictogram.description.toUpperCase()}
-                </Text>
-              </View>
-            ))}
+            {selectedTerms.map((term, index) => {
+              const display = resolveTermDisplay(term, displayMode);
+              return (
+                <View
+                  key={`${term.pictogram.uuid}-${index}`}
+                  style={styles.selectedPictogramDiv}
+                >
+                  <Image
+                    source={{ uri: display.imageSource }}
+                    style={styles.selectedPictogramImage}
+                  />
+                  <Text style={styles.pictogramText} numberOfLines={1}>
+                    {display.label}
+                  </Text>
+                </View>
+              );
+            })}
           </ScrollView>
         </View>
         <View style={styles.actionsContainer}>
@@ -152,20 +170,21 @@ export default function CommBoardScreen() {
                 );
 
                 navigation.navigate("FeedbackScreen", {
-                  pictograms: [],
+                  terms: [],
                   textContent: typedText.trim(),
                   senderSpeaker: currentSpeaker,
+                  displayMode,
                 });
               } else {
-                if (selectedPictograms.length === 0) return;
+                if (selectedTerms.length === 0) return;
 
                 if (!isInConsultation) {
-                  setSelectedPictograms([]);
+                  setSelectedTerms([]);
                   console.log("Modo triagem: mensagem não registrada.");
                   return;
                 }
 
-                setSelectedPictograms([]);
+                setSelectedTerms([]);
 
                 setCurrentSpeaker(
                   currentSpeaker === "professional"
@@ -174,8 +193,9 @@ export default function CommBoardScreen() {
                 );
 
                 navigation.navigate("FeedbackScreen", {
-                  pictograms: selectedPictograms,
+                  terms: selectedTerms,
                   senderSpeaker: currentSpeaker,
+                  displayMode,
                 });
               }
             }}
@@ -212,11 +232,10 @@ export default function CommBoardScreen() {
         {/* Categories Bar */}
         {isSearchActive && (
           <View style={{ marginBottom: 16 }}>
-            <TextInput
-              style={styles.searchInput}
-              placeholder="Buscar prancha..."
+            <SearchBar
               value={searchQuery}
               onChangeText={setSearchQuery}
+              placeholder="Buscar prancha..."
             />
           </View>
         )}
@@ -243,6 +262,7 @@ export default function CommBoardScreen() {
                       colors={["#5ce1e6", "#ffb8e4"]}
                       style={styles.categoryGradient}
                     >
+                      {/* Board cover always uses the representative pictogram, not a Term */}
                       {board.representativePictogram && (
                         <Image
                           source={{
@@ -278,29 +298,32 @@ export default function CommBoardScreen() {
           </TouchableOpacity>
         </View>
 
-        {/* FlatList to list all pictograms */}
+        {/* FlatList — term grid */}
         <View style={{ flex: 1, paddingTop: 16 }}>
-          {isLoadingPics ? (
+          {isLoadingTerms ? (
             <BoardSkeleton />
           ) : (
             <FlatList
               numColumns={4}
               showsVerticalScrollIndicator={false}
-              data={pictograms}
-              keyExtractor={(item) => item.uuid}
-              renderItem={({ item }) => (
-                <TouchableOpacity onPress={() => handleSelect(item)}>
-                  <View style={styles.pictogramDiv}>
-                    <Image
-                      source={{ uri: item.imageSource }}
-                      style={styles.pictogramImage}
-                    />
-                    <Text style={styles.pictogramText} numberOfLines={1}>
-                      {item.description.toUpperCase()}
-                    </Text>
-                  </View>
-                </TouchableOpacity>
-              )}
+              data={terms}
+              keyExtractor={(item) => item.pictogram.uuid}
+              renderItem={({ item }) => {
+                const display = resolveTermDisplay(item, displayMode);
+                return (
+                  <TouchableOpacity onPress={() => handleSelect(item)}>
+                    <View style={styles.pictogramDiv}>
+                      <Image
+                        source={{ uri: display.imageSource }}
+                        style={styles.pictogramImage}
+                      />
+                      <Text style={styles.pictogramText} numberOfLines={1}>
+                        {display.label}
+                      </Text>
+                    </View>
+                  </TouchableOpacity>
+                );
+              }}
               columnWrapperStyle={{ justifyContent: "space-between" }}
             />
           )}

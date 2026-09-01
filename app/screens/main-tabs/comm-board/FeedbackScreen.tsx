@@ -1,5 +1,8 @@
-import { RootStackParamList } from "@/navigation/types";
+import { usePreferences } from "@/hooks/usePreferences";
 import { useSession } from "@/hooks/useSession";
+import { RootStackParamList } from "@/navigation/types";
+import { Term } from "@/types/term.types";
+import { resolveTermDisplay } from "@/utils/resolveTermDisplay";
 import { COLORS } from "@/styles/themes";
 import { Ionicons } from "@expo/vector-icons";
 import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
@@ -12,22 +15,24 @@ export default function FeedbackScreen() {
   const route = useRoute<RouteProp<RootStackParamList, "FeedbackScreen">>();
   const navigation = useNavigation();
   const { addInteraction, setCurrentSpeaker } = useSession();
+  const { displayMode: currentDisplayMode } = usePreferences();
 
-  const { pictograms, textContent, senderSpeaker } = route.params;
+  const { terms, textContent, senderSpeaker, displayMode } = route.params;
+
+  // Use the mode recorded at send time for rendering; fall back to current mode.
+  const renderMode = displayMode ?? currentDisplayMode;
 
   const isTextMessage = !!textContent;
 
   const handleUnderstood = () => {
-    // Register the interaction as successful communication
     addInteraction({
       id: Date.now().toString(),
       speaker: senderSpeaker,
-      type: isTextMessage ? "text" : "pictogram",
-      content: isTextMessage
-        ? textContent!
-        : pictograms,
+      type: isTextMessage ? "text" : "term",
+      content: isTextMessage ? textContent! : terms,
       timestamp: new Date().toISOString(),
       understood: true,
+      displayMode: renderMode,
     });
 
     console.log("Feedback: ENTENDI");
@@ -35,16 +40,14 @@ export default function FeedbackScreen() {
   };
 
   const handleDoubt = () => {
-    // Register the interaction as confusion
     addInteraction({
       id: Date.now().toString(),
       speaker: senderSpeaker,
-      type: isTextMessage ? "text" : "pictogram",
-      content: isTextMessage
-        ? textContent!
-        : pictograms,
+      type: isTextMessage ? "text" : "term",
+      content: isTextMessage ? textContent! : terms,
       timestamp: new Date().toISOString(),
       understood: false,
+      displayMode: renderMode,
     });
 
     // Revert speaker to the original sender so they can reformulate
@@ -83,20 +86,23 @@ export default function FeedbackScreen() {
             showsHorizontalScrollIndicator={false}
             contentContainerStyle={styles.visorScrollContent}
           >
-            {pictograms.map((pictogram, index) => (
-              <View
-                key={`${pictogram.uuid}-${index}`}
-                style={styles.visorPictogramItem}
-              >
-                <Image
-                  source={{ uri: pictogram.imageSource }}
-                  style={styles.visorPictogramImage}
-                />
-                <Text style={styles.visorPictogramText} numberOfLines={1}>
-                  {pictogram.description.toUpperCase()}
-                </Text>
-              </View>
-            ))}
+            {terms.map((term: Term, index: number) => {
+              const display = resolveTermDisplay(term, renderMode);
+              return (
+                <View
+                  key={`${term.pictogram.uuid}-${index}`}
+                  style={styles.visorPictogramItem}
+                >
+                  <Image
+                    source={{ uri: display.imageSource }}
+                    style={styles.visorPictogramImage}
+                  />
+                  <Text style={styles.visorPictogramText} numberOfLines={1}>
+                    {display.label}
+                  </Text>
+                </View>
+              );
+            })}
           </ScrollView>
         )}
       </View>

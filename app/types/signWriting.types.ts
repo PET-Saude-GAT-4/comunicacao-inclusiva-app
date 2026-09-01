@@ -1,17 +1,17 @@
-import { ApiTerm, Term } from "./term.types";
-
-export interface Phrase {
+export interface SignWriting {
+  id: number;
   uuid: string;
   description: string;
-  terms: Term[];
+  imageSource: string;
   createdAt: string;
   updatedAt: string;
 }
 
-export interface ApiPhrase {
+export interface ApiSignWriting {
+  id: number;
   uuid: string;
   description: string;
-  terms: ApiTerm[];
+  fileUrl: string;
   createdAt: string;
   updatedAt: string;
 }

@@ -1,8 +1,8 @@
 import {
+  boardTermsCacheKey,
   BOARDS_CACHE_KEY,
   nextBoardsCacheKey,
   PHRASES_CACHE_KEY,
-  pictogramsCacheKey,
   PROFESSIONS_CACHE_KEY,
   specialitiesCacheKey,
 } from "@/constants/cache";
@@ -102,19 +102,19 @@ export class SyncService {
       await AsyncStorage.setItem(BOARDS_CACHE_KEY, JSON.stringify(boards));
       console.log("Synchronized boards saved in the cache.");
 
-      // 2. For each board, download its pictograms and its next boards
+      // 2. For each board, download its terms and its next boards
       for (const board of boards) {
         try {
-          const pictograms = await boardService.getBoardPictograms(board.uuid);
+          const boardTerms = await boardService.getBoardTerms(board.uuid);
 
-          if (pictograms && pictograms.length > 0) {
-            const cacheKey = pictogramsCacheKey(board.uuid);
-            await AsyncStorage.setItem(cacheKey, JSON.stringify(pictograms));
-            console.log(`Pictograms synced for board: ${board.title}`);
+          if (boardTerms && boardTerms.length > 0) {
+            const cacheKey = boardTermsCacheKey(board.uuid);
+            await AsyncStorage.setItem(cacheKey, JSON.stringify(boardTerms));
+            console.log(`BoardTerms synced for board: ${board.title}`);
           }
         } catch (picError) {
           // Catches isolated error from a specific board to avoid stopping the entire loop
-          console.log(`Failed to sync pictograms for board: ${board.uuid}`);
+          console.log(`Failed to sync BoardTerms for board: ${board.uuid}`);
         }
 
         try {

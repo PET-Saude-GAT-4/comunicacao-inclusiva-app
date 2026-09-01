@@ -20,7 +20,15 @@ export function useSpecialities(professionCode?: string) {
       const cacheData = await AsyncStorage.getItem(cacheKey);
 
       if (cacheData) {
-        setSpecialities(JSON.parse(cacheData));
+        const parsed = JSON.parse(cacheData);
+        if (parsed.length > 0) {
+          setSpecialities(parsed);
+        } else {
+          const filteredMock = specialityMock.filter(
+            (item) => item.professionCode === professionCode,
+          );
+          setSpecialities(filteredMock);
+        }
       } else {
         // 2. If cache is completely empty, fall back to Mock
         const filteredMock = specialityMock.filter(
