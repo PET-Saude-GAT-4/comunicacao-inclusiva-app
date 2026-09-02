@@ -1,5 +1,5 @@
 import { boardTermsCacheKey } from "@/constants/cache";
-import { boardTermsMock } from "@/mocks/modulesMock";
+import { moduleBoardTermsMock } from "@/mocks/modulesMock";
 import { Term } from "@/types/term.types";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useEffect, useMemo, useState } from "react";
@@ -24,15 +24,15 @@ export function useModuleBoardTerms(uuid: string) {
         if (parsed.length > 0) {
           setTerms(parsed);
         } else {
-          setTerms(boardTermsMock[uuid] || []);
+          setTerms(moduleBoardTermsMock[uuid] || []);
         }
       } else {
         // 2. If not in cache, fall back to emergency Mock
-        setTerms(boardTermsMock[uuid] || []);
+        setTerms(moduleBoardTermsMock[uuid] || []);
       }
     } catch (error) {
       console.log(`Failed to load cache for UUID: ${uuid}. Using Mock.`);
-      setTerms(boardTermsMock[uuid] || []);
+      setTerms(moduleBoardTermsMock[uuid] || []);
     } finally {
       setIsLoading(false);
     }
