@@ -1,80 +1,47 @@
+import { TERMS } from "@/mocks/termsMock";
 import { Phrase } from "@/types/phrase.types";
-import { Pictogram } from "@/types/pictogram.types";
-import { SignWriting } from "@/types/signWriting.types";
-import { Term } from "@/types/term.types";
-import { Image } from "react-native";
 
 const now = new Date().toISOString();
 
-function img(asset: any): string {
-  return Image.resolveAssetSource(asset).uri;
-}
-
 const timestamp = () => ({ createdAt: now, updatedAt: now });
 
-const assets = {
-  cabeca: require("../../assets/images/cabeca.png"),
-  comer: require("../../assets/images/comer.png"),
-  feliz: require("../../assets/images/feliz.png"),
-  triste: require("../../assets/images/triste.png"),
-} as const;
-
-function createTerm(
-  id: number,
-  uuidSuffix: string,
-  description: string,
-  asset: any,
-): Term {
-  const pictogram: Pictogram = {
-    id,
-    uuid: `pic-${uuidSuffix}`,
-    description,
-    imageSource: img(asset),
-    ...timestamp(),
-  };
-
-  const signWriting: SignWriting = {
-    id,
-    uuid: `sw-${uuidSuffix}`,
-    description,
-    imageSource: img(assets.cabeca),
-    ...timestamp(),
-  };
-
-  return {
-    description,
-    pictogram,
-    signWriting,
-  };
-}
-
+// Descriptions and term sequences mirror PHRASE_DEFS in the
+// api repo, in the order the seed writes them.
 export const phrasesMock: Phrase[] = [
   {
     uuid: "phrase-1",
     description: "Estou com dor de cabeça",
-    createdAt: now,
-    updatedAt: now,
-    terms: [createTerm(2, "2", "Cabeça", assets.cabeca)],
+    terms: [TERMS.head, TERMS.malaise],
+    ...timestamp(),
   },
   {
     uuid: "phrase-2",
-    description: "Estou com fome",
-    createdAt: now,
-    updatedAt: now,
-    terms: [createTerm(4, "4", "Comer", assets.comer), createTerm(4, "4", "Comer", assets.comer)],
+    description: "Quero beber água",
+    terms: [TERMS.mouth, TERMS.water],
+    ...timestamp(),
   },
   {
     uuid: "phrase-3",
-    description: "Estou feliz",
-    createdAt: now,
-    updatedAt: now,
-    terms: [createTerm(7, "7", "Feliz", assets.feliz)],
+    description: "Estou com falta de ar",
+    terms: [TERMS.lung, TERMS["shortness-of-breath"]],
+    ...timestamp(),
   },
   {
     uuid: "phrase-4",
-    description: "Estou triste",
-    createdAt: now,
-    updatedAt: now,
-    terms: [createTerm(11, "11", "Triste", assets.triste)],
+    description: "Estou com náusea e tontura",
+    terms: [TERMS.belly, TERMS.nausea, TERMS.dizziness],
+    ...timestamp(),
+  },
+  {
+    uuid: "phrase-5",
+    description: "Estou cansado e quero descansar",
+    terms: [TERMS.fatigue, TERMS.rest],
+    ...timestamp(),
+  },
+  {
+    uuid: "phrase-6",
+    description: "Preciso ir ao banheiro",
+    terms: [TERMS.bathroom],
+    ...timestamp(),
   },
 ];
