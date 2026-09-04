@@ -1,7 +1,10 @@
+import { useClipboard } from "@/hooks/useClipboard";
 import { useSession } from "@/hooks/useSession";
-import { Term } from "@/types/term.types";
-import { resolveTermDisplay } from "@/utils/resolveTermDisplay";
+import { assertNever } from "@/utils/assertNever";
 import { formatDateBR, formatTimeBR } from "@/utils/dateFormatter";
+import { formatBodyMapRecord, formatPainRecord } from "@/utils/interactionText";
+import { resolveTermDisplay } from "@/utils/resolveTermDisplay";
+import Ionicons from "@expo/vector-icons/Ionicons";
 import { useNavigation } from "@react-navigation/native";
 import * as Clipboard from "expo-clipboard";
 import { Image } from "expo-image";
@@ -14,8 +17,6 @@ import {
   View,
 } from "react-native";
 import { styles } from "./ReportScreen.styles";
-import { useClipboard } from "@/hooks/useClipboard";
-import Ionicons from "@expo/vector-icons/Ionicons";
 
 export default function ReportScreen() {
   const navigation = useNavigation();
@@ -50,16 +51,16 @@ export default function ReportScreen() {
           // Falls back to "pictogram" for entries created before displayMode was stored.
           const entryMode = item.displayMode ?? "pictogram";
 
-          function renderContent() {
-            return (
-              <>
-                {item.type === "term" && Array.isArray(item.content) ? (
+          function renderBody() {
+            switch (item.type) {
+              case "term":
+                return (
                   <View style={styles.pictogramScroll}>
                     <ScrollView
                       horizontal={true}
                       showsHorizontalScrollIndicator={false}
                     >
-                      {(item.content as Term[]).map((term, index) => {
+                      {item.content.map((term, index) => {
                         const display = resolveTermDisplay(term, entryMode);
                         return (
                           <View
@@ -81,9 +82,30 @@ export default function ReportScreen() {
                       })}
                     </ScrollView>
                   </View>
-                ) : (
-                  <Text style={styles.text}>{item.content as string}</Text>
-                )}
+                );
+              case "text":
+                return <Text style={styles.text}>{item.content}</Text>;
+              case "painScale":
+                return (
+                  <Text style={styles.recordText}>
+                    {formatPainRecord(item.content)}
+                  </Text>
+                );
+              case "bodyMap":
+                return (
+                  <Text style={styles.recordText}>
+                    {formatBodyMapRecord(item.content)}
+                  </Text>
+                );
+              default:
+                return <Text style={styles.text}>{assertNever(item)}</Text>;
+            }
+          }
+
+          function renderContent() {
+            return (
+              <>
+                {renderBody()}
                 {!item.understood && (
                   <Text style={styles.confusionText}>❓ Não entendi</Text>
                 )}
