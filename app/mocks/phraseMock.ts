@@ -1,77 +1,47 @@
+import { TERMS } from "@/mocks/termsMock";
 import { Phrase } from "@/types/phrase.types";
-import { Image } from "react-native";
 
+const now = new Date().toISOString();
+
+const timestamp = () => ({ createdAt: now, updatedAt: now });
+
+// Descriptions and term sequences mirror PHRASE_DEFS in the
+// api repo, in the order the seed writes them.
 export const phrasesMock: Phrase[] = [
   {
     uuid: "phrase-1",
     description: "Estou com dor de cabeça",
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-    pictograms: [
-      {
-        id: 2,
-        uuid: "pic-2",
-        description: "Cabeça",
-        imageSource: Image.resolveAssetSource(
-          require("../../assets/images/cabeca.png"),
-        ).uri,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      },
-    ],
+    terms: [TERMS.head, TERMS.malaise],
+    ...timestamp(),
   },
   {
     uuid: "phrase-2",
-    description: "Estou com fome",
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-    pictograms: [
-      {
-        id: 4,
-        uuid: "pic-4",
-        description: "Comer",
-        imageSource: Image.resolveAssetSource(
-          require("../../assets/images/comer.png"),
-        ).uri,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      },
-    ],
+    description: "Quero beber água",
+    terms: [TERMS.mouth, TERMS.water],
+    ...timestamp(),
   },
   {
     uuid: "phrase-3",
-    description: "Estou feliz",
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-    pictograms: [
-      {
-        id: 7,
-        uuid: "pic-7",
-        description: "Feliz",
-        imageSource: Image.resolveAssetSource(
-          require("../../assets/images/feliz.png"),
-        ).uri,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      },
-    ],
+    description: "Estou com falta de ar",
+    terms: [TERMS.lung, TERMS["shortness-of-breath"]],
+    ...timestamp(),
   },
   {
     uuid: "phrase-4",
-    description: "Estou triste",
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-    pictograms: [
-      {
-        id: 11,
-        uuid: "pic-11",
-        description: "Triste",
-        imageSource: Image.resolveAssetSource(
-          require("../../assets/images/triste.png"),
-        ).uri,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      },
-    ],
+    description: "Estou com náusea e tontura",
+    terms: [TERMS.belly, TERMS.nausea, TERMS.dizziness],
+    ...timestamp(),
+  },
+  {
+    uuid: "phrase-5",
+    description: "Estou cansado e quero descansar",
+    terms: [TERMS.fatigue, TERMS.rest],
+    ...timestamp(),
+  },
+  {
+    uuid: "phrase-6",
+    description: "Preciso ir ao banheiro",
+    terms: [TERMS.bathroom],
+    ...timestamp(),
   },
 ];

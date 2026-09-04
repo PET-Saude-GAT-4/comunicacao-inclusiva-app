@@ -1,9 +1,9 @@
-import { ApiPictogram, Pictogram } from "./pictogram.types";
+import { ApiTerm, Term } from "./term.types";
 
 export interface Phrase {
   uuid: string;
   description: string;
-  pictograms: Pictogram[];
+  terms: Term[];
   createdAt: string;
   updatedAt: string;
 }
@@ -11,7 +11,7 @@ export interface Phrase {
 export interface ApiPhrase {
   uuid: string;
   description: string;
-  pictograms: ApiPictogram[];
+  terms: ApiTerm[];
   createdAt: string;
   updatedAt: string;
 }
