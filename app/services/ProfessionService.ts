@@ -1,6 +1,6 @@
 import { professionAdapter } from "@/adapters/professionAdapter";
 import { specialityAdapter } from "@/adapters/specialityAdapter";
-import { ApiProfession, Profession } from "@/types/Profession.types";
+import { ApiProfession, Profession } from "@/types/profession.types";
 import { ApiSpeciality, Speciality } from "@/types/speciality.types";
 import { request } from "@/utils/apiUtils";
 import Constants from "expo-constants";

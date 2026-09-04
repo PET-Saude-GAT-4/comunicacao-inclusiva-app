@@ -4,6 +4,8 @@ import React from "react";
 import BoardStackNav from "./tabs/BoardStackNav";
 import { screenOptions } from "../TopTabs.style";
 
+import MyPhraseScreen from "@/screens/main-tabs/my-collection/tabs/MyPhraseScreen";
+
 const TopTabs = createMaterialTopTabNavigator();
 
 export default function () {
@@ -20,7 +22,7 @@ export default function () {
       />
       <TopTabs.Screen
         name="ReadyInteractions"
-        component={() => <></>}
+        component={MyPhraseScreen}
         options={{ title: "Interações" }}
       />
     </TopTabs.Navigator>

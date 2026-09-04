@@ -1,9 +1,11 @@
-import { COLORS, CONTAINERS, TYPOGRAPHY } from "@/styles/themes";
-
-import { useModuleBoardPictogram } from "@/hooks/useModulePictograms";
+import { useModuleBoardTerms } from "@/hooks/useModuleBoardTerms";
+import { usePreferences } from "@/hooks/usePreferences";
 import { EmergencyStackParamList } from "@/navigation/types";
+import { COLORS, CONTAINERS, TYPOGRAPHY } from "@/styles/themes";
 import { Board } from "@/types/board.types";
 import { Pictogram } from "@/types/pictogram.types";
+import { Term } from "@/types/term.types";
+import { resolveTermDisplay } from "@/utils/resolveTermDisplay";
 import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
 import { Image } from "expo-image";
 import { useEffect } from "react";
@@ -14,6 +16,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+
 type ModuleVisualizationRouteProp = RouteProp<
   EmergencyStackParamList,
   "ModuleVisualization"
@@ -31,22 +34,27 @@ export default function ModuleVisualizationScreen({
   const navigation = useNavigation();
   const route = useRoute<ModuleVisualizationRouteProp>();
   const board = boardProp ?? route.params?.board;
+  const { displayMode } = usePreferences();
 
-  const { pictograms, isLoading: isLoadingPics } = useModuleBoardPictogram(
-    board.uuid || "",
+  const { terms, isLoading: isLoadingTerms } = useModuleBoardTerms(
+    board?.uuid || "",
   );
 
-  function onTap(pictogram: Pictogram) {
+  function onTap(term: Term) {
     if (onPictogramPress) {
-      onPictogramPress(pictogram);
+      onPictogramPress(term.pictogram);
     } else {
-      console.log(pictogram.description);
+      console.log(term.description);
     }
   }
 
   useEffect(() => {
-    navigation.setOptions({ title: board.title });
-  }, [navigation, board.title]);
+    if (board) {
+      navigation.setOptions({ title: board.title });
+    }
+  }, [navigation, board]);
+
+  if (!board) return null;
 
   return (
     <View style={styles.container}>
@@ -56,21 +64,27 @@ export default function ModuleVisualizationScreen({
 
       <FlatList
         style={{ padding: CONTAINERS.spacings.lg }}
-        data={pictograms}
+        data={terms}
         numColumns={2}
         scrollEnabled={false}
         showsVerticalScrollIndicator={false}
         columnWrapperStyle={styles.row}
         contentContainerStyle={styles.listContent}
-        keyExtractor={(item) => item.uuid}
-        renderItem={({ item }) => (
-          <TouchableOpacity style={styles.card} onPress={() => onTap(item)}>
-            <Image source={item.imageSource} style={styles.image} />
-            <Text style={styles.label} numberOfLines={2}>
-              {item.description.toUpperCase()}
-            </Text>
-          </TouchableOpacity>
-        )}
+        keyExtractor={(item: Term) => item.pictogram.uuid}
+        renderItem={({ item }: { item: Term }) => {
+          const display = resolveTermDisplay(item, displayMode);
+          return (
+            <TouchableOpacity style={styles.card} onPress={() => onTap(item)}>
+              <Image
+                source={{ uri: display.imageSource }}
+                style={styles.image}
+              />
+              <Text style={styles.label} numberOfLines={2}>
+                {display.label}
+              </Text>
+            </TouchableOpacity>
+          );
+        }}
       />
     </View>
   );

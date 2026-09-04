@@ -1,4 +1,6 @@
 import { useSession } from "@/hooks/useSession";
+import { Term } from "@/types/term.types";
+import { resolveTermDisplay } from "@/utils/resolveTermDisplay";
 import { formatDateBR, formatTimeBR } from "@/utils/dateFormatter";
 import { useNavigation } from "@react-navigation/native";
 import * as Clipboard from "expo-clipboard";
@@ -13,7 +15,7 @@ import {
 } from "react-native";
 import { styles } from "./ReportScreen.styles";
 import { useClipboard } from "@/hooks/useClipboard";
-import Ionicons from '@expo/vector-icons/Ionicons';
+import Ionicons from "@expo/vector-icons/Ionicons";
 
 export default function ReportScreen() {
   const navigation = useNavigation();
@@ -24,12 +26,11 @@ export default function ReportScreen() {
       ? formatDateBR(interactions[0].timestamp)
       : formatDateBR(new Date().toISOString());
 
-
   const text = useClipboard(interactions);
   const copyToClipboard = async () => {
-    console.log("Relatorio copiado")
+    console.log("Relatorio copiado");
     await Clipboard.setStringAsync(text);
-    Alert.alert("Sucesso", "Relatório copiado para a área de transferência.")
+    Alert.alert("Sucesso", "Relatório copiado para a área de transferência.");
   };
 
   return (
@@ -45,29 +46,39 @@ export default function ReportScreen() {
             ? styles.bubblePatient
             : styles.bubbleProfessional;
 
+          // Each entry renders in the mode it was sent in (historical accuracy).
+          // Falls back to "pictogram" for entries created before displayMode was stored.
+          const entryMode = item.displayMode ?? "pictogram";
+
           function renderContent() {
             return (
               <>
-                {item.type === "pictogram" && Array.isArray(item.content) ? (
+                {item.type === "term" && Array.isArray(item.content) ? (
                   <View style={styles.pictogramScroll}>
                     <ScrollView
                       horizontal={true}
                       showsHorizontalScrollIndicator={false}
                     >
-                      {item.content.map((pictogram, index) => (
-                        <View
-                          key={`${pictogram.uuid}-${index}`}
-                          style={styles.pictogramDiv}
-                        >
-                          <Image
-                            source={{ uri: pictogram.imageSource }}
-                            style={styles.pictogramImage}
-                          />
-                          <Text style={styles.pictogramText} numberOfLines={1}>
-                            {pictogram.description.toUpperCase()}
-                          </Text>
-                        </View>
-                      ))}
+                      {(item.content as Term[]).map((term, index) => {
+                        const display = resolveTermDisplay(term, entryMode);
+                        return (
+                          <View
+                            key={`${term.pictogram.uuid}-${index}`}
+                            style={styles.pictogramDiv}
+                          >
+                            <Image
+                              source={{ uri: display.imageSource }}
+                              style={styles.pictogramImage}
+                            />
+                            <Text
+                              style={styles.pictogramText}
+                              numberOfLines={1}
+                            >
+                              {display.label}
+                            </Text>
+                          </View>
+                        );
+                      })}
                     </ScrollView>
                   </View>
                 ) : (
@@ -102,7 +113,7 @@ export default function ReportScreen() {
         >
           <Text style={styles.newConsultationText}>Finalizar atendimento</Text>
         </TouchableOpacity>
-        
+
         <TouchableOpacity
           style={styles.clipboardButton}
           onPress={copyToClipboard}
@@ -112,7 +123,6 @@ export default function ReportScreen() {
             <Text style={styles.clipboardText}>Copiar</Text>
           </View>
         </TouchableOpacity>
-
       </View>
     </View>
   );

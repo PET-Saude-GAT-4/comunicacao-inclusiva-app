@@ -1,4 +1,8 @@
-export const COLORS = {
+/**
+ * Base palette. Split out only so derived groups below (e.g. painScale) can
+ * reference these values instead of repeating their hexes.
+ */
+const CORE = {
   primary: "#78d6c7",
   primaryDark: "#006B5F",
   secondary: "#814C77",
@@ -15,6 +19,21 @@ export const COLORS = {
     onPrimaryVariant: "#6F7976",
     onPrimaryDarkVariant: "#D1D1D1",
     onSecondary: "#FFFFFF",
+  },
+};
+
+export const COLORS = {
+  ...CORE,
+  painScale: {
+    panelBg: CORE.background,
+    cardBg: "#FFFFFF",
+    cardBorder: CORE.outlineCommon,
+    track: CORE.surface.secondary,
+    tick: CORE.text.onPrimaryVariant,
+    thumb: CORE.primaryDark,
+    scrim: "rgba(0, 0, 0, 0.4)",
+    submitBg: CORE.primaryDark,
+    submitFg: CORE.text.onPrimaryDark,
   },
   // Misc
   errorPrimary: "#BA1A1A",

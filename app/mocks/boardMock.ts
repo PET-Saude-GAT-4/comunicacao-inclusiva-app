@@ -1,497 +1,93 @@
+import { createBoard, TERMS } from "@/mocks/termsMock";
 import { Board } from "@/types/board.types";
-import { Pictogram } from "@/types/pictogram.types";
-import { Image } from "react-native";
+import { Term } from "@/types/term.types";
 
-export const boardsMock: Board[] = [
-  {
-    id: 1,
-    uuid: "board-1",
-    title: "Geral",
-    pictogramCount: 16,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-    representativePictogram: {
-      id: 1,
-      uuid: "pic-1",
-      description: "Andar",
-      imageSource: Image.resolveAssetSource(
-        require("../../assets/images/andar.png"),
-      ).uri,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    },
-  },
-  {
-    id: 2,
-    uuid: "board-2",
-    title: "Ações",
-    pictogramCount: 4,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-    representativePictogram: {
-      id: 5,
-      uuid: "pic-5",
-      description: "Correr",
-      imageSource: Image.resolveAssetSource(
-        require("../../assets/images/correr.png"),
-      ).uri,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    },
-  },
-  {
-    id: 3,
-    uuid: "board-3",
-    title: "Corpo",
-    pictogramCount: 9,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-    representativePictogram: {
-      id: 2,
-      uuid: "pic-2",
-      description: "Cabeça",
-      imageSource: Image.resolveAssetSource(
-        require("../../assets/images/cabeca.png"),
-      ).uri,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    },
-  },
-  {
-    id: 4,
-    uuid: "board-4",
-    title: "Sentimentos",
-    pictogramCount: 3,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-    representativePictogram: {
-      id: 7,
-      uuid: "pic-7",
-      description: "Feliz",
-      imageSource: Image.resolveAssetSource(
-        require("../../assets/images/feliz.png"),
-      ).uri,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    },
-  },
-];
+// Membership and order mirror BOARD_DEFS in the api repo
+// api repo, read in array order (the seed writes that order
+// into the board's linked list).
+const BASIC_NEEDS = "board-basic-needs";
+const EMOTIONS_AND_STATE = "board-emotions-and-state";
+const BODY_PARTS = "board-body-parts";
+const GENERAL_SYMPTOMS = "board-general-symptoms";
 
-export const nextBoardsMock: Record<string, Board[]> = {
-  "board-1": [boardsMock[1], boardsMock[2]],
-  "board-2": [boardsMock[3]],
-  "board-3": [boardsMock[3]],
+export const boardTermsMock: Record<string, Term[]> = {
+  [BASIC_NEEDS]: [
+    TERMS.water,
+    TERMS.food,
+    TERMS.bathroom,
+    TERMS.sleep,
+    TERMS.rest,
+  ],
+  [EMOTIONS_AND_STATE]: [
+    TERMS.happy,
+    TERMS.sad,
+    TERMS.afraid,
+    TERMS.irritated,
+    TERMS.anxious,
+    TERMS.calm,
+    TERMS.confused,
+  ],
+  [BODY_PARTS]: [
+    TERMS.head,
+    TERMS.eyes,
+    TERMS.ear,
+    TERMS.nose,
+    TERMS.mouth,
+    TERMS.tooth,
+    TERMS.throat,
+    TERMS.lung,
+    TERMS.heart,
+    TERMS.belly,
+    TERMS.arm,
+    TERMS.leg,
+    TERMS.foot,
+    TERMS.back,
+  ],
+  [GENERAL_SYMPTOMS]: [
+    TERMS.nausea,
+    TERMS.dizziness,
+    TERMS["shortness-of-breath"],
+    TERMS.fatigue,
+    TERMS.fever,
+    TERMS.tingling,
+  ],
 };
 
-export const pictogramsMock: Record<string, Pictogram[]> = {
-  "board-1": [
-    {
-      id: 1,
-      uuid: "pic-1",
-      description: "Andar",
-      imageSource: Image.resolveAssetSource(
-        require("../../assets/images/andar.png"),
-      ).uri,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    },
-    {
-      id: 2,
-      uuid: "pic-2",
-      description: "Cabeça",
-      imageSource: Image.resolveAssetSource(
-        require("../../assets/images/cabeca.png"),
-      ).uri,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    },
-    {
-      id: 3,
-      uuid: "pic-3",
-      description: "Com Raiva",
-      imageSource: Image.resolveAssetSource(
-        require("../../assets/images/com_raiva.png"),
-      ).uri,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    },
-    {
-      id: 4,
-      uuid: "pic-4",
-      description: "Comer",
-      imageSource: Image.resolveAssetSource(
-        require("../../assets/images/comer.png"),
-      ).uri,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    },
-    {
-      id: 5,
-      uuid: "pic-5",
-      description: "Correr",
-      imageSource: Image.resolveAssetSource(
-        require("../../assets/images/correr.png"),
-      ).uri,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    },
-    {
-      id: 6,
-      uuid: "pic-6",
-      description: "Escrever",
-      imageSource: Image.resolveAssetSource(
-        require("../../assets/images/escrever.png"),
-      ).uri,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    },
-    {
-      id: 7,
-      uuid: "pic-7",
-      description: "Feliz",
-      imageSource: Image.resolveAssetSource(
-        require("../../assets/images/feliz.png"),
-      ).uri,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    },
-    {
-      id: 8,
-      uuid: "pic-8",
-      description: "Nariz",
-      imageSource: Image.resolveAssetSource(
-        require("../../assets/images/nariz.png"),
-      ).uri,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    },
-    {
-      id: 9,
-      uuid: "pic-9",
-      description: "Olho",
-      imageSource: Image.resolveAssetSource(
-        require("../../assets/images/olho.png"),
-      ).uri,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    },
-    {
-      id: 10,
-      uuid: "pic-10",
-      description: "Orelha",
-      imageSource: Image.resolveAssetSource(
-        require("../../assets/images/orelha.png"),
-      ).uri,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    },
-    {
-      id: 11,
-      uuid: "pic-11",
-      description: "Triste",
-      imageSource: Image.resolveAssetSource(
-        require("../../assets/images/triste.png"),
-      ).uri,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    },
-    {
-      id: 12,
-      uuid: "pic-12",
-      description: "Boca",
-      imageSource: Image.resolveAssetSource(
-        require("../../assets/images/boca.png"),
-      ).uri,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    },
-    {
-      id: 13,
-      uuid: "pic-13",
-      description: "Coração",
-      imageSource: Image.resolveAssetSource(
-        require("../../assets/images/coracao.png"),
-      ).uri,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    },
-    {
-      id: 14,
-      uuid: "pic-14",
-      description: "Dente",
-      imageSource: Image.resolveAssetSource(
-        require("../../assets/images/dente.png"),
-      ).uri,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    },
-    {
-      id: 15,
-      uuid: "pic-15",
-      description: "Mão",
-      imageSource: Image.resolveAssetSource(
-        require("../../assets/images/mao.png"),
-      ).uri,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    },
-    {
-      id: 16,
-      uuid: "pic-16",
-      description: "Rins",
-      imageSource: Image.resolveAssetSource(
-        require("../../assets/images/rins.png"),
-      ).uri,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    },
-  ],
-  "board-2": [
-    {
-      id: 1,
-      uuid: "pic-1",
-      description: "Andar",
-      imageSource: Image.resolveAssetSource(
-        require("../../assets/images/andar.png"),
-      ).uri,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    },
-    {
-      id: 4,
-      uuid: "pic-4",
-      description: "Comer",
-      imageSource: Image.resolveAssetSource(
-        require("../../assets/images/comer.png"),
-      ).uri,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    },
-    {
-      id: 5,
-      uuid: "pic-5",
-      description: "Correr",
-      imageSource: Image.resolveAssetSource(
-        require("../../assets/images/correr.png"),
-      ).uri,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    },
-    {
-      id: 6,
-      uuid: "pic-6",
-      description: "Escrever",
-      imageSource: Image.resolveAssetSource(
-        require("../../assets/images/escrever.png"),
-      ).uri,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    },
-  ],
-  "board-3": [
-    {
-      id: 2,
-      uuid: "pic-2",
-      description: "Cabeça",
-      imageSource: Image.resolveAssetSource(
-        require("../../assets/images/cabeca.png"),
-      ).uri,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    },
-    {
-      id: 8,
-      uuid: "pic-8",
-      description: "Nariz",
-      imageSource: Image.resolveAssetSource(
-        require("../../assets/images/nariz.png"),
-      ).uri,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    },
-    {
-      id: 9,
-      uuid: "pic-9",
-      description: "Olho",
-      imageSource: Image.resolveAssetSource(
-        require("../../assets/images/olho.png"),
-      ).uri,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    },
-    {
-      id: 10,
-      uuid: "pic-10",
-      description: "Orelha",
-      imageSource: Image.resolveAssetSource(
-        require("../../assets/images/orelha.png"),
-      ).uri,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    },
-    {
-      id: 12,
-      uuid: "pic-12",
-      description: "Boca",
-      imageSource: Image.resolveAssetSource(
-        require("../../assets/images/boca.png"),
-      ).uri,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    },
-    {
-      id: 13,
-      uuid: "pic-13",
-      description: "Coração",
-      imageSource: Image.resolveAssetSource(
-        require("../../assets/images/coracao.png"),
-      ).uri,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    },
-    {
-      id: 14,
-      uuid: "pic-14",
-      description: "Dente",
-      imageSource: Image.resolveAssetSource(
-        require("../../assets/images/dente.png"),
-      ).uri,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    },
-    {
-      id: 15,
-      uuid: "pic-15",
-      description: "Mão",
-      imageSource: Image.resolveAssetSource(
-        require("../../assets/images/mao.png"),
-      ).uri,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    },
-    {
-      id: 16,
-      uuid: "pic-16",
-      description: "Rins",
-      imageSource: Image.resolveAssetSource(
-        require("../../assets/images/rins.png"),
-      ).uri,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    },
-  ],
-  "board-4": [
-    {
-      id: 3,
-      uuid: "pic-3",
-      description: "Com Raiva",
-      imageSource: Image.resolveAssetSource(
-        require("../../assets/images/com_raiva.png"),
-      ).uri,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    },
-    {
-      id: 7,
-      uuid: "pic-7",
-      description: "Feliz",
-      imageSource: Image.resolveAssetSource(
-        require("../../assets/images/feliz.png"),
-      ).uri,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    },
-    {
-      id: 11,
-      uuid: "pic-11",
-      description: "Triste",
-      imageSource: Image.resolveAssetSource(
-        require("../../assets/images/triste.png"),
-      ).uri,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    },
-  ],
-  "board-5": [
-    {
-      id: 0,
-      uuid: "pic-0",
-      description: "prototype",
-      imageSource: Image.resolveAssetSource(
-        require("../../assets/images/alert.png"),
-      ).uri,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    },
-    {
-      id: 0,
-      uuid: "pic-0",
-      description: "prototype",
-      imageSource: Image.resolveAssetSource(
-        require("../../assets/images/alert.png"),
-      ).uri,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    },
-    {
-      id: 0,
-      uuid: "pic-0",
-      description: "prototype",
-      imageSource: Image.resolveAssetSource(
-        require("../../assets/images/alert.png"),
-      ).uri,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    },
-    {
-      id: 0,
-      uuid: "pic-0",
-      description: "prototype",
-      imageSource: Image.resolveAssetSource(
-        require("../../assets/images/alert.png"),
-      ).uri,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    },
-    {
-      id: 0,
-      uuid: "pic-0",
-      description: "prototype",
-      imageSource: Image.resolveAssetSource(
-        require("../../assets/images/alert.png"),
-      ).uri,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    },
-    {
-      id: 0,
-      uuid: "pic-0",
-      description: "prototype",
-      imageSource: Image.resolveAssetSource(
-        require("../../assets/images/alert.png"),
-      ).uri,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    },
-    {
-      id: 0,
-      uuid: "pic-0",
-      description: "prototype",
-      imageSource: Image.resolveAssetSource(
-        require("../../assets/images/alert.png"),
-      ).uri,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    },
-    {
-      id: 0,
-      uuid: "pic-0",
-      description: "prototype",
-      imageSource: Image.resolveAssetSource(
-        require("../../assets/images/alert.png"),
-      ).uri,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    },
-  ],
+export const boardsMock: Board[] = [
+  createBoard(
+    1,
+    BASIC_NEEDS,
+    "Necessidades Básicas",
+    TERMS.water,
+    boardTermsMock[BASIC_NEEDS],
+  ),
+  createBoard(
+    2,
+    EMOTIONS_AND_STATE,
+    "Emoções e Estado",
+    TERMS.happy,
+    boardTermsMock[EMOTIONS_AND_STATE],
+  ),
+  // `body` and `malaise` represent their boards without being members of them.
+  createBoard(
+    3,
+    BODY_PARTS,
+    "Partes do Corpo",
+    TERMS.body,
+    boardTermsMock[BODY_PARTS],
+  ),
+  createBoard(
+    4,
+    GENERAL_SYMPTOMS,
+    "Sintomas Gerais",
+    TERMS.malaise,
+    boardTermsMock[GENERAL_SYMPTOMS],
+  ),
+];
+
+// The API has no board chain to mirror yet, so this models the flow the boards
+// imply: name the body part, then the symptom, and back.
+export const nextBoardsMock: Record<string, Board[]> = {
+  [BODY_PARTS]: [boardsMock[3]],
+  [GENERAL_SYMPTOMS]: [boardsMock[2]],
 };

@@ -1,13 +1,13 @@
-import 'dotenv/config';
-import { ExpoConfig } from '@expo/config-types';
+import "dotenv/config";
+import { ConfigContext, ExpoConfig } from "expo/config";
 
-const config: ExpoConfig = {
-  name: "comunicacao-inclusiva-app",
-  slug: "comunicacao-inclusiva-app",
-  version: "1.0.0",
+export default ({ config }: ConfigContext): ExpoConfig => ({
+  ...config,
+  name: config.name ?? "comunicacao-inclusiva-app",
+  slug: config.slug ?? "comunicacao-inclusiva-app",
   extra: {
+    ...config.extra,
     API_BASE_URL: process.env.API_BASE_URL,
   },
-};
+});
 
-export default config;
