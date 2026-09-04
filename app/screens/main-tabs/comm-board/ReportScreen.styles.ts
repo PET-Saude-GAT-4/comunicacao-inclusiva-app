@@ -79,6 +79,12 @@ export const styles = StyleSheet.create({
     color: COLORS.text.onPrimary,
   },
 
+  recordText: {
+    fontSize: TYPOGRAPHY.sizes.bodyEmph,
+    fontWeight: TYPOGRAPHY.weights.bold,
+    color: COLORS.primaryDark,
+  },
+
   confusionText: {
     fontSize: TYPOGRAPHY.sizes.bodyEmph,
     color: COLORS.secondary,
