@@ -7,6 +7,11 @@ import { MyCollectionProvider } from "./app/contexts/MyCollectionContext";
 import { PreferencesProvider } from "./app/contexts/PreferencesContext";
 import { SessionProvider } from "./app/contexts/SessionContext";
 import RootStackNavigator from "./app/navigation/RootStackNav";
+import { DefaultTheme } from "@react-navigation/native";
+import { COLORS } from "./app/styles/themes"; 
+
+const navTheme = DefaultTheme;
+navTheme.colors.background = COLORS.background;
 
 export default function App() {
   const theme = useTheme();
@@ -20,7 +25,9 @@ export default function App() {
           <SessionProvider>
             <MyCollectionProvider>
               <PreferencesProvider>
-                <NavigationContainer>
+                <NavigationContainer
+                  theme={navTheme}
+                >
                   <StatusBar
                     barStyle={theme.dark ? "light-content" : "dark-content"}
                     backgroundColor={theme.colors.background}

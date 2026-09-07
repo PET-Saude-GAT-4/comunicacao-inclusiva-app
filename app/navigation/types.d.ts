@@ -74,6 +74,7 @@ export type BoardStackParamList = {
 };
 
 export type LibraryBoardStackParamList = {
+  LibraryTab: undefined;
   PublicBoards: undefined;
   PublicBoardDetails: { board: Board };
 };

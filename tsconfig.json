@@ -3,16 +3,11 @@
   "compilerOptions": {
     "strict": true,
     "baseUrl": ".",
+    "ignoreDeprecations": "6.0",
     "paths": {
-      "@/*": [
-        "app/*"
-      ],
-      "@assets/*": [
-        "assets/*"
-      ]
+      "@/*": ["app/*"],
+      "@assets/*": ["assets/*"]
     }
   },
-  "include": [
-    "app/**/*"
-  ]
+  "include": ["App.tsx", "app/**/*"]
 }

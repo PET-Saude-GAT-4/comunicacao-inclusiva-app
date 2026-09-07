@@ -1,26 +1,26 @@
 import GlobalHeader from "@/components/GlobalHeaderComponent";
-import ModuleVisualizationScreen from "@/screens/main-tabs/emergency/ModuleVisualizationScreen";
 import { COLORS } from "@/styles/themes";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { Platform } from "react-native";
 import { Appbar } from "react-native-paper";
-import { EmergencyStackParamList } from "./../../types";
-import EmergencyTabNav from "./EmergencyTabNav";
+import { LibraryBoardStackParamList } from "./../../types";
+import LibraryTabNav from "./LibraryTabNav";
+import BoardDetailScreen from "@/screens/main-tabs/my-collection/BoardDetailScreen";
 
 const MORE_ICON = Platform.OS === "ios" ? "dots-horizontal" : "dots-vertical";
 
-export default function EmergencyStackNav() {
-  const Stack = createNativeStackNavigator<EmergencyStackParamList>();
+export default function LibraryStackNav() {
+  const Stack = createNativeStackNavigator<LibraryBoardStackParamList>();
 
   return (
     <Stack.Navigator
       screenOptions={{ header: (props) => <GlobalHeader {...props} /> }}
     >
       <Stack.Screen
-        name="EmergencyTab"
-        component={EmergencyTabNav}
+        name="LibraryTab"
+        component={LibraryTabNav}
         options={{
-          title: "Emergência",
+          title: "Biblioteca",
           headerRight: () => (
             <Appbar.Action
               iconColor={COLORS.text.onPrimary}
@@ -31,9 +31,9 @@ export default function EmergencyStackNav() {
         }}
       />
       <Stack.Screen
-        name="ModuleVisualization"
-        component={ModuleVisualizationScreen}
-        options={{ title: "Visualização do Módulo" }}
+        name="PublicBoardDetails"
+        component={BoardDetailScreen}
+        options={{ title: "Detalhes da Prancha" }}
       />
     </Stack.Navigator>
   );
