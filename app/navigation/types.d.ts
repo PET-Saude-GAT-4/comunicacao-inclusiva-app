@@ -40,10 +40,12 @@ export type AuthStackParamList = {
 };
 
 export type MainTabParamList = {
-  CommBoardStackNav: {
-    screen?: keyof CommBoardStackParamList;
-    params?: any;
-  } | undefined;
+  CommBoardStackNav:
+    | {
+        screen?: keyof CommBoardStackParamList;
+        params?: any;
+      }
+    | undefined;
   BoardCollection: undefined;
   Emergency: undefined;
   Library: undefined;
@@ -86,4 +88,14 @@ export type LibraryPhraseStackParamList = {
 export type EmergencyStackParamList = {
   EmergencyTab: undefined;
   ModuleVisualization: { board: Board };
+};
+
+export type EmergencyTabParamList = {
+  QuickEmergency: undefined;
+  CatEmergency: undefined;
+};
+
+export type QuickEmergencyStackParamList = {
+  QuickEmergency: undefined;
+  UrgencyResponse: { pictogram: Pictogram };
 };

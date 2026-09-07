@@ -1,7 +1,9 @@
-import { COLORS, CONTAINERS, TYPOGRAPHY } from "@/styles/themes";
-import { usePreferences } from "@/hooks/usePreferences";
 import { useModuleBoardTerms } from "@/hooks/useModuleBoardTerms";
+import { usePreferences } from "@/hooks/usePreferences";
 import { EmergencyStackParamList } from "@/navigation/types";
+import { COLORS, CONTAINERS, TYPOGRAPHY } from "@/styles/themes";
+import { Board } from "@/types/board.types";
+import { Pictogram } from "@/types/pictogram.types";
 import { Term } from "@/types/term.types";
 import { resolveTermDisplay } from "@/utils/resolveTermDisplay";
 import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
@@ -20,25 +22,39 @@ type ModuleVisualizationRouteProp = RouteProp<
   "ModuleVisualization"
 >;
 
-export default function ModuleVisualizationScreen() {
+type Props = {
+  board?: Board;
+  onPictogramPress?: (pictogram: Pictogram) => void;
+};
+
+export default function ModuleVisualizationScreen({
+  board: boardProp,
+  onPictogramPress,
+}: Props) {
   const navigation = useNavigation();
   const route = useRoute<ModuleVisualizationRouteProp>();
-  const { board } = route.params;
+  const board = boardProp ?? route.params?.board;
   const { displayMode } = usePreferences();
 
   const { terms, isLoading: isLoadingTerms } = useModuleBoardTerms(
-    board.uuid || "",
+    board?.uuid || "",
   );
 
   function onTap(term: Term) {
-    // Supposedly leads to communication board, with the context of such, meaning each
-    // of the terms housed here are linked to a context somehow
-    console.log(term.description);
+    if (onPictogramPress) {
+      onPictogramPress(term.pictogram);
+    } else {
+      console.log(term.description);
+    }
   }
 
   useEffect(() => {
-    navigation.setOptions({ title: board.title });
-  }, [navigation, board.title]);
+    if (board) {
+      navigation.setOptions({ title: board.title });
+    }
+  }, [navigation, board]);
+
+  if (!board) return null;
 
   return (
     <View style={styles.container}>
@@ -50,6 +66,7 @@ export default function ModuleVisualizationScreen() {
         style={{ padding: CONTAINERS.spacings.lg }}
         data={terms}
         numColumns={2}
+        scrollEnabled={false}
         showsVerticalScrollIndicator={false}
         columnWrapperStyle={styles.row}
         contentContainerStyle={styles.listContent}
@@ -58,7 +75,10 @@ export default function ModuleVisualizationScreen() {
           const display = resolveTermDisplay(item, displayMode);
           return (
             <TouchableOpacity style={styles.card} onPress={() => onTap(item)}>
-              <Image source={{ uri: display.imageSource }} style={styles.image} />
+              <Image
+                source={{ uri: display.imageSource }}
+                style={styles.image}
+              />
               <Text style={styles.label} numberOfLines={2}>
                 {display.label}
               </Text>
