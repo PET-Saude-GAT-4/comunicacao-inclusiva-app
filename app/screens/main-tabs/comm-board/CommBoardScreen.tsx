@@ -1,12 +1,13 @@
 import { AccessibilityMenu } from "@/components/AccessibilityMenu";
 import { BoardSkeleton } from "@/components/BoardSkeleton";
-import { PainScaleTray } from "@/components/pain-scale/PainScaleTray";
 import { SearchBar } from "@/components/SearchBar";
+import { PainScaleTray } from "@/components/pain-scale/PainScaleTray";
 import { PainScaleTrigger } from "@/components/pain-scale/PainScaleTrigger";
 import type { PainScaleSubmission } from "@/components/pain-scale/types";
-import { usePreferences } from "@/hooks/usePreferences";
+import { PAIN_SCALE_FACES } from "@/constants/painScaleFaces";
 import { useBoardTerms } from "@/hooks/useBoardTerms";
 import { useBoards } from "@/hooks/useBoards";
+import { usePreferences } from "@/hooks/usePreferences";
 import { useSession } from "@/hooks/useSession";
 import { CommBoardStackParamList } from "@/navigation/types";
 import { COLORS } from "@/styles/themes";
@@ -34,7 +35,12 @@ export default function CommBoardScreen() {
   const route =
     useRoute<RouteProp<CommBoardStackParamList, "CommBoardScreen">>();
 
-  const { currentSpeaker, isInConsultation, setCurrentSpeaker } = useSession();
+  const {
+    addInteraction,
+    currentSpeaker,
+    isInConsultation,
+    setCurrentSpeaker,
+  } = useSession();
   const { displayMode } = usePreferences();
 
   // Redirect to NoConsultationScreen when consultation ends
@@ -64,11 +70,30 @@ export default function CommBoardScreen() {
     }
   }, [route.params?.initialTerms]);
 
-  // TODO: record the intensity through SessionContext once an interaction type
-  // exists for it.
-  const handlePainScaleSubmit = async (submission: PainScaleSubmission) => {
-    await new Promise((resolve) => setTimeout(resolve, 100));
-    console.log("Intensidade enviada:", submission);
+  const handlePainScaleSubmit = (submission: PainScaleSubmission) => {
+    if (!isInConsultation) {
+      console.log("Modo triagem: dor não registrada.");
+      return;
+    }
+
+    const face = PAIN_SCALE_FACES[submission.nearestIndex];
+
+    addInteraction({
+      id: Date.now().toString(),
+      speaker: currentSpeaker,
+      type: "painScale",
+      content: {
+        level: submission.nearestIndex,
+        levelCount: PAIN_SCALE_FACES.length,
+        severity: face.severity,
+      },
+      timestamp: new Date().toISOString(),
+      understood: true,
+    });
+
+    setCurrentSpeaker(
+      currentSpeaker === "professional" ? "patient" : "professional",
+    );
   };
 
   const { boards, isLoading: isLoadingBoards } = useBoards();

@@ -1,9 +1,10 @@
 import { usePreferences } from "@/hooks/usePreferences";
 import { useSession } from "@/hooks/useSession";
 import { RootStackParamList } from "@/navigation/types";
+import { COLORS } from "@/styles/themes";
+import { InteractionEntry } from "@/types/interaction.types";
 import { Term } from "@/types/term.types";
 import { resolveTermDisplay } from "@/utils/resolveTermDisplay";
-import { COLORS } from "@/styles/themes";
 import { Ionicons } from "@expo/vector-icons";
 import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
 import { Image } from "expo-image";
@@ -24,36 +25,39 @@ export default function FeedbackScreen() {
 
   const isTextMessage = !!textContent;
 
-  const handleUnderstood = () => {
-    addInteraction({
+  // `type` and `content` have to be decided together: the entry is a
+  // discriminated union, so a ternary on each field separately does not type.
+  function buildEntry(understood: boolean): InteractionEntry {
+    const base = {
       id: Date.now().toString(),
       speaker: senderSpeaker,
-      type: isTextMessage ? "text" : "term",
-      content: isTextMessage ? textContent! : terms,
       timestamp: new Date().toISOString(),
-      understood: true,
+      understood,
       displayMode: renderMode,
-    });
+    };
+
+    return isTextMessage
+      ? { ...base, type: "text", content: textContent! }
+      : { ...base, type: "term", content: terms };
+  }
+
+  const handleUnderstood = () => {
+    addInteraction(buildEntry(true));
 
     console.log("Feedback: ENTENDI");
     navigation.goBack();
   };
 
   const handleDoubt = () => {
-    addInteraction({
-      id: Date.now().toString(),
-      speaker: senderSpeaker,
-      type: isTextMessage ? "text" : "term",
-      content: isTextMessage ? textContent! : terms,
-      timestamp: new Date().toISOString(),
-      understood: false,
-      displayMode: renderMode,
-    });
+    addInteraction(buildEntry(false));
 
     // Revert speaker to the original sender so they can reformulate
     setCurrentSpeaker(senderSpeaker);
 
-    console.log("Feedback: TENHO DÚVIDA — speaker revertido para:", senderSpeaker);
+    console.log(
+      "Feedback: TENHO DÚVIDA — speaker revertido para:",
+      senderSpeaker,
+    );
     navigation.goBack();
   };
 
