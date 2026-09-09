@@ -35,28 +35,24 @@ export const moduleBoardTermsMock: Record<string, Term[]> = {
 // prefix is load-bearing.
 export const emergencyBoardsMock: Board[] = [
   createBoard(
-    5,
     "module-board-quick-emergency-1",
     "Cardiologia",
     TERMS.heart,
     moduleBoardTermsMock["module-board-quick-emergency-1"],
   ),
   createBoard(
-    6,
     "module-board-quick-emergency-2",
     "Neurologia",
     TERMS.head,
     moduleBoardTermsMock["module-board-quick-emergency-2"],
   ),
   createBoard(
-    7,
     "module-board-quick-emergency-3",
     "Ortopedia",
     TERMS.leg,
     moduleBoardTermsMock["module-board-quick-emergency-3"],
   ),
   createBoard(
-    8,
     "module-board-quick-emergency-4",
     "Geral",
     TERMS.malaise,

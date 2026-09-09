@@ -1,5 +1,4 @@
 export interface SignWriting {
-  id: number;
   uuid: string;
   description: string;
   imageSource: string;
@@ -7,8 +6,8 @@ export interface SignWriting {
   updatedAt: string;
 }
 
+/** Wire format matching the API's SignWritingResponse */
 export interface ApiSignWriting {
-  id: number;
   uuid: string;
   description: string;
   fileUrl: string;

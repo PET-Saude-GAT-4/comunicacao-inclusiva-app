@@ -70,7 +70,7 @@ export default function ModuleVisualizationScreen({
         showsVerticalScrollIndicator={false}
         columnWrapperStyle={styles.row}
         contentContainerStyle={styles.listContent}
-        keyExtractor={(item: Term) => item.pictogram.uuid}
+        keyExtractor={(item: Term) => item.uuid}
         renderItem={({ item }: { item: Term }) => {
           const display = resolveTermDisplay(item, displayMode);
           return (

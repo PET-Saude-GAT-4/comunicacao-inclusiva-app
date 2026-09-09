@@ -94,7 +94,7 @@ export default function FeedbackScreen() {
               const display = resolveTermDisplay(term, renderMode);
               return (
                 <View
-                  key={`${term.pictogram.uuid}-${index}`}
+                  key={`${term.uuid}-${index}`}
                   style={styles.visorPictogramItem}
                 >
                   <Image

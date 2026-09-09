@@ -55,14 +55,12 @@ export const boardTermsMock: Record<string, Term[]> = {
 
 export const boardsMock: Board[] = [
   createBoard(
-    1,
     BASIC_NEEDS,
     "Necessidades Básicas",
     TERMS.water,
     boardTermsMock[BASIC_NEEDS],
   ),
   createBoard(
-    2,
     EMOTIONS_AND_STATE,
     "Emoções e Estado",
     TERMS.happy,
@@ -70,14 +68,12 @@ export const boardsMock: Board[] = [
   ),
   // `body` and `malaise` represent their boards without being members of them.
   createBoard(
-    3,
     BODY_PARTS,
     "Partes do Corpo",
     TERMS.body,
     boardTermsMock[BODY_PARTS],
   ),
   createBoard(
-    4,
     GENERAL_SYMPTOMS,
     "Sintomas Gerais",
     TERMS.malaise,

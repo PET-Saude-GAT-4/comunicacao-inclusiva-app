@@ -64,7 +64,7 @@ export default function ReportScreen() {
                         const display = resolveTermDisplay(term, entryMode);
                         return (
                           <View
-                            key={`${term.pictogram.uuid}-${index}`}
+                            key={`${term.uuid}-${index}`}
                             style={styles.pictogramDiv}
                           >
                             <Image
