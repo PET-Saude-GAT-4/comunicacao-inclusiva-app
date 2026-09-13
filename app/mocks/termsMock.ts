@@ -152,6 +152,30 @@ const assets = {
     pictogram: require("../../assets/images/boards/general-symptoms/tingling/pictogram.png"),
     signWriting: require("../../assets/images/boards/general-symptoms/tingling/signwriting.png"),
   },
+  cold: {
+    pictogram: require("../../assets/images/boards/general-symptoms/cold/pictogram.png"),
+    signWriting: require("../../assets/images/boards/general-symptoms/cold/signwriting.png"),
+  },
+  allergy: {
+    pictogram: require("../../assets/images/boards/general-symptoms/allergy/pictogram.png"),
+    signWriting: require("../../assets/images/boards/general-symptoms/allergy/signwriting.png"),
+  },
+  "bleeding-cut": {
+    pictogram: require("../../assets/images/boards/general-symptoms/bleeding-cut/pictogram.png"),
+    signWriting: require("../../assets/images/boards/general-symptoms/bleeding-cut/signwriting.png"),
+  },
+  "sharp-pain": {
+    pictogram: require("../../assets/images/boards/general-symptoms/sharp-pain/pictogram.png"),
+    signWriting: require("../../assets/images/boards/general-symptoms/sharp-pain/signwriting.png"),
+  },
+  "animal-bite": {
+    pictogram: require("../../assets/images/boards/general-symptoms/animal-bite/pictogram.png"),
+    signWriting: require("../../assets/images/boards/general-symptoms/animal-bite/signwriting.png"),
+  },
+  "vehicle-crash": {
+    pictogram: require("../../assets/images/boards/general-symptoms/vehicle-crash/pictogram.png"),
+    signWriting: require("../../assets/images/boards/general-symptoms/vehicle-crash/signwriting.png"),
+  },
 } as const;
 
 export type TermSlug = keyof typeof assets;
@@ -221,6 +245,12 @@ export const TERMS: Record<TermSlug, Term> = {
   fatigue: createTerm(32, "fatigue", "Cansaço"),
   fever: createTerm(33, "fever", "Febre"),
   tingling: createTerm(34, "tingling", "Formigamento"),
+  cold: createTerm(35, "cold", "Frio"),
+  allergy: createTerm(36, "allergy", "Alergia"),
+  "bleeding-cut": createTerm(37, "bleeding-cut", "Sangramento"),
+  "sharp-pain": createTerm(38, "sharp-pain", "Dor Forte"),
+  "animal-bite": createTerm(39, "animal-bite", "Mordida de Animal"),
+  "vehicle-crash": createTerm(40, "vehicle-crash", "Acidente de Trânsito"),
 };
 
 export function createBoard(
