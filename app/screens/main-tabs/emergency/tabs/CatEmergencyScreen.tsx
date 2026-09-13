@@ -12,7 +12,7 @@ type NavProp = NativeStackNavigationProp<
 
 export function CatEmergencyScreen() {
   const navigation = useNavigation<NavProp>();
-  const searchQuery = "module";
+  const searchQuery = "module-board-cat-emergency";
 
   const { boards } = useEmergency();
 

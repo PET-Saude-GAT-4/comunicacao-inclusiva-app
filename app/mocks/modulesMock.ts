@@ -6,6 +6,7 @@ import { Term } from "@/types/term.types";
 // they stay app-side fabricated content: the board definitions below are the
 // ones the app already shipped.
 export const moduleBoardTermsMock: Record<string, Term[]> = {
+  // Quick Emergency triage levels
   "module-board-quick-emergency-level-3": [
     TERMS["shortness-of-breath"],
     TERMS["bleeding-cut"],
@@ -30,30 +31,93 @@ export const moduleBoardTermsMock: Record<string, Term[]> = {
     TERMS.afraid,
     TERMS.sad,
   ],
+
+  // Categorized Emergency specialties
+  "module-board-cat-emergency-cardiologia": [
+    TERMS.heart,
+    TERMS.lung,
+    TERMS["shortness-of-breath"],
+    TERMS.fatigue,
+    TERMS.dizziness,
+    TERMS["sharp-pain"],
+  ],
+  "module-board-cat-emergency-neurologia": [
+    TERMS.head,
+    TERMS.eyes,
+    TERMS.ear,
+    TERMS.dizziness,
+    TERMS.confused,
+    TERMS.tingling,
+  ],
+  "module-board-cat-emergency-ortopedia": [
+    TERMS.arm,
+    TERMS.leg,
+    TERMS.foot,
+    TERMS.back,
+    TERMS["sharp-pain"],
+    TERMS["bleeding-cut"],
+  ],
+  "module-board-cat-emergency-geral": [
+    TERMS.malaise,
+    TERMS.fever,
+    TERMS.nausea,
+    TERMS.allergy,
+    TERMS.cold,
+    TERMS.fatigue,
+  ],
 };
 
-// CatEmergencyScreen selects these by matching "module" in the uuid, so the
-// prefix is load-bearing.
 export const emergencyBoardsMock: Board[] = [
+  // Quick Emergency triage levels
   createBoard(
     5,
     "module-board-quick-emergency-level-3",
-    "Cardiologia",
-    TERMS.heart,
+    "Emergência Nível 3",
+    TERMS["shortness-of-breath"],
     moduleBoardTermsMock["module-board-quick-emergency-level-3"],
   ),
   createBoard(
     6,
     "module-board-quick-emergency-level-2",
-    "Neurologia",
-    TERMS.head,
+    "Emergência Nível 2",
+    TERMS.fever,
     moduleBoardTermsMock["module-board-quick-emergency-level-2"],
   ),
   createBoard(
     7,
     "module-board-quick-emergency-level-1",
+    "Emergência Nível 1",
+    TERMS.fatigue,
+    moduleBoardTermsMock["module-board-quick-emergency-level-1"],
+  ),
+
+  // Categorized Emergency specialties
+  createBoard(
+    8,
+    "module-board-cat-emergency-cardiologia",
+    "Cardiologia",
+    TERMS.heart,
+    moduleBoardTermsMock["module-board-cat-emergency-cardiologia"],
+  ),
+  createBoard(
+    9,
+    "module-board-cat-emergency-neurologia",
+    "Neurologia",
+    TERMS.head,
+    moduleBoardTermsMock["module-board-cat-emergency-neurologia"],
+  ),
+  createBoard(
+    10,
+    "module-board-cat-emergency-ortopedia",
     "Ortopedia",
     TERMS.leg,
-    moduleBoardTermsMock["module-board-quick-emergency-level-1"],
+    moduleBoardTermsMock["module-board-cat-emergency-ortopedia"],
+  ),
+  createBoard(
+    11,
+    "module-board-cat-emergency-geral",
+    "Geral",
+    TERMS.malaise,
+    moduleBoardTermsMock["module-board-cat-emergency-geral"],
   ),
 ];
