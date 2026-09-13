@@ -50,6 +50,12 @@ export const boardTermsMock: Record<string, Term[]> = {
     TERMS.fatigue,
     TERMS.fever,
     TERMS.tingling,
+    TERMS.cold,
+    TERMS.allergy,
+    TERMS["bleeding-cut"],
+    TERMS["sharp-pain"],
+    TERMS["animal-bite"],
+    TERMS["vehicle-crash"],
   ],
 };
 

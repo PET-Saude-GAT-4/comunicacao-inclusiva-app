@@ -152,6 +152,30 @@ const assets = {
     pictogram: require("../../assets/images/boards/general-symptoms/tingling/pictogram.png"),
     signWriting: require("../../assets/images/boards/general-symptoms/tingling/signwriting.png"),
   },
+  cold: {
+    pictogram: require("../../assets/images/boards/general-symptoms/cold/pictogram.png"),
+    signWriting: require("../../assets/images/boards/general-symptoms/cold/signwriting.png"),
+  },
+  allergy: {
+    pictogram: require("../../assets/images/boards/general-symptoms/allergy/pictogram.png"),
+    signWriting: require("../../assets/images/boards/general-symptoms/allergy/signwriting.png"),
+  },
+  "bleeding-cut": {
+    pictogram: require("../../assets/images/boards/general-symptoms/bleeding-cut/pictogram.png"),
+    signWriting: require("../../assets/images/boards/general-symptoms/bleeding-cut/signwriting.png"),
+  },
+  "sharp-pain": {
+    pictogram: require("../../assets/images/boards/general-symptoms/sharp-pain/pictogram.png"),
+    signWriting: require("../../assets/images/boards/general-symptoms/sharp-pain/signwriting.png"),
+  },
+  "animal-bite": {
+    pictogram: require("../../assets/images/boards/general-symptoms/animal-bite/pictogram.png"),
+    signWriting: require("../../assets/images/boards/general-symptoms/animal-bite/signwriting.png"),
+  },
+  "vehicle-crash": {
+    pictogram: require("../../assets/images/boards/general-symptoms/vehicle-crash/pictogram.png"),
+    signWriting: require("../../assets/images/boards/general-symptoms/vehicle-crash/signwriting.png"),
+  },
 } as const;
 
 export type TermSlug = keyof typeof assets;
@@ -212,13 +236,18 @@ export const TERMS: Record<TermSlug, Term> = {
   foot: createTerm("foot", "Pé"),
   back: createTerm("back", "Costas"),
 
-  // General Symptoms
   nausea: createTerm("nausea", "Náusea"),
   dizziness: createTerm("dizziness", "Tontura"),
   "shortness-of-breath": createTerm("shortness-of-breath", "Falta de Ar"),
   fatigue: createTerm("fatigue", "Cansaço"),
   fever: createTerm("fever", "Febre"),
   tingling: createTerm("tingling", "Formigamento"),
+  cold: createTerm("cold", "Frio"),
+  allergy: createTerm("allergy", "Alergia"),
+  "bleeding-cut": createTerm("bleeding-cut", "Sangramento"),
+  "sharp-pain": createTerm("sharp-pain", "Dor Forte"),
+  "animal-bite": createTerm("animal-bite", "Mordida de Animal"),
+  "vehicle-crash": createTerm("vehicle-crash", "Acidente de Trânsito"),
 };
 
 export function createBoard(

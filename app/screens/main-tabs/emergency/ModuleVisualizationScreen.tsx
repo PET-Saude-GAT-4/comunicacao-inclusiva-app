@@ -73,13 +73,27 @@ export default function ModuleVisualizationScreen({
         keyExtractor={(item: Term) => item.uuid}
         renderItem={({ item }: { item: Term }) => {
           const display = resolveTermDisplay(item, displayMode);
+          const isSignWriting = displayMode === "signWriting";
           return (
             <TouchableOpacity style={styles.card} onPress={() => onTap(item)}>
-              <Image
-                source={{ uri: display.imageSource }}
-                style={styles.image}
-              />
-              <Text style={styles.label} numberOfLines={2}>
+              <View
+                style={[
+                  styles.imageContainer,
+                  isSignWriting && styles.signWritingContainer,
+                ]}
+              >
+                <Image
+                  source={{ uri: display.imageSource }}
+                  style={styles.image}
+                  contentFit="contain"
+                />
+              </View>
+              <Text
+                style={styles.label}
+                numberOfLines={1}
+                adjustsFontSizeToFit
+                minimumFontScale={0.6}
+              >
                 {display.label}
               </Text>
             </TouchableOpacity>
@@ -113,18 +127,33 @@ export const styles = StyleSheet.create({
     aspectRatio: 1,
     borderRadius: CONTAINERS.radius.lg,
     backgroundColor: COLORS.surface.secondary,
-    gap: CONTAINERS.spacings.lg,
+    gap: CONTAINERS.spacings.sm,
+    padding: CONTAINERS.spacings.sm,
     alignItems: "center",
     justifyContent: "center",
   },
+  imageContainer: {
+    width: "70%",
+    height: "70%",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  signWritingContainer: {
+    backgroundColor: "#FFFFFF",
+    borderRadius: CONTAINERS.radius.md,
+    padding: CONTAINERS.spacings.xs,
+    overflow: "hidden",
+  },
   image: {
-    width: "50%",
-    height: "50%",
+    width: "100%",
+    height: "100%",
   },
   label: {
-    fontSize: TYPOGRAPHY.sizes.heading,
+    width: "100%",
+    fontSize: TYPOGRAPHY.sizes.bodyEmph,
     fontWeight: "700",
     color: COLORS.text.onPrimary,
     letterSpacing: 0.5,
+    textAlign: "center",
   },
 });
