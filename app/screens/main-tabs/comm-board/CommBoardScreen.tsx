@@ -151,7 +151,7 @@ export default function CommBoardScreen() {
               const display = resolveTermDisplay(term, displayMode);
               return (
                 <View
-                  key={`${term.pictogram.uuid}-${index}`}
+                  key={`${term.uuid}-${index}`}
                   style={styles.selectedPictogramDiv}
                 >
                   <Image
@@ -332,7 +332,7 @@ export default function CommBoardScreen() {
               numColumns={4}
               showsVerticalScrollIndicator={false}
               data={terms}
-              keyExtractor={(item) => item.pictogram.uuid}
+              keyExtractor={(item) => item.uuid}
               renderItem={({ item }) => {
                 const display = resolveTermDisplay(item, displayMode);
                 return (

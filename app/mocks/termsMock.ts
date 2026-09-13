@@ -180,9 +180,8 @@ const assets = {
 
 export type TermSlug = keyof typeof assets;
 
-function createTerm(id: number, slug: TermSlug, description: string): Term {
+function createTerm(slug: TermSlug, description: string): Term {
   const pictogram: Pictogram = {
-    id,
     uuid: `pic-${slug}`,
     description,
     imageSource: img(assets[slug].pictogram),
@@ -190,82 +189,78 @@ function createTerm(id: number, slug: TermSlug, description: string): Term {
   };
 
   const signWriting: SignWriting = {
-    id,
     uuid: `sw-${slug}`,
     description,
     imageSource: img(assets[slug].signWriting),
     ...timestamp(),
   };
 
-  return { description, pictogram, signWriting };
+  return { uuid: `term-${slug}`, description, pictogram, signWriting };
 }
 
 /** Descriptions are byte-for-byte the seed's, accents included. */
 export const TERMS: Record<TermSlug, Term> = {
   // Exclusive representatives (not members of any board)
-  body: createTerm(1, "body", "Corpo"),
-  malaise: createTerm(2, "malaise", "Mal-Estar"),
+  body: createTerm("body", "Corpo"),
+  malaise: createTerm("malaise", "Mal-Estar"),
 
   // Basic Needs
-  water: createTerm(3, "water", "Água"),
-  food: createTerm(4, "food", "Comida"),
-  bathroom: createTerm(5, "bathroom", "Banheiro"),
-  sleep: createTerm(6, "sleep", "Sono"),
-  rest: createTerm(7, "rest", "Descanso"),
+  water: createTerm("water", "Água"),
+  food: createTerm("food", "Comida"),
+  bathroom: createTerm("bathroom", "Banheiro"),
+  sleep: createTerm("sleep", "Sono"),
+  rest: createTerm("rest", "Descanso"),
 
   // Emotions and State
-  happy: createTerm(8, "happy", "Feliz"),
-  sad: createTerm(9, "sad", "Triste"),
-  afraid: createTerm(10, "afraid", "Com Medo"),
-  irritated: createTerm(11, "irritated", "Irritado"),
-  anxious: createTerm(12, "anxious", "Ansioso"),
-  calm: createTerm(13, "calm", "Calmo"),
-  confused: createTerm(14, "confused", "Confuso"),
+  happy: createTerm("happy", "Feliz"),
+  sad: createTerm("sad", "Triste"),
+  afraid: createTerm("afraid", "Com Medo"),
+  irritated: createTerm("irritated", "Irritado"),
+  anxious: createTerm("anxious", "Ansioso"),
+  calm: createTerm("calm", "Calmo"),
+  confused: createTerm("confused", "Confuso"),
 
   // Body Parts
-  head: createTerm(15, "head", "Cabeça"),
-  eyes: createTerm(16, "eyes", "Olhos"),
-  ear: createTerm(17, "ear", "Ouvidos"),
-  nose: createTerm(18, "nose", "Nariz"),
-  mouth: createTerm(19, "mouth", "Boca"),
-  tooth: createTerm(20, "tooth", "Dente"),
-  throat: createTerm(21, "throat", "Garganta"),
-  lung: createTerm(22, "lung", "Peito / Pulmão"),
-  heart: createTerm(23, "heart", "Coração"),
-  belly: createTerm(24, "belly", "Barriga"),
-  arm: createTerm(25, "arm", "Braço"),
-  leg: createTerm(26, "leg", "Perna"),
-  foot: createTerm(27, "foot", "Pé"),
-  back: createTerm(28, "back", "Costas"),
+  head: createTerm("head", "Cabeça"),
+  eyes: createTerm("eyes", "Olhos"),
+  ear: createTerm("ear", "Ouvidos"),
+  nose: createTerm("nose", "Nariz"),
+  mouth: createTerm("mouth", "Boca"),
+  tooth: createTerm("tooth", "Dente"),
+  throat: createTerm("throat", "Garganta"),
+  lung: createTerm("lung", "Peito / Pulmão"),
+  heart: createTerm("heart", "Coração"),
+  belly: createTerm("belly", "Barriga"),
+  arm: createTerm("arm", "Braço"),
+  leg: createTerm("leg", "Perna"),
+  foot: createTerm("foot", "Pé"),
+  back: createTerm("back", "Costas"),
 
-  // General Symptoms
-  nausea: createTerm(29, "nausea", "Náusea"),
-  dizziness: createTerm(30, "dizziness", "Tontura"),
-  "shortness-of-breath": createTerm(31, "shortness-of-breath", "Falta de Ar"),
-  fatigue: createTerm(32, "fatigue", "Cansaço"),
-  fever: createTerm(33, "fever", "Febre"),
-  tingling: createTerm(34, "tingling", "Formigamento"),
-  cold: createTerm(35, "cold", "Frio"),
-  allergy: createTerm(36, "allergy", "Alergia"),
-  "bleeding-cut": createTerm(37, "bleeding-cut", "Sangramento"),
-  "sharp-pain": createTerm(38, "sharp-pain", "Dor Forte"),
-  "animal-bite": createTerm(39, "animal-bite", "Mordida de Animal"),
-  "vehicle-crash": createTerm(40, "vehicle-crash", "Acidente de Trânsito"),
+  nausea: createTerm("nausea", "Náusea"),
+  dizziness: createTerm("dizziness", "Tontura"),
+  "shortness-of-breath": createTerm("shortness-of-breath", "Falta de Ar"),
+  fatigue: createTerm("fatigue", "Cansaço"),
+  fever: createTerm("fever", "Febre"),
+  tingling: createTerm("tingling", "Formigamento"),
+  cold: createTerm("cold", "Frio"),
+  allergy: createTerm("allergy", "Alergia"),
+  "bleeding-cut": createTerm("bleeding-cut", "Sangramento"),
+  "sharp-pain": createTerm("sharp-pain", "Dor Forte"),
+  "animal-bite": createTerm("animal-bite", "Mordida de Animal"),
+  "vehicle-crash": createTerm("vehicle-crash", "Acidente de Trânsito"),
 };
 
 export function createBoard(
-  id: number,
   uuid: string,
   title: string,
   representative: Term,
   terms: Term[],
 ): Board {
   return {
-    id,
     uuid,
     title,
     representativePictogram: representative.pictogram,
-    pictogramCount: terms.length,
+    termCount: terms.length,
     ...timestamp(),
   };
 }

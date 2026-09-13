@@ -70,21 +70,18 @@ export const moduleBoardTermsMock: Record<string, Term[]> = {
 export const emergencyBoardsMock: Board[] = [
   // Quick Emergency triage levels
   createBoard(
-    5,
     "module-board-quick-emergency-level-3",
     "Emergência Nível 3",
     TERMS["shortness-of-breath"],
     moduleBoardTermsMock["module-board-quick-emergency-level-3"],
   ),
   createBoard(
-    6,
     "module-board-quick-emergency-level-2",
     "Emergência Nível 2",
     TERMS.fever,
     moduleBoardTermsMock["module-board-quick-emergency-level-2"],
   ),
   createBoard(
-    7,
     "module-board-quick-emergency-level-1",
     "Emergência Nível 1",
     TERMS.fatigue,
@@ -93,28 +90,24 @@ export const emergencyBoardsMock: Board[] = [
 
   // Categorized Emergency specialties
   createBoard(
-    8,
     "module-board-cat-emergency-cardiologia",
     "Cardiologia",
     TERMS.heart,
     moduleBoardTermsMock["module-board-cat-emergency-cardiologia"],
   ),
   createBoard(
-    9,
     "module-board-cat-emergency-neurologia",
     "Neurologia",
     TERMS.head,
     moduleBoardTermsMock["module-board-cat-emergency-neurologia"],
   ),
   createBoard(
-    10,
     "module-board-cat-emergency-ortopedia",
     "Ortopedia",
     TERMS.leg,
     moduleBoardTermsMock["module-board-cat-emergency-ortopedia"],
   ),
   createBoard(
-    11,
     "module-board-cat-emergency-geral",
     "Geral",
     TERMS.malaise,

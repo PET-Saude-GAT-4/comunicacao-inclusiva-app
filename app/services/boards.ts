@@ -25,9 +25,8 @@ export class BoardService {
     const response = await request(
       `${API_BASE_URL}/public/boards/${uuid}/terms`,
     );
-    return (response.terms ?? response.pictograms ?? []).map((term: ApiTerm) =>
-      boardAdapter.toTerm(term),
-    );
+    // The API already returns the terms in the order they should be shown.
+    return response.terms.map((term: ApiTerm) => boardAdapter.toTerm(term));
   }
 
   async getNextBoards(uuid: string): Promise<Board[]> {

@@ -2,7 +2,7 @@ import { boardTermsCacheKey } from "@/constants/cache";
 import { boardTermsMock } from "@/mocks/boardMock";
 import { Term } from "@/types/term.types";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 
 export function useBoardTerms(uuid: string) {
   const [terms, setTerms] = useState<Term[]>([]);
@@ -42,17 +42,9 @@ export function useBoardTerms(uuid: string) {
     loadTerms();
   }, [uuid]);
 
-  const pictograms = useMemo(
-    () => terms.map((term) => term.pictogram),
-    [terms],
-  );
-
   return {
     terms,
-    pictograms, // alias for backwards compatibility during migration
     isLoading,
     refetch: loadTerms,
   };
 }
-
-export const useBoardPictogram = useBoardTerms;

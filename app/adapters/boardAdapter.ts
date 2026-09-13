@@ -29,6 +29,9 @@ function resolveFileUrl(fileUrl: string): string {
 export const boardAdapter = {
   toTerm(apiData: ApiTerm): Term {
     return {
+      // `uuid` on the wire addresses the placement inside the board or phrase;
+      // the app identifies terms by the vocabulary entry they point to.
+      uuid: apiData.termUuid,
       description: apiData.description,
       pictogram: this.toPictogram(apiData.pictogram),
       signWriting: this.toSignWriting(apiData.signWriting),
@@ -37,7 +40,6 @@ export const boardAdapter = {
 
   toPictogram(apiData: ApiPictogram): Pictogram {
     return {
-      id: apiData.id,
       uuid: apiData.uuid,
       description: apiData.description,
       imageSource: resolveFileUrl(apiData.fileUrl),
@@ -48,7 +50,6 @@ export const boardAdapter = {
 
   toSignWriting(apiData: ApiSignWriting): SignWriting {
     return {
-      id: apiData.id,
       uuid: apiData.uuid,
       description: apiData.description,
       imageSource: resolveFileUrl(apiData.fileUrl),
@@ -59,13 +60,12 @@ export const boardAdapter = {
 
   toBoard(apiData: ApiBoard): Board {
     return {
-      id: apiData.id,
       uuid: apiData.uuid,
       title: apiData.title,
       representativePictogram: this.toPictogram(
         apiData.representativePictogram,
       ),
-      pictogramCount: apiData.pictogramCount,
+      termCount: apiData.termCount,
       createdAt: apiData.createdAt,
       updatedAt: apiData.updatedAt,
     };

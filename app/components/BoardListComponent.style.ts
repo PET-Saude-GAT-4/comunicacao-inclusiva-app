@@ -50,7 +50,7 @@ export const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "bold",
   },
-  pictogramCount: {
+  termCount: {
     marginTop: 4,
     fontSize: 13,
     color: COLORS.text.onPrimaryVariant,

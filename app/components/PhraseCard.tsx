@@ -30,10 +30,7 @@ export function PhraseCard({ phrase, actionElement }: Props) {
           {phrase.terms.map((term: Term, index: number) => {
             const display = resolveTermDisplay(term, displayMode);
             return (
-              <View
-                key={`${term.pictogram.uuid}-${index}`}
-                style={styles.pictogramItem}
-              >
+              <View key={`${term.uuid}-${index}`} style={styles.pictogramItem}>
                 <Image
                   source={{ uri: display.imageSource }}
                   style={styles.pictogramImage}

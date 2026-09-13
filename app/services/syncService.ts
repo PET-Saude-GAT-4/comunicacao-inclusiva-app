@@ -1,6 +1,6 @@
 import {
-  boardTermsCacheKey,
   BOARDS_CACHE_KEY,
+  boardTermsCacheKey,
   nextBoardsCacheKey,
   PHRASES_CACHE_KEY,
   PROFESSIONS_CACHE_KEY,
@@ -64,7 +64,7 @@ export class SyncService {
         try {
           const professionCode = profession.code;
           const specialities =
-            await professionService.getSpecilities(professionCode);
+            await professionService.getSpecialities(professionCode);
 
           if (specialities && specialities.length > 0) {
             const cacheKey = specialitiesCacheKey(professionCode);
