@@ -7,6 +7,7 @@ import type { PainScaleSubmission } from "@/components/pain-scale/types";
 import { PAIN_SCALE_FACES } from "@/constants/painScaleFaces";
 import { useBoardTerms } from "@/hooks/useBoardTerms";
 import { useBoards } from "@/hooks/useBoards";
+import { useNextBoards } from "@/hooks/useNextBoards";
 import { usePreferences } from "@/hooks/usePreferences";
 import { useSession } from "@/hooks/useSession";
 import { CommBoardStackParamList } from "@/navigation/types";
@@ -100,6 +101,7 @@ export default function CommBoardScreen() {
   const { terms, isLoading: isLoadingTerms } = useBoardTerms(
     selectedBoardUuid || "",
   );
+  const { nextBoards } = useNextBoards(selectedBoardUuid || "");
 
   useEffect(() => {
     if (boards.length > 0 && !selectedBoardUuid) {
@@ -125,6 +127,30 @@ export default function CommBoardScreen() {
       board.title.toLowerCase().includes(searchQuery.toLowerCase()),
     );
   }, [searchQuery, boards]);
+
+  // The open board leads the carousel whether it has a chain or not, so its
+  // position never depends on data the user cannot see.
+  const orderedBoards = useMemo(() => {
+    const successorUuids = new Set(
+      nextBoards
+        .map((board) => board.uuid)
+        .filter((uuid) => uuid !== selectedBoardUuid),
+    );
+
+    return [
+      ...filteredBoards.filter((board) => board.uuid === selectedBoardUuid),
+      // A chain can name a board this device never synced: there is nothing to
+      // find, and `?? []` is what drops it.
+      ...[...successorUuids].flatMap(
+        (uuid) => filteredBoards.find((board) => board.uuid === uuid) ?? [],
+      ),
+      ...filteredBoards.filter(
+        (board) =>
+          board.uuid !== selectedBoardUuid && !successorUuids.has(board.uuid),
+      ),
+    ];
+  }, [filteredBoards, nextBoards, selectedBoardUuid]);
+
   return (
     <View style={styles.container}>
       {/* OfflineBanner is now driven by the global SyncEngine in MainTabNav */}
@@ -270,8 +296,11 @@ export default function CommBoardScreen() {
             showsHorizontalScrollIndicator={false}
             style={styles.categoriesScroll}
           >
-            {filteredBoards.map((board) => {
+            {orderedBoards.map((board) => {
               const isSelected = board.uuid === selectedBoardUuid;
+              const isSuggested =
+                !isSelected &&
+                nextBoards.some((next) => next.uuid === board.uuid);
               return (
                 <TouchableOpacity
                   key={board.uuid}
@@ -281,6 +310,7 @@ export default function CommBoardScreen() {
                     style={[
                       styles.categoryItem,
                       isSelected && styles.categoryItemSelected,
+                      isSuggested && styles.categoryItemSuggested,
                     ]}
                   >
                     <LinearGradient
@@ -301,6 +331,17 @@ export default function CommBoardScreen() {
                       </Text>
                     </LinearGradient>
                   </View>
+                  {/* Sibling of the chip, not a child: the chip clips to its
+                      rounded corners and would cut the badge away. */}
+                  {isSuggested && (
+                    <View style={styles.categorySuggestedBadge}>
+                      <Ionicons
+                        name="arrow-forward"
+                        size={11}
+                        color={COLORS.text.onSecondary}
+                      />
+                    </View>
+                  )}
                 </TouchableOpacity>
               );
             })}

@@ -5,11 +5,12 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useEffect, useState } from "react";
 
 export function useNextBoards(uuid: string) {
-  const [nextBoards, setNextBoards] = useState<Board[]>([]);
+  const [loaded, setLoaded] = useState<{ uuid: string; boards: Board[] }>({
+    uuid: "",
+    boards: [],
+  });
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
-
-  const cacheKey = nextBoardsCacheKey(uuid);
 
   const loadNextBoards = async () => {
     if (!uuid) return;
@@ -19,23 +20,20 @@ export function useNextBoards(uuid: string) {
 
     try {
       // 1. Try to read from cache (where SyncEngine saves data)
-      const cacheData = await AsyncStorage.getItem(cacheKey);
+      const cacheData = await AsyncStorage.getItem(nextBoardsCacheKey(uuid));
 
       if (cacheData) {
-        const parsed = JSON.parse(cacheData);
-        // The cache preserves the ranking order returned by the API.
-        if (parsed.length > 0) {
-          setNextBoards(parsed);
-        } else {
-          setNextBoards(nextBoardsMock[uuid] || []);
-        }
+        // An empty list is the API saying this board has no successors, which
+        // is not the same as never having synced. The cache keeps the API's
+        // ranking order, so nothing here sorts.
+        setLoaded({ uuid, boards: JSON.parse(cacheData) });
       } else {
         // 2. If not in cache, fall back to Mock
-        setNextBoards(nextBoardsMock[uuid] || []);
+        setLoaded({ uuid, boards: nextBoardsMock[uuid] || [] });
       }
     } catch (error) {
-      console.log(`Failed to load next boards for UUID: ${uuid}. Using Mock.`);
-      setNextBoards(nextBoardsMock[uuid] || []);
+      console.log(`Failed to load next boards for UUID: ${uuid}.`);
+      setLoaded({ uuid, boards: [] });
       setIsError(true);
     } finally {
       setIsLoading(false);
@@ -45,6 +43,10 @@ export function useNextBoards(uuid: string) {
   useEffect(() => {
     loadNextBoards();
   }, [uuid]);
+
+  // Until the load for this uuid lands, the pair still holds the previous
+  // board's chain. Reading it as empty keeps that off screen entirely.
+  const nextBoards = loaded.uuid === uuid ? loaded.boards : [];
 
   return { nextBoards, isLoading, isError, refetch: loadNextBoards };
 }
