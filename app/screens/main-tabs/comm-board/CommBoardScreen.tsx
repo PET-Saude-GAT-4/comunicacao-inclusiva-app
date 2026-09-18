@@ -128,24 +128,19 @@ export default function CommBoardScreen() {
     );
   }, [searchQuery, boards]);
 
-  // A chain can name a board this device never synced. Dropping it here keeps
-  // it out of the carousel and unmarked.
-  const availableNextBoards = useMemo(
-    () => nextBoards.filter((next) => boards.some((b) => b.uuid === next.uuid)),
-    [nextBoards, boards],
-  );
-
   // The open board leads the carousel whether it has a chain or not, so its
   // position never depends on data the user cannot see.
   const orderedBoards = useMemo(() => {
     const successorUuids = new Set(
-      availableNextBoards
+      nextBoards
         .map((board) => board.uuid)
         .filter((uuid) => uuid !== selectedBoardUuid),
     );
 
     return [
       ...filteredBoards.filter((board) => board.uuid === selectedBoardUuid),
+      // A chain can name a board this device never synced: there is nothing to
+      // find, and `?? []` is what drops it.
       ...[...successorUuids].flatMap(
         (uuid) => filteredBoards.find((board) => board.uuid === uuid) ?? [],
       ),
@@ -154,7 +149,7 @@ export default function CommBoardScreen() {
           board.uuid !== selectedBoardUuid && !successorUuids.has(board.uuid),
       ),
     ];
-  }, [filteredBoards, availableNextBoards, selectedBoardUuid]);
+  }, [filteredBoards, nextBoards, selectedBoardUuid]);
 
   return (
     <View style={styles.container}>
@@ -305,7 +300,7 @@ export default function CommBoardScreen() {
               const isSelected = board.uuid === selectedBoardUuid;
               const isSuggested =
                 !isSelected &&
-                availableNextBoards.some((next) => next.uuid === board.uuid);
+                nextBoards.some((next) => next.uuid === board.uuid);
               return (
                 <TouchableOpacity
                   key={board.uuid}
