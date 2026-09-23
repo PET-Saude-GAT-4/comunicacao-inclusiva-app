@@ -1,4 +1,4 @@
-import { ApiProfession, Profession } from "@/types/Profession.types";
+import { ApiProfession, Profession } from "@/types/profession.types";
 
 export const professionAdapter = {
   toProfession(apiData: ApiProfession): Profession {

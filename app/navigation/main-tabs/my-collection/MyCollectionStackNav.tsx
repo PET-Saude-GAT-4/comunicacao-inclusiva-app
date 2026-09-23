@@ -1,26 +1,33 @@
-import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
-import BoardStackNav from "./tabs/BoardStackNav";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import BoardCollectionTabNav from "./BoardCollectionTabNav";
-import BoardDetailScreen from "@/screens/main-tabs/my-collection/BoardDetailScreen";
-import { MyCollectionStackParamList } from "@/navigation/types";
 import GlobalHeader from "@/components/GlobalHeaderComponent";
-import { Appbar } from "react-native-paper";
+import { MyCollectionStackParamList } from "@/navigation/types";
+import BoardDetailScreen from "@/screens/main-tabs/my-collection/BoardDetailScreen";
+import { COLORS } from "@/styles/themes";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { Platform } from "react-native";
+import { Appbar } from "react-native-paper";
+import BoardCollectionTabNav from "./BoardCollectionTabNav";
 
 const MORE_ICON = Platform.OS === "ios" ? "dots-horizontal" : "dots-vertical";
 
-export default function MyCollectionStackNav(){
-const Stack = createNativeStackNavigator<MyCollectionStackParamList>();
+export default function MyCollectionStackNav() {
+  const Stack = createNativeStackNavigator<MyCollectionStackParamList>();
 
-  return(
-    <Stack.Navigator screenOptions={{ header: (props) => <GlobalHeader {...props} /> }}>
+  return (
+    <Stack.Navigator
+      screenOptions={{ header: (props) => <GlobalHeader {...props} /> }}
+    >
       <Stack.Screen
         name="BoardCollectionTab"
         component={BoardCollectionTabNav}
-        options={{ 
+        options={{
           title: "Minha Coleção",
-          headerRight: () => <Appbar.Action icon={MORE_ICON} onPress={() => {}} /> 
+          headerRight: () => (
+            <Appbar.Action
+              iconColor={COLORS.text.onPrimary}
+              icon={MORE_ICON}
+              onPress={() => {}}
+            />
+          ),
         }}
       />
       <Stack.Screen
@@ -29,5 +36,5 @@ const Stack = createNativeStackNavigator<MyCollectionStackParamList>();
         options={{ title: "Detalhes da Prancha" }}
       />
     </Stack.Navigator>
-  )
+  );
 }

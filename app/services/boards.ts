@@ -1,6 +1,6 @@
 import { boardAdapter } from "@/adapters/boardAdapter";
 import { ApiBoard, Board } from "@/types/board.types";
-import { ApiPictogram, Pictogram } from "@/types/pictogram.types";
+import { ApiTerm, Term } from "@/types/term.types";
 import { request } from "@/utils/apiUtils";
 import Constants from "expo-constants";
 
@@ -21,13 +21,12 @@ export class BoardService {
     return boardAdapter.toBoard(response.board);
   }
 
-  async getBoardPictograms(uuid: string): Promise<Pictogram[]> {
+  async getBoardTerms(uuid: string): Promise<Term[]> {
     const response = await request(
-      `${API_BASE_URL}/public/boards/${uuid}/pictograms`,
+      `${API_BASE_URL}/public/boards/${uuid}/terms`,
     );
-    return response.pictograms.map((pic: ApiPictogram) =>
-      boardAdapter.toPictogram(pic),
-    );
+    // The API already returns the terms in the order they should be shown.
+    return response.terms.map((term: ApiTerm) => boardAdapter.toTerm(term));
   }
 
   async getNextBoards(uuid: string): Promise<Board[]> {

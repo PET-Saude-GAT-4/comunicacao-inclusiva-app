@@ -6,6 +6,8 @@ import React from "react";
 import MainTabNavigator from "./MainTabNav";
 import TutorialStackNav from "./TutorialStackNav";
 
+import { COLORS } from "@/styles/themes";
+
 const RootStack = createNativeStackNavigator();
 
 /* 
@@ -17,7 +19,12 @@ export default function RootStackNav() {
   const { user, isLoading } = { user: true, isLoading: false };
 
   return (
-    <RootStack.Navigator screenOptions={{ headerShown: false }}>
+    <RootStack.Navigator
+      screenOptions={{
+        headerShown: false,
+        contentStyle: { backgroundColor: COLORS.background },
+      }}
+    >
       <RootStack.Screen
         name="MainTabNav"
         component={MainTabNavigator}

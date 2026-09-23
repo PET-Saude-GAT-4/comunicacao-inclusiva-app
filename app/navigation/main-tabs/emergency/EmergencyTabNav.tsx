@@ -3,12 +3,17 @@ import React from "react";
 
 import CatEmergencyStackNav from "./top-tabs/CatEmergencyStackNav";
 import QuickEmergencyStackNav from "./top-tabs/QuickEmergencyStackNav";
+import { screenOptions } from "../TopTabs.style";
 
 const TopTabs = createMaterialTopTabNavigator();
 
 export default function EmergencyTabNav() {
   return (
-    <TopTabs.Navigator>
+    <TopTabs.Navigator
+      screenOptions={{
+        ...screenOptions,
+      }}
+    >
       <TopTabs.Screen
         name="QuickEmergency"
         component={QuickEmergencyStackNav}

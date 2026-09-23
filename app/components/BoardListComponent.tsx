@@ -4,14 +4,9 @@ import { Board } from "@/types/board.types";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { Image } from "expo-image";
 import React, { useMemo, useState } from "react";
-import {
-  FlatList,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { FlatList, Text, TouchableOpacity, View } from "react-native";
 import { styles } from "./BoardListComponent.style";
+import { SearchBar } from "./SearchBar";
 
 type Props = {
   boards: Board[];
@@ -38,11 +33,10 @@ export default function BoardListComponent({
   return (
     <View style={styles.container}>
       <View style={{ marginBottom: 25 }}>
-        <TextInput
-          style={styles.searchInput}
-          placeholder="Buscar prancha..."
+        <SearchBar
           value={searchQuery}
           onChangeText={setSearchQuery}
+          placeholder="Buscar prancha..."
         />
       </View>
       <FlatList
@@ -64,9 +58,9 @@ export default function BoardListComponent({
               <View style={styles.divider} />
               <View style={styles.boardInfo}>
                 <Text style={styles.boradTitle}>{item.title}</Text>
-                <Text style={styles.pictogramCount}>
-                  {item.pictogramCount}{" "}
-                  {item.pictogramCount === 1 ? "pictograma" : "pictogramas"}
+                <Text style={styles.termCount}>
+                  {item.termCount}{" "}
+                  {item.termCount === 1 ? "pictograma" : "pictogramas"}
                 </Text>
               </View>
               {showSaveButton && (

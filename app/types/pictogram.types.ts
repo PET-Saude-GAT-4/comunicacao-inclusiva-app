@@ -1,5 +1,4 @@
 export interface Pictogram {
-  id: number;
   uuid: string;
   description: string;
   imageSource: string;
@@ -7,8 +6,8 @@ export interface Pictogram {
   updatedAt: string;
 }
 
+/** Wire format matching the API's PictogramResponse */
 export interface ApiPictogram {
-  id: number;
   uuid: string;
   description: string;
   fileUrl: string;

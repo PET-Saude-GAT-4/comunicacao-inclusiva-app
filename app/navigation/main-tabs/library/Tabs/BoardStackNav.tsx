@@ -14,11 +14,6 @@ export default function BoardLibStackNav() {
         component={PublicBoardsScreen}
         options={{ headerShown: false }}
       />
-      <Stack.Screen
-        name="PublicBoardDetails"
-        component={BoardDetailScreen}
-        options={{ title: "Detalhes da Prancha" }}
-      />
     </Stack.Navigator>
   );
 }

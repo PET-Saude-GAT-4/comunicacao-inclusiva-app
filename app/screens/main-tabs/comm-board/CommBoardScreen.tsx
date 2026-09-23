@@ -1,15 +1,21 @@
 import { AccessibilityMenu } from "@/components/AccessibilityMenu";
 import { BoardSkeleton } from "@/components/BoardSkeleton";
+import { SearchBar } from "@/components/SearchBar";
 import { PainScaleTray } from "@/components/pain-scale/PainScaleTray";
 import { PainScaleTrigger } from "@/components/pain-scale/PainScaleTrigger";
 import type { PainScaleSubmission } from "@/components/pain-scale/types";
-import { useBoardPictogram } from "@/hooks/useBoardPictograms";
+import { PAIN_SCALE_FACES } from "@/constants/painScaleFaces";
+import { useBoardTerms } from "@/hooks/useBoardTerms";
 import { useBoards } from "@/hooks/useBoards";
+import { useNextBoards } from "@/hooks/useNextBoards";
+import { usePreferences } from "@/hooks/usePreferences";
 import { useSession } from "@/hooks/useSession";
 import { CommBoardStackParamList } from "@/navigation/types";
 import { COLORS, CONTAINERS } from "@/styles/themes";
+import { Term } from "@/types/term.types";
+import { resolveTermDisplay } from "@/utils/resolveTermDisplay";
 import { Ionicons } from "@expo/vector-icons";
-import { useNavigation } from "@react-navigation/native";
+import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useRoute, RouteProp } from "@react-navigation/native";
 import { BodyMap } from "@/components/body-map/BodyMap";
@@ -24,15 +30,21 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { Pictogram } from "../../../types/pictogram.types";
 import { styles } from "./CommBoardScreen.styles";
 
 export default function CommBoardScreen() {
   const navigation =
     useNavigation<NativeStackNavigationProp<CommBoardStackParamList>>();
-  const route = useRoute<RouteProp<CommBoardStackParamList, "CommBoardScreen">>();
+  const route =
+    useRoute<RouteProp<CommBoardStackParamList, "CommBoardScreen">>();
 
-  const { currentSpeaker, isInConsultation, setCurrentSpeaker, addInteraction } = useSession();
+  const {
+    addInteraction,
+    currentSpeaker,
+    isInConsultation,
+    setCurrentSpeaker,
+  } = useSession();
+  const { displayMode } = usePreferences();
   // Redirect to NoConsultationScreen when consultation ends
   useEffect(() => {
     if (!isInConsultation) {
@@ -43,8 +55,8 @@ export default function CommBoardScreen() {
   const [isTextMode, setIsTextMode] = useState(false);
   const [isBodyMapMode, setIsBodyMapMode] = useState(false);
   const [typedText, setTypedText] = useState("");
-  //save the selected pictogram sequence
-  const [selectedPictograms, setSelectedPictograms] = useState<Pictogram[]>([]);
+  // save the selected term sequence
+  const [selectedTerms, setSelectedTerms] = useState<Term[]>([]);
   const [selectedBoardUuid, setSelectedBoardUuid] = useState<string | null>(
     null,
   );
@@ -52,17 +64,46 @@ export default function CommBoardScreen() {
   const [searchQuery, setSearchQuery] = useState("");
   const [isPainScaleVisible, setIsPainScaleVisible] = useState(false);
 
-  // TODO: record the intensity through SessionContext once an interaction type
-  // exists for it.
-  const handlePainScaleSubmit = async (submission: PainScaleSubmission) => {
-    await new Promise((resolve) => setTimeout(resolve, 100));
-    console.log("Intensidade enviada:", submission);
+  // Load pre-filled terms from a ready-made phrase
+  useEffect(() => {
+    const incoming = route.params?.initialTerms;
+    if (incoming && incoming.length > 0) {
+      setSelectedTerms(incoming);
+      navigation.setParams({ initialTerms: undefined });
+    }
+  }, [route.params?.initialTerms]);
+
+  const handlePainScaleSubmit = (submission: PainScaleSubmission) => {
+    if (!isInConsultation) {
+      console.log("Modo triagem: dor não registrada.");
+      return;
+    }
+
+    const face = PAIN_SCALE_FACES[submission.nearestIndex];
+
+    addInteraction({
+      id: Date.now().toString(),
+      speaker: currentSpeaker,
+      type: "painScale",
+      content: {
+        level: submission.nearestIndex,
+        levelCount: PAIN_SCALE_FACES.length,
+        severity: face.severity,
+      },
+      timestamp: new Date().toISOString(),
+      understood: true,
+    });
+
+    setCurrentSpeaker(
+      currentSpeaker === "professional" ? "patient" : "professional",
+    );
   };
 
   const { boards, isLoading: isLoadingBoards } = useBoards();
-  const { pictograms, isLoading: isLoadingPics } = useBoardPictogram(
+  const { terms, isLoading: isLoadingTerms } = useBoardTerms(
     selectedBoardUuid || "",
   );
+  const { nextBoards } = useNextBoards(selectedBoardUuid || "");
 
   useEffect(() => {
     if (boards.length > 0 && !selectedBoardUuid) {
@@ -80,17 +121,17 @@ export default function CommBoardScreen() {
     }
   }, [route.params?.mode]);
 
-  //add pictograms to the list
-  const handleSelect = (pictogram: Pictogram) => {
-    setSelectedPictograms((prev) => [...prev, pictogram]);
+  // add terms to the visor list
+  const handleSelect = (term: Term) => {
+    setSelectedTerms((prev) => [...prev, term]);
   };
 
   const handleDeleteLast = () => {
-    setSelectedPictograms((prev) => prev.slice(0, -1));
+    setSelectedTerms((prev) => prev.slice(0, -1));
   };
 
   const handleClear = () => {
-    setSelectedPictograms([]);
+    setSelectedTerms([]);
   };
 
   const filteredBoards = useMemo(() => {
@@ -98,6 +139,29 @@ export default function CommBoardScreen() {
       board.title.toLowerCase().includes(searchQuery.toLowerCase()),
     );
   }, [searchQuery, boards]);
+
+  // The open board leads the carousel whether it has a chain or not, so its
+  // position never depends on data the user cannot see.
+  const orderedBoards = useMemo(() => {
+    const successorUuids = new Set(
+      nextBoards
+        .map((board) => board.uuid)
+        .filter((uuid) => uuid !== selectedBoardUuid),
+    );
+
+    return [
+      ...filteredBoards.filter((board) => board.uuid === selectedBoardUuid),
+      // A chain can name a board this device never synced: there is nothing to
+      // find, and `?? []` is what drops it.
+      ...[...successorUuids].flatMap(
+        (uuid) => filteredBoards.find((board) => board.uuid === uuid) ?? [],
+      ),
+      ...filteredBoards.filter(
+        (board) =>
+          board.uuid !== selectedBoardUuid && !successorUuids.has(board.uuid),
+      ),
+    ];
+  }, [filteredBoards, nextBoards, selectedBoardUuid]);
 
   return (
     <View style={styles.container}>
@@ -120,22 +184,25 @@ export default function CommBoardScreen() {
               : "Interação do paciente"}
           </Text>
           <View style={styles.listSelectedPictograms}>
-            {/* Scroll view to list all selected pictograms  */}
+            {/* Visor: scroll list of selected terms */}
             <ScrollView horizontal={true}>
-              {selectedPictograms.map((pictogram, index) => (
-                <View
-                  key={`${pictogram.uuid}-${index}`}
-                  style={styles.selectedPictogramDiv}
-                >
-                  <Image
-                    source={{ uri: pictogram.imageSource }}
-                    style={styles.selectedPictogramImage}
-                  />
-                  <Text style={styles.pictogramText} numberOfLines={1}>
-                    {pictogram.description.toUpperCase()}
-                  </Text>
-                </View>
-              ))}
+              {selectedTerms.map((term, index) => {
+                const display = resolveTermDisplay(term, displayMode);
+                return (
+                  <View
+                    key={`${term.uuid}-${index}`}
+                    style={styles.selectedPictogramDiv}
+                  >
+                    <Image
+                      source={{ uri: display.imageSource }}
+                      style={styles.selectedPictogramImage}
+                    />
+                    <Text style={styles.pictogramText} numberOfLines={1}>
+                      {display.label}
+                    </Text>
+                  </View>
+                );
+              })}
             </ScrollView>
           </View>
           <View style={styles.actionsContainer}>
@@ -167,20 +234,21 @@ export default function CommBoardScreen() {
                   );
 
                   navigation.navigate("FeedbackScreen", {
-                    pictograms: [],
+                    terms: [],
                     textContent: typedText.trim(),
                     senderSpeaker: currentSpeaker,
+                    displayMode,
                   });
                 } else {
-                  if (selectedPictograms.length === 0) return;
+                  if (selectedTerms.length === 0) return;
 
                   if (!isInConsultation) {
-                    setSelectedPictograms([]);
+                    setSelectedTerms([]);
                     console.log("Modo triagem: mensagem não registrada.");
                     return;
                   }
 
-                  setSelectedPictograms([]);
+                  setSelectedTerms([]);
 
                   setCurrentSpeaker(
                     currentSpeaker === "professional"
@@ -189,8 +257,9 @@ export default function CommBoardScreen() {
                   );
 
                   navigation.navigate("FeedbackScreen", {
-                    pictograms: selectedPictograms,
+                    terms: selectedTerms,
                     senderSpeaker: currentSpeaker,
+                    displayMode,
                   });
                 }
               }}
@@ -199,6 +268,8 @@ export default function CommBoardScreen() {
               <Ionicons name="send-outline" size={32} color="#333" />
             </TouchableOpacity>
           </View>
+        </View>
+      )}
         </View>
       )}
 
@@ -254,11 +325,10 @@ export default function CommBoardScreen() {
         {/* Categories Bar */}
         {isSearchActive && (
           <View style={{ marginBottom: 16 }}>
-            <TextInput
-              style={styles.searchInput}
-              placeholder="Buscar prancha..."
+            <SearchBar
               value={searchQuery}
               onChangeText={setSearchQuery}
+              placeholder="Buscar prancha..."
             />
           </View>
         )}
@@ -268,8 +338,11 @@ export default function CommBoardScreen() {
             showsHorizontalScrollIndicator={false}
             style={styles.categoriesScroll}
           >
-            {filteredBoards.map((board) => {
+            {orderedBoards.map((board) => {
               const isSelected = board.uuid === selectedBoardUuid;
+              const isSuggested =
+                !isSelected &&
+                nextBoards.some((next) => next.uuid === board.uuid);
               return (
                 <TouchableOpacity
                   key={board.uuid}
@@ -279,12 +352,14 @@ export default function CommBoardScreen() {
                     style={[
                       styles.categoryItem,
                       isSelected && styles.categoryItemSelected,
+                      isSuggested && styles.categoryItemSuggested,
                     ]}
                   >
                     <LinearGradient
                       colors={["#5ce1e6", "#ffb8e4"]}
                       style={styles.categoryGradient}
                     >
+                      {/* Board cover always uses the representative pictogram, not a Term */}
                       {board.representativePictogram && (
                         <Image
                           source={{
@@ -298,6 +373,17 @@ export default function CommBoardScreen() {
                       </Text>
                     </LinearGradient>
                   </View>
+                  {/* Sibling of the chip, not a child: the chip clips to its
+                      rounded corners and would cut the badge away. */}
+                  {isSuggested && (
+                    <View style={styles.categorySuggestedBadge}>
+                      <Ionicons
+                        name="arrow-forward"
+                        size={11}
+                        color={COLORS.text.onSecondary}
+                      />
+                    </View>
+                  )}
                 </TouchableOpacity>
               );
             })}
@@ -320,29 +406,32 @@ export default function CommBoardScreen() {
           </TouchableOpacity>
         </View>
 
-        {/* FlatList to list all pictograms */}
+        {/* FlatList — term grid */}
         <View style={{ flex: 1, paddingTop: 16 }}>
-          {isLoadingPics ? (
+          {isLoadingTerms ? (
             <BoardSkeleton />
           ) : (
             <FlatList
               numColumns={4}
               showsVerticalScrollIndicator={false}
-              data={pictograms}
+              data={terms}
               keyExtractor={(item) => item.uuid}
-              renderItem={({ item }) => (
-                <TouchableOpacity onPress={() => handleSelect(item)}>
-                  <View style={styles.pictogramDiv}>
-                    <Image
-                      source={{ uri: item.imageSource }}
-                      style={styles.pictogramImage}
-                    />
-                    <Text style={styles.pictogramText} numberOfLines={1}>
-                      {item.description.toUpperCase()}
-                    </Text>
-                  </View>
-                </TouchableOpacity>
-              )}
+              renderItem={({ item }) => {
+                const display = resolveTermDisplay(item, displayMode);
+                return (
+                  <TouchableOpacity onPress={() => handleSelect(item)}>
+                    <View style={styles.pictogramDiv}>
+                      <Image
+                        source={{ uri: display.imageSource }}
+                        style={styles.pictogramImage}
+                      />
+                      <Text style={styles.pictogramText} numberOfLines={1}>
+                        {display.label}
+                      </Text>
+                    </View>
+                  </TouchableOpacity>
+                );
+              }}
               columnWrapperStyle={{ justifyContent: "space-between" }}
             />
           )}

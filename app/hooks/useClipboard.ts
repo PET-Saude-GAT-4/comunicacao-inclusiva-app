@@ -1,6 +1,7 @@
 import { InteractionEntry } from "@/types/interaction.types";
-import { Pictogram } from "@/types/pictogram.types";
+import { assertNever } from "@/utils/assertNever";
 import { formatDateBR, formatTimeBR } from "@/utils/dateFormatter";
+import { formatBodyMapRecord, formatPainRecord } from "@/utils/interactionText";
 import { useMemo } from "react";
 
 export function useClipboard(interactions: InteractionEntry[]): string {
@@ -14,16 +15,29 @@ export function useClipboard(interactions: InteractionEntry[]): string {
       .map((interaction) => {
         const isPatient = interaction.speaker === "patient";
         const speaker = isPatient ? "Paciente" : "Profissional";
-        const time = formatTimeBR(interaction.timestamp)
+        const time = formatTimeBR(interaction.timestamp);
         let content = "";
         switch (interaction.type) {
           case "text":
             content += `${speaker} (${time}): \n${interaction.content}`;
             break;
-          case "pictogram":
-            content += `${speaker} (${time}): \n${(interaction.content as Pictogram[])
-              .map((p) => p.description)
+          case "term":
+            content += `${speaker} (${time}): \n${interaction.content
+              .map((t) => t.description)
               .join(" -> ")}`;
+            break;
+          case "painScale":
+            content += `${speaker} (${time}): \n${formatPainRecord(
+              interaction.content,
+            )}`;
+            break;
+          case "bodyMap":
+            content += `${speaker} (${time}): \n${formatBodyMapRecord(
+              interaction.content,
+            )}`;
+            break;
+          default:
+            content += `${speaker} (${time}): \n${assertNever(interaction)}`;
             break;
         }
 

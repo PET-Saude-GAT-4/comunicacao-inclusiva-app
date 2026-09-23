@@ -1,6 +1,6 @@
 import { useProfessionHistory } from "@/hooks/useProfessionHistory";
 import { CommBoardStackParamList } from "@/navigation/types";
-import { Profession } from "@/types/Profession.types";
+import { Profession } from "@/types/profession.types";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";

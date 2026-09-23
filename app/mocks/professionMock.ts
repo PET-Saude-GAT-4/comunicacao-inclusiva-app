@@ -1,4 +1,4 @@
-import { Profession } from "@/types/Profession.types";
+import { Profession } from "@/types/profession.types";
 
 export const professionMock: Profession[] = [
   {

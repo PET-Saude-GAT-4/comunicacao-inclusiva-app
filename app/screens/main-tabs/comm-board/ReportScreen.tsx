@@ -1,5 +1,10 @@
+import { useClipboard } from "@/hooks/useClipboard";
 import { useSession } from "@/hooks/useSession";
+import { assertNever } from "@/utils/assertNever";
 import { formatDateBR, formatTimeBR } from "@/utils/dateFormatter";
+import { formatBodyMapRecord, formatPainRecord } from "@/utils/interactionText";
+import { resolveTermDisplay } from "@/utils/resolveTermDisplay";
+import Ionicons from "@expo/vector-icons/Ionicons";
 import { useNavigation } from "@react-navigation/native";
 import * as Clipboard from "expo-clipboard";
 import { Image } from "expo-image";
@@ -12,8 +17,6 @@ import {
   View,
 } from "react-native";
 import { styles } from "./ReportScreen.styles";
-import { useClipboard } from "@/hooks/useClipboard";
-import Ionicons from '@expo/vector-icons/Ionicons';
 
 export default function ReportScreen() {
   const navigation = useNavigation();
@@ -24,12 +27,11 @@ export default function ReportScreen() {
       ? formatDateBR(interactions[0].timestamp)
       : formatDateBR(new Date().toISOString());
 
-
   const text = useClipboard(interactions);
   const copyToClipboard = async () => {
-    console.log("Relatorio copiado")
+    console.log("Relatorio copiado");
     await Clipboard.setStringAsync(text);
-    Alert.alert("Sucesso", "Relatório copiado para a área de transferência.")
+    Alert.alert("Sucesso", "Relatório copiado para a área de transferência.");
   };
 
   return (
@@ -45,34 +47,65 @@ export default function ReportScreen() {
             ? styles.bubblePatient
             : styles.bubbleProfessional;
 
-          function renderContent() {
-            return (
-              <>
-                {item.type === "pictogram" && Array.isArray(item.content) ? (
+          // Each entry renders in the mode it was sent in (historical accuracy).
+          // Falls back to "pictogram" for entries created before displayMode was stored.
+          const entryMode = item.displayMode ?? "pictogram";
+
+          function renderBody() {
+            switch (item.type) {
+              case "term":
+                return (
                   <View style={styles.pictogramScroll}>
                     <ScrollView
                       horizontal={true}
                       showsHorizontalScrollIndicator={false}
                     >
-                      {item.content.map((pictogram, index) => (
-                        <View
-                          key={`${pictogram.uuid}-${index}`}
-                          style={styles.pictogramDiv}
-                        >
-                          <Image
-                            source={{ uri: pictogram.imageSource }}
-                            style={styles.pictogramImage}
-                          />
-                          <Text style={styles.pictogramText} numberOfLines={1}>
-                            {pictogram.description.toUpperCase()}
-                          </Text>
-                        </View>
-                      ))}
+                      {item.content.map((term, index) => {
+                        const display = resolveTermDisplay(term, entryMode);
+                        return (
+                          <View
+                            key={`${term.uuid}-${index}`}
+                            style={styles.pictogramDiv}
+                          >
+                            <Image
+                              source={{ uri: display.imageSource }}
+                              style={styles.pictogramImage}
+                            />
+                            <Text
+                              style={styles.pictogramText}
+                              numberOfLines={1}
+                            >
+                              {display.label}
+                            </Text>
+                          </View>
+                        );
+                      })}
                     </ScrollView>
                   </View>
-                ) : (
-                  <Text style={styles.text}>{item.content as string}</Text>
-                )}
+                );
+              case "text":
+                return <Text style={styles.text}>{item.content}</Text>;
+              case "painScale":
+                return (
+                  <Text style={styles.recordText}>
+                    {formatPainRecord(item.content)}
+                  </Text>
+                );
+              case "bodyMap":
+                return (
+                  <Text style={styles.recordText}>
+                    {formatBodyMapRecord(item.content)}
+                  </Text>
+                );
+              default:
+                return <Text style={styles.text}>{assertNever(item)}</Text>;
+            }
+          }
+
+          function renderContent() {
+            return (
+              <>
+                {renderBody()}
                 {!item.understood && (
                   <Text style={styles.confusionText}>❓ Não entendi</Text>
                 )}
@@ -102,7 +135,7 @@ export default function ReportScreen() {
         >
           <Text style={styles.newConsultationText}>Finalizar atendimento</Text>
         </TouchableOpacity>
-        
+
         <TouchableOpacity
           style={styles.clipboardButton}
           onPress={copyToClipboard}
@@ -112,7 +145,6 @@ export default function ReportScreen() {
             <Text style={styles.clipboardText}>Copiar</Text>
           </View>
         </TouchableOpacity>
-
       </View>
     </View>
   );

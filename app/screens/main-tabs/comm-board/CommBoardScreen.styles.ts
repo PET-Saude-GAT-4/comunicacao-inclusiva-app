@@ -1,5 +1,5 @@
+import { COLORS, TYPOGRAPHY } from "@/styles/themes";
 import { StyleSheet } from "react-native";
-import { COLORS, TYPOGRAPHY } from "../../../styles/themes"; 
 
 export const styles = StyleSheet.create({
   text: {
@@ -51,13 +51,13 @@ export const styles = StyleSheet.create({
     backgroundColor: COLORS.surface.secondary,
     height: 110,
     borderRadius: 20,
-    padding: 1
+    padding: 1,
   },
   selectedPictogramDiv: {
     flexDirection: "column",
     alignItems: "center",
     justifyContent: "center",
-    paddingRight: 20
+    paddingRight: 20,
   },
   gridContainer: {
     flex: 2,
@@ -77,7 +77,7 @@ export const styles = StyleSheet.create({
     width: 80,
     height: 80,
   },
-  pictogramText:{
+  pictogramText: {
     fontSize: 10,
     fontWeight: "bold",
     color: "#000000",
@@ -104,6 +104,25 @@ export const styles = StyleSheet.create({
   },
   categoryItemSelected: {
     borderColor: COLORS.primaryDark,
+  },
+  // The board an authored chain leads to. Deliberately unlike the selected
+  // border, so the two never read as the same state.
+  categoryItemSuggested: {
+    borderColor: COLORS.secondary,
+    borderStyle: "dashed",
+  },
+  // right = categoryItem's 12px marginRight + a 3px inset, because the badge
+  // is positioned against the touchable wrapping the chip, not the chip.
+  categorySuggestedBadge: {
+    position: "absolute",
+    top: 3,
+    right: 15,
+    width: 16,
+    height: 16,
+    borderRadius: 8,
+    backgroundColor: COLORS.secondary,
+    alignItems: "center",
+    justifyContent: "center",
   },
   categoryGradient: {
     flex: 1,
@@ -148,9 +167,9 @@ export const styles = StyleSheet.create({
     color: COLORS.text.onPrimary,
   },
   textModeInputContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#EAEAEA',
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#EAEAEA",
     borderRadius: 24,
     paddingHorizontal: 16,
     height: 48,
@@ -158,7 +177,7 @@ export const styles = StyleSheet.create({
   textModeInput: {
     flex: 1,
     fontSize: 16,
-    color: '#333',
+    color: "#333",
   },
   clearTextButton: {
     marginLeft: 8,

@@ -1,5 +1,5 @@
 import { PROFESSIONS_HISTORIC_KEY } from "@/constants/cache";
-import { Profession } from "@/types/Profession.types";
+import { Profession } from "@/types/profession.types";
 import { Speciality } from "@/types/speciality.types";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useEffect, useState } from "react";

@@ -25,6 +25,9 @@ export const styles = StyleSheet.create({
     marginBottom: 16,
     padding: 20,
     flexDirection: "row",
+    borderWidth: 1,
+    borderColor: COLORS.outlineCommon,
+    color: COLORS.text.onPrimary,
   },
   boardImage: {
     width: 80,
@@ -47,7 +50,7 @@ export const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "bold",
   },
-  pictogramCount: {
+  termCount: {
     marginTop: 4,
     fontSize: 13,
     color: COLORS.text.onPrimaryVariant,

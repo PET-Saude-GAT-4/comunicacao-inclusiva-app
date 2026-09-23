@@ -16,7 +16,12 @@ export function usePhrases() {
       const cacheData = await AsyncStorage.getItem(PHRASES_CACHE_KEY);
 
       if (cacheData) {
-        setPhrases(JSON.parse(cacheData));
+        const parsed = JSON.parse(cacheData);
+        if (parsed.length > 0) {
+          setPhrases(parsed);
+        } else {
+          setPhrases(phrasesMock);
+        }
       } else {
         setPhrases(phrasesMock);
       }

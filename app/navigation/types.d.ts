@@ -1,5 +1,6 @@
 import { Pictogram } from "@/types/pictogram.types";
-import { Profession } from "@/types/Profession.types";
+import { Profession } from "@/types/profession.types";
+import { Term } from "@/types/term.types";
 
 /*
         This file extends as a type safe way to ensure navigation between the right stacks
@@ -22,9 +23,10 @@ export type RootStackParamList = {
   AuthNav: undefined;
   MainTabNav: undefined;
   FeedbackScreen: {
-    pictograms: Pictogram[];
+    terms: Term[];
     textContent?: string;
     senderSpeaker: Speaker;
+    displayMode?: import("@/contexts/PreferencesContext").DisplayMode;
   };
   ReportScreen: undefined;
   TutorialStackNav: undefined;
@@ -38,19 +40,29 @@ export type AuthStackParamList = {
 };
 
 export type MainTabParamList = {
-  CommBoardStackNav: undefined;
+  CommBoardStackNav:
+    | {
+        screen?: keyof CommBoardStackParamList;
+        params?: any;
+      }
+    | undefined;
+  BoardCollection: undefined;
+  Emergency: undefined;
+  Library: undefined;
+  Settings: undefined;
 };
 
 export type CommBoardStackParamList = {
-  NoConsultationScreen: undefined;
-  CommBoardScreen: { mode?: "bodyMap" } | undefined;
+  NoConsultationScreen: { showPhrasePrompt?: boolean } | undefined;
+  CommBoardScreen: { mode?: "bodyMap"; initialTerms?: Term[] } | undefined;
   SelectProfessionScreen: undefined;
   SelectSpecialityScreen: { profession: Profession };
-  ConfirmConsultationScreen:  { profession: Profession, speciality: Speciality };
+  ConfirmConsultationScreen: { profession: Profession; speciality: Speciality };
   FeedbackScreen: {
-    pictograms: Pictogram[];
+    terms: Term[];
     textContent?: string;
     senderSpeaker: Speaker;
+    displayMode?: import("@/contexts/PreferencesContext").DisplayMode;
   };
 };
 
@@ -64,11 +76,26 @@ export type BoardStackParamList = {
 };
 
 export type LibraryBoardStackParamList = {
+  LibraryTab: undefined;
   PublicBoards: undefined;
   PublicBoardDetails: { board: Board };
+};
+
+export type LibraryPhraseStackParamList = {
+  PublicPhrases: undefined;
 };
 
 export type EmergencyStackParamList = {
   EmergencyTab: undefined;
   ModuleVisualization: { board: Board };
+};
+
+export type EmergencyTabParamList = {
+  QuickEmergency: undefined;
+  CatEmergency: undefined;
+};
+
+export type QuickEmergencyStackParamList = {
+  QuickEmergency: undefined;
+  UrgencyResponse: { pictogram: Pictogram };
 };
