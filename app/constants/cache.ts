@@ -18,3 +18,6 @@ export const boardTermsCacheKey = (uuid: string) => `@board_terms:${uuid}`;
 
 export const nextBoardsCacheKey = (uuid: string) =>
   `@next_boards_cache:${uuid}`;
+
+export const phraseNextBoardsCacheKey = (uuid: string) =>
+  `@phrase_next_boards_cache:${uuid}`;

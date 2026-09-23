@@ -13,6 +13,7 @@ export const phraseAdapter = {
       description: apiData.description,
       // The API already returns the terms in the order they should be read.
       terms: (apiData.terms ?? []).map((term) => boardAdapter.toTerm(term)),
+      listedInLibrary: apiData.listedInLibrary,
       createdAt: apiData.createdAt,
       updatedAt: apiData.updatedAt,
     };

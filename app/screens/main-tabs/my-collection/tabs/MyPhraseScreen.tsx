@@ -5,16 +5,16 @@ import { SearchBar } from "@/components/SearchBar";
 import { useMyCollection } from "@/hooks/useMyCollection";
 import { usePhrases } from "@/hooks/usePhrases";
 import { useSession } from "@/hooks/useSession";
+import { styles } from "@/screens/main-tabs/library/PhrasesScreen.styles";
 import { Phrase } from "@/types/phrase.types";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { useNavigation } from "@react-navigation/native";
 import React, { useMemo, useState } from "react";
 import { FlatList, Text, TouchableOpacity, View } from "react-native";
-import { styles } from "@/screens/main-tabs/library/PhrasesScreen.styles";
 
 export default function MyPhraseScreen() {
   const [searchQuery, setSearchQuery] = useState("");
-  const { phrases, isLoading } = usePhrases();
+  const { listedPhrases, isLoading } = usePhrases();
   const { savedUuids } = useMyCollection();
   const { isInConsultation } = useSession();
   const navigation = useNavigation();
@@ -30,17 +30,20 @@ export default function MyPhraseScreen() {
 
     navigation.navigate("CommBoardStackNav" as any, {
       screen: "CommBoardScreen",
-      params: { initialTerms: phrase.terms },
+      params: { initialTerms: phrase.terms, triggerPhraseUuid: phrase.uuid },
     });
   };
 
+  // Starting from the listed phrases rather than from every cached one: a
+  // phrase can be saved while listed and unlisted afterwards, and the saved set
+  // keeps it either way.
   const savedPhrases = useMemo(() => {
-    return phrases
+    return listedPhrases
       .filter((phrase) => savedUuids.includes(phrase.uuid))
       .filter((phrase) =>
         phrase.description.toLowerCase().includes(searchQuery.toLowerCase()),
       );
-  }, [phrases, savedUuids, searchQuery]);
+  }, [listedPhrases, savedUuids, searchQuery]);
 
   if (isLoading) {
     return (

@@ -11,14 +11,14 @@ import { styles } from "./PhrasesScreen.styles";
 
 export default function PhrasesScreen() {
   const [searchQuery, setSearchQuery] = useState("");
-  const { phrases, isLoading } = usePhrases();
+  const { listedPhrases, isLoading } = usePhrases();
   const { isSaved, toggleSaved } = useMyCollection();
 
   const filteredPhrases = useMemo(() => {
-    return phrases.filter((phrase) =>
+    return listedPhrases.filter((phrase) =>
       phrase.description.toLowerCase().includes(searchQuery.toLowerCase()),
     );
-  }, [searchQuery, phrases]);
+  }, [searchQuery, listedPhrases]);
 
   if (isLoading) {
     return (
@@ -44,9 +44,7 @@ export default function PhrasesScreen() {
         showsVerticalScrollIndicator={false}
         ListEmptyComponent={
           <View style={styles.emptyContainer}>
-            <Text style={styles.emptyText}>
-              Nenhuma frase encontrada.
-            </Text>
+            <Text style={styles.emptyText}>Nenhuma frase encontrada.</Text>
           </View>
         }
         renderItem={({ item }) => (

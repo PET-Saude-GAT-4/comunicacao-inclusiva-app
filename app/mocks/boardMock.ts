@@ -87,9 +87,20 @@ export const boardsMock: Board[] = [
   ),
 ];
 
-// The API has no board chain to mirror yet, so this models the flow the boards
-// imply: name the body part, then the symptom, and back.
+// Mirrors BOARD_CHAIN_DEFS in the api repo's 05-interaction-chains seed: name
+// the body part, then the symptom, and back.
 export const nextBoardsMock: Record<string, Board[]> = {
   [BODY_PARTS]: [boardsMock[3]],
   [GENERAL_SYMPTOMS]: [boardsMock[2]],
+};
+
+// Keyed by phrase uuid, shaped after PHRASE_CHAIN_DEFS in the api repo's
+// 05-interaction-chains seed. The uuids are this file's own, so the two never
+// hold the same rows; what they share is that a phrase suggests the body-part
+// and symptom boards.
+export const phraseNextBoardsMock: Record<string, Board[]> = {
+  "phrase-1": [boardsMock[2], boardsMock[3]],
+  "phrase-3": [boardsMock[3], boardsMock[2]],
+  "phrase-4": [boardsMock[3]],
+  "phrase-7": [boardsMock[3]],
 };
