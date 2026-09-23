@@ -7,8 +7,10 @@ import { COLORS, CONTAINERS, TYPOGRAPHY } from "@/styles/themes";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useSession } from "@/hooks/useSession";
 
+import { BodyMapContent } from "@/types/interaction.types";
+
 interface Props {
-  onSend: (regions: string) => void;
+  onSend: (content: BodyMapContent) => void;
 }
 
 export function BodyMap({ onSend }: Props) {
@@ -27,8 +29,8 @@ export function BodyMap({ onSend }: Props) {
 
   const handleSend = () => {
     if (selectedRegions.length === 0) return;
-    const regionNames = selectedRegions.map((slug) => BODY_REGIONS[slug]).join(", ");
-    onSend(`Dor: ${regionNames}`);
+    const regions = selectedRegions.map((slug) => ({ slug, label: BODY_REGIONS[slug] }));
+    onSend({ regions });
     setSelectedRegions([]); // Clear selection after send
   };
 

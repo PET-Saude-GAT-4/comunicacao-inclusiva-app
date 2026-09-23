@@ -1,5 +1,5 @@
 import React from "react";
-import Svg, { Path, G, Circle, Ellipse } from "react-native-svg";
+import { Svg, Path, G, Circle, Ellipse } from "react-native-svg";
 import { BodyRegionSlug, BODY_REGIONS } from "@/constants/bodyMapRegions";
 import { COLORS } from "@/styles/themes";
 

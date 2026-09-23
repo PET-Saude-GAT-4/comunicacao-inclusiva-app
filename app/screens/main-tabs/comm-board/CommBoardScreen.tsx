@@ -17,7 +17,6 @@ import { resolveTermDisplay } from "@/utils/resolveTermDisplay";
 import { Ionicons } from "@expo/vector-icons";
 import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { useRoute, RouteProp } from "@react-navigation/native";
 import { BodyMap } from "@/components/body-map/BodyMap";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
@@ -270,8 +269,6 @@ export default function CommBoardScreen() {
           </View>
         </View>
       )}
-        </View>
-      )}
 
       <View style={styles.gridContainer}>
         {isBodyMapMode ? (
@@ -290,7 +287,7 @@ export default function CommBoardScreen() {
                    type: "bodyMap",
                    content: regionsText,
                    timestamp: new Date().toISOString(),
-                   understood: false,
+                   understood: true,
                  });
                  // Alterna quem fala e sai do mapa
                  setCurrentSpeaker(currentSpeaker === "professional" ? "patient" : "professional");
