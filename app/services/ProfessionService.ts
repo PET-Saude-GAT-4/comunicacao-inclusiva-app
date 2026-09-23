@@ -1,0 +1,28 @@
+import { professionAdapter } from "@/adapters/professionAdapter";
+import { specialityAdapter } from "@/adapters/specialityAdapter";
+import { ApiProfession, Profession } from "@/types/profession.types";
+import { ApiSpeciality, Speciality } from "@/types/speciality.types";
+import { request } from "@/utils/apiUtils";
+import Constants from "expo-constants";
+
+const API_BASE_URL = Constants.expoConfig?.extra?.API_BASE_URL;
+
+export class ProfessionService {
+  async getProfessions(): Promise<Profession[]> {
+    const response = await request(`${API_BASE_URL}/public/professions`);
+
+    return response.professions.map((profession: ApiProfession) =>
+      professionAdapter.toProfession(profession),
+    );
+  }
+
+  async getSpecialities(professionCode: string): Promise<Speciality[]> {
+    const response = await request(
+      `${API_BASE_URL}/public/professions/${professionCode}/specialities`,
+    );
+
+    return response.specialities.map((speciality: ApiSpeciality) =>
+      specialityAdapter.toSpeciality(speciality),
+    );
+  }
+}

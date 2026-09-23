@@ -1,0 +1,185 @@
+import { COLORS, TYPOGRAPHY } from "@/styles/themes";
+import { StyleSheet } from "react-native";
+
+export const styles = StyleSheet.create({
+  text: {
+    fontSize: TYPOGRAPHY.sizes.bodyEmph,
+    fontWeight: TYPOGRAPHY.weights.medium,
+    color: COLORS.text.onPrimary,
+  },
+  container: {
+    flex: 1,
+    backgroundColor: COLORS.background,
+  },
+  visorContainer: {
+    flex: 1,
+    backgroundColor: COLORS.background,
+    padding: 16,
+  },
+  actionsContainer: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    marginTop: 16,
+  },
+  deleteButton: {
+    backgroundColor: "red",
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    justifyContent: "center",
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  sendButton: {
+    backgroundColor: "#00e0ff",
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    justifyContent: "center",
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  listSelectedPictograms: {
+    backgroundColor: COLORS.surface.secondary,
+    height: 110,
+    borderRadius: 20,
+    padding: 1,
+  },
+  selectedPictogramDiv: {
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
+    paddingRight: 20,
+  },
+  gridContainer: {
+    flex: 2,
+    padding: 16,
+    backgroundColor: COLORS.surface.secondary,
+  },
+  selectedPictogramImage: {
+    width: 80,
+    height: 80,
+  },
+  pictogramDiv: {
+    flexDirection: "column",
+    alignItems: "center",
+    marginBottom: 12,
+  },
+  pictogramImage: {
+    width: 80,
+    height: 80,
+  },
+  pictogramText: {
+    fontSize: 10,
+    fontWeight: "bold",
+    color: "#000000",
+    textAlign: "center",
+  },
+  categoriesWrapper: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingBottom: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: COLORS.outlineCommon,
+  },
+  categoriesScroll: {
+    flex: 1,
+  },
+  categoryItem: {
+    width: 70,
+    height: 70,
+    borderRadius: 16,
+    marginRight: 12,
+    overflow: "hidden",
+    borderWidth: 2,
+    borderColor: "transparent",
+  },
+  categoryItemSelected: {
+    borderColor: COLORS.primaryDark,
+  },
+  // The board an authored chain leads to. Deliberately unlike the selected
+  // border, so the two never read as the same state.
+  categoryItemSuggested: {
+    borderColor: COLORS.secondary,
+    borderStyle: "dashed",
+  },
+  // right = categoryItem's 12px marginRight + a 3px inset, because the badge
+  // is positioned against the touchable wrapping the chip, not the chip.
+  categorySuggestedBadge: {
+    position: "absolute",
+    top: 3,
+    right: 15,
+    width: 16,
+    height: 16,
+    borderRadius: 8,
+    backgroundColor: COLORS.secondary,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  categoryGradient: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    padding: 4,
+  },
+  categoryImage: {
+    width: 32,
+    height: 32,
+    resizeMode: "contain",
+  },
+  categoryText: {
+    fontSize: 9,
+    fontWeight: "bold",
+    textAlign: "center",
+    color: "#111",
+    marginTop: 4,
+  },
+  searchButtonContainer: {
+    paddingLeft: 12,
+  },
+  searchButton: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    backgroundColor: "#ccc",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  searchInputContainer: {
+    flex: 1,
+    marginRight: 12,
+  },
+  searchInput: {
+    height: 48,
+    backgroundColor: "#fff",
+    borderRadius: 24,
+    paddingHorizontal: 16,
+    borderWidth: 1,
+    borderColor: COLORS.outlineCommon,
+    color: COLORS.text.onPrimary,
+  },
+  textModeInputContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#EAEAEA",
+    borderRadius: 24,
+    paddingHorizontal: 16,
+    height: 48,
+  },
+  textModeInput: {
+    flex: 1,
+    fontSize: 16,
+    color: "#333",
+  },
+  clearTextButton: {
+    marginLeft: 8,
+  },
+});

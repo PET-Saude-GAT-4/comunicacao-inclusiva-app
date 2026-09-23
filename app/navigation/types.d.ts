@@ -1,0 +1,101 @@
+import { Pictogram } from "@/types/pictogram.types";
+import { Profession } from "@/types/profession.types";
+import { Term } from "@/types/term.types";
+
+/*
+        This file extends as a type safe way to ensure navigation between the right stacks
+    defining exactly what params go through each stack or tab exchange, and what to do
+    with all of that.
+        Check more on this matter when searching "Type Checking The Navigator". Or, through the
+    docs themselves (dynamic): https://reactnavigation.org/docs/typescript/#type-checking-the-navigator
+ */
+
+declare global {
+  namespace ReactNavigation {
+    interface RootParamList extends RootStackParamList {}
+  }
+}
+
+export type Speaker = "patient" | "professional";
+
+// RootStackParamList is the default list of Params for useNavigation()
+export type RootStackParamList = {
+  AuthNav: undefined;
+  MainTabNav: undefined;
+  FeedbackScreen: {
+    terms: Term[];
+    textContent?: string;
+    senderSpeaker: Speaker;
+    displayMode?: import("@/contexts/PreferencesContext").DisplayMode;
+  };
+  ReportScreen: undefined;
+  TutorialStackNav: undefined;
+};
+
+export type AuthStackParamList = {
+  Placeholder: undefined;
+  LoginScreen: undefined;
+  RegisterScreen: undefined;
+  PasswordResetScreen: undefined;
+};
+
+export type MainTabParamList = {
+  CommBoardStackNav:
+    | {
+        screen?: keyof CommBoardStackParamList;
+        params?: any;
+      }
+    | undefined;
+  BoardCollection: undefined;
+  Emergency: undefined;
+  Library: undefined;
+  Settings: undefined;
+};
+
+export type CommBoardStackParamList = {
+  NoConsultationScreen: { showPhrasePrompt?: boolean } | undefined;
+  CommBoardScreen: { mode?: "bodyMap"; initialTerms?: Term[] } | undefined;
+  SelectProfessionScreen: undefined;
+  SelectSpecialityScreen: { profession: Profession };
+  ConfirmConsultationScreen: { profession: Profession; speciality: Speciality };
+  FeedbackScreen: {
+    terms: Term[];
+    textContent?: string;
+    senderSpeaker: Speaker;
+    displayMode?: import("@/contexts/PreferencesContext").DisplayMode;
+  };
+};
+
+export type MyCollectionStackParamList = {
+  BoardCollectionTab: undefined;
+  BoardDetails: { board: Board };
+};
+
+export type BoardStackParamList = {
+  placeholder: undefined;
+};
+
+export type LibraryBoardStackParamList = {
+  LibraryTab: undefined;
+  PublicBoards: undefined;
+  PublicBoardDetails: { board: Board };
+};
+
+export type LibraryPhraseStackParamList = {
+  PublicPhrases: undefined;
+};
+
+export type EmergencyStackParamList = {
+  EmergencyTab: undefined;
+  ModuleVisualization: { board: Board };
+};
+
+export type EmergencyTabParamList = {
+  QuickEmergency: undefined;
+  CatEmergency: undefined;
+};
+
+export type QuickEmergencyStackParamList = {
+  QuickEmergency: undefined;
+  UrgencyResponse: { pictogram: Pictogram };
+};
