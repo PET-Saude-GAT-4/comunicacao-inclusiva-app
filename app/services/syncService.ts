@@ -2,6 +2,7 @@ import {
   BOARDS_CACHE_KEY,
   boardTermsCacheKey,
   nextBoardsCacheKey,
+  phraseNextBoardsCacheKey,
   PHRASES_CACHE_KEY,
   PROFESSIONS_CACHE_KEY,
   specialitiesCacheKey,
@@ -153,6 +154,26 @@ export class SyncService {
 
       await AsyncStorage.setItem(PHRASES_CACHE_KEY, JSON.stringify(phrases));
       console.log("Synchronized phrases saved in the cache.");
+
+      // One request per phrase, the same shape syncBoards uses for chains. It
+      // grows with the number of phrases, which is what the offline guarantee
+      // costs.
+      for (const phrase of phrases) {
+        try {
+          const nextBoards = await phraseService.getPhraseNextBoards(
+            phrase.uuid,
+          );
+
+          // Having no recommendation is a valid state, so the empty list is
+          // cached as well. Otherwise it would be indistinguishable from a
+          // phrase that has never been synced.
+          const cacheKey = phraseNextBoardsCacheKey(phrase.uuid);
+          await AsyncStorage.setItem(cacheKey, JSON.stringify(nextBoards));
+          console.log(`Next boards synced for phrase: ${phrase.description}`);
+        } catch (chainError) {
+          console.log(`Failed to sync next boards for phrase: ${phrase.uuid}`);
+        }
+      }
 
       return true;
     } catch (error) {

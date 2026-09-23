@@ -8,11 +8,14 @@ import { PAIN_SCALE_FACES } from "@/constants/painScaleFaces";
 import { useBoardTerms } from "@/hooks/useBoardTerms";
 import { useBoards } from "@/hooks/useBoards";
 import { useNextBoards } from "@/hooks/useNextBoards";
+import { usePhraseNextBoards } from "@/hooks/usePhraseNextBoards";
+import { usePhrases } from "@/hooks/usePhrases";
 import { usePreferences } from "@/hooks/usePreferences";
 import { useSession } from "@/hooks/useSession";
 import { CommBoardStackParamList } from "@/navigation/types";
 import { COLORS } from "@/styles/themes";
 import { Term } from "@/types/term.types";
+import { matchPhraseBySequence } from "@/utils/matchPhraseBySequence";
 import { resolveTermDisplay } from "@/utils/resolveTermDisplay";
 import { Ionicons } from "@expo/vector-icons";
 import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
@@ -62,14 +65,41 @@ export default function CommBoardScreen() {
   const [searchQuery, setSearchQuery] = useState("");
   const [isPainScaleVisible, setIsPainScaleVisible] = useState(false);
 
+  // Arriving from a ready-made phrase is the one case that may open a board on
+  // its own. It is a one-shot event, not a mode, so a boolean is all it needs.
+  const [isPhraseOpenPending, setIsPhraseOpenPending] = useState(false);
+
+  // A matched phrase starts a suggestion but does not own its lifetime. Sending
+  // empties the visor and the boards that phrase recommends are still the right
+  // next step, so the suggestion outlives the send and the confirmation screen
+  // that follows it. These two are what ends it instead: the user composing
+  // something else, or choosing a board.
+  const [sentPhraseUuid, setSentPhraseUuid] = useState<string | null>(null);
+  const [isSuggestionDismissed, setIsSuggestionDismissed] = useState(false);
+
   // Load pre-filled terms from a ready-made phrase
   useEffect(() => {
     const incoming = route.params?.initialTerms;
     if (incoming && incoming.length > 0) {
       setSelectedTerms(incoming);
+      // The screen survives in the stack, so it can be arrived at carrying a
+      // suggestion the user already moved past. Filling the visor starts over,
+      // exactly as composing by hand does.
+      setSentPhraseUuid(null);
+      setIsSuggestionDismissed(false);
       navigation.setParams({ initialTerms: undefined });
     }
   }, [route.params?.initialTerms]);
+
+  // The param only asks for the auto-open; the promotion comes from the terms it
+  // dropped in the visor. Clearing it is what keeps a return visit from
+  // re-opening the board.
+  useEffect(() => {
+    if (route.params?.triggerPhraseUuid) {
+      setIsPhraseOpenPending(true);
+      navigation.setParams({ triggerPhraseUuid: undefined });
+    }
+  }, [route.params?.triggerPhraseUuid]);
 
   const handlePainScaleSubmit = (submission: PainScaleSubmission) => {
     if (!isInConsultation) {
@@ -102,16 +132,72 @@ export default function CommBoardScreen() {
     selectedBoardUuid || "",
   );
   const { nextBoards } = useNextBoards(selectedBoardUuid || "");
+  const { phrases } = usePhrases();
+
+  // The sequence in the visor is the trigger, whether the terms got there by
+  // being tapped or by a ready-made phrase filling them in. One path, one rule.
+  const matchedPhrase = useMemo(
+    () => matchPhraseBySequence(phrases, selectedTerms),
+    [phrases, selectedTerms],
+  );
+
+  const suggestingPhraseUuid = isSuggestionDismissed
+    ? null
+    : (matchedPhrase?.uuid ?? sentPhraseUuid);
+
+  const { nextBoards: phraseNextBoards, isReady: arePhraseBoardsReady } =
+    usePhraseNextBoards(suggestingPhraseUuid ?? "");
 
   useEffect(() => {
-    if (boards.length > 0 && !selectedBoardUuid) {
+    // Holding the default back while an arrival is still resolving keeps the
+    // first board from flashing before the recommended one replaces it.
+    if (boards.length > 0 && !selectedBoardUuid && !isPhraseOpenPending) {
       setSelectedBoardUuid(boards[0].uuid);
     }
-  }, [boards]);
+  }, [boards, isPhraseOpenPending]);
+
+  // Open the first recommendation this device actually has. One naming a board
+  // that was never synced is skipped rather than opening a blank board, and a
+  // phrase whose recommendations are all missing leaves the board unchanged.
+  useEffect(() => {
+    if (!isPhraseOpenPending || boards.length === 0) return;
+
+    // The two params land in separate effects, so the terms may not be in the
+    // visor yet. Waiting for them matters because usePhraseNextBoards reports
+    // isReady for an empty uuid — the pair matches trivially — and acting on
+    // that would clear the flag before there was anything to open.
+    if (selectedTerms.length === 0) return;
+
+    if (!matchedPhrase) {
+      setIsPhraseOpenPending(false);
+      return;
+    }
+
+    if (!arePhraseBoardsReady) return;
+
+    const opened = phraseNextBoards.find((recommended) =>
+      boards.some((board) => board.uuid === recommended.uuid),
+    );
+
+    setIsPhraseOpenPending(false);
+
+    if (opened) setSelectedBoardUuid(opened.uuid);
+  }, [
+    isPhraseOpenPending,
+    selectedTerms,
+    matchedPhrase,
+    arePhraseBoardsReady,
+    phraseNextBoards,
+    boards,
+  ]);
 
   // add terms to the visor list
   const handleSelect = (term: Term) => {
     setSelectedTerms((prev) => [...prev, term]);
+    // Composing starts over: the sequence being built decides on its own what
+    // is suggested, including nothing.
+    setSentPhraseUuid(null);
+    setIsSuggestionDismissed(false);
   };
 
   const handleDeleteLast = () => {
@@ -128,11 +214,16 @@ export default function CommBoardScreen() {
     );
   }, [searchQuery, boards]);
 
+  // A phrase speaks for the whole composition, so its recommendations outrank
+  // the open board's successors while the suggestion stands.
+  const promotedBoards =
+    phraseNextBoards.length > 0 ? phraseNextBoards : nextBoards;
+
   // The open board leads the carousel whether it has a chain or not, so its
   // position never depends on data the user cannot see.
   const orderedBoards = useMemo(() => {
     const successorUuids = new Set(
-      nextBoards
+      promotedBoards
         .map((board) => board.uuid)
         .filter((uuid) => uuid !== selectedBoardUuid),
     );
@@ -149,7 +240,7 @@ export default function CommBoardScreen() {
           board.uuid !== selectedBoardUuid && !successorUuids.has(board.uuid),
       ),
     ];
-  }, [filteredBoards, nextBoards, selectedBoardUuid]);
+  }, [filteredBoards, promotedBoards, selectedBoardUuid]);
 
   return (
     <View style={styles.container}>
@@ -229,6 +320,10 @@ export default function CommBoardScreen() {
               } else {
                 if (selectedTerms.length === 0) return;
 
+                // The visor empties, the suggestion does not: it is still the
+                // right next step when the user lands back here.
+                setSentPhraseUuid(matchedPhrase?.uuid ?? null);
+
                 if (!isInConsultation) {
                   setSelectedTerms([]);
                   console.log("Modo triagem: mensagem não registrada.");
@@ -266,7 +361,10 @@ export default function CommBoardScreen() {
                 style={styles.textModeInput}
                 placeholder="Digite sua frase"
                 value={typedText}
-                onChangeText={setTypedText}
+                onChangeText={(text) => {
+                  setTypedText(text);
+                  setIsSuggestionDismissed(true);
+                }}
               />
               {typedText.length > 0 && (
                 <TouchableOpacity
@@ -300,11 +398,16 @@ export default function CommBoardScreen() {
               const isSelected = board.uuid === selectedBoardUuid;
               const isSuggested =
                 !isSelected &&
-                nextBoards.some((next) => next.uuid === board.uuid);
+                promotedBoards.some((next) => next.uuid === board.uuid);
               return (
                 <TouchableOpacity
                   key={board.uuid}
-                  onPress={() => setSelectedBoardUuid(board.uuid)}
+                  onPress={() => {
+                    setSelectedBoardUuid(board.uuid);
+                    // Choosing a board asks for that board's own successors,
+                    // whether or not it was one of the suggested ones.
+                    setIsSuggestionDismissed(true);
+                  }}
                 >
                   <View
                     style={[
