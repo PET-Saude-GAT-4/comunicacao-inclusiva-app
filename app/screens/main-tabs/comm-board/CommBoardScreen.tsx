@@ -13,13 +13,14 @@ import { usePhrases } from "@/hooks/usePhrases";
 import { usePreferences } from "@/hooks/usePreferences";
 import { useSession } from "@/hooks/useSession";
 import { CommBoardStackParamList } from "@/navigation/types";
-import { COLORS } from "@/styles/themes";
+import { COLORS, CONTAINERS } from "@/styles/themes";
 import { Term } from "@/types/term.types";
 import { matchPhraseBySequence } from "@/utils/matchPhraseBySequence";
 import { resolveTermDisplay } from "@/utils/resolveTermDisplay";
 import { Ionicons } from "@expo/vector-icons";
 import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { BodyMap } from "@/components/body-map/BodyMap";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import React, { useEffect, useMemo, useState } from "react";
@@ -46,7 +47,6 @@ export default function CommBoardScreen() {
     setCurrentSpeaker,
   } = useSession();
   const { displayMode } = usePreferences();
-
   // Redirect to NoConsultationScreen when consultation ends
   useEffect(() => {
     if (!isInConsultation) {
@@ -55,6 +55,7 @@ export default function CommBoardScreen() {
   }, [isInConsultation]);
 
   const [isTextMode, setIsTextMode] = useState(false);
+  const [isBodyMapMode, setIsBodyMapMode] = useState(false);
   const [typedText, setTypedText] = useState("");
   // save the selected term sequence
   const [selectedTerms, setSelectedTerms] = useState<Term[]>([]);
@@ -191,6 +192,16 @@ export default function CommBoardScreen() {
     boards,
   ]);
 
+  // Activate BodyMapMode via route param from ConsultationMenuModal
+  useEffect(() => {
+    if (route.params?.mode === "bodyMap") {
+      setIsBodyMapMode(true);
+      setIsTextMode(false);
+      // Reset param so it doesn't trigger again on re-focus if unmounted
+      navigation.setParams({ mode: undefined });
+    }
+  }, [route.params?.mode]);
+
   // add terms to the visor list
   const handleSelect = (term: Term) => {
     setSelectedTerms((prev) => [...prev, term]);
@@ -245,115 +256,143 @@ export default function CommBoardScreen() {
   return (
     <View style={styles.container}>
       {/* OfflineBanner is now driven by the global SyncEngine in MainTabNav */}
-      <View style={styles.visorContainer}>
-        <Text
-          style={[
-            styles.text,
-            {
-              color:
-                currentSpeaker === "professional"
-                  ? COLORS.primaryDark
-                  : COLORS.secondary,
-            },
-          ]}
-        >
-          {currentSpeaker === "professional"
-            ? "Interação do profissional"
-            : "Interação do paciente"}
-        </Text>
-        <View style={styles.listSelectedPictograms}>
-          {/* Visor: scroll list of selected terms */}
-          <ScrollView horizontal={true}>
-            {selectedTerms.map((term, index) => {
-              const display = resolveTermDisplay(term, displayMode);
-              return (
-                <View
-                  key={`${term.uuid}-${index}`}
-                  style={styles.selectedPictogramDiv}
-                >
-                  <Image
-                    source={{ uri: display.imageSource }}
-                    style={styles.selectedPictogramImage}
-                  />
-                  <Text style={styles.pictogramText} numberOfLines={1}>
-                    {display.label}
-                  </Text>
-                </View>
-              );
-            })}
-          </ScrollView>
-        </View>
-        <View style={styles.actionsContainer}>
-          <TouchableOpacity
-            onPress={handleDeleteLast}
-            style={styles.deleteButton}
+      {!isBodyMapMode && (
+        <View style={styles.visorContainer}>
+          <Text
+            style={[
+              styles.text,
+              {
+                color:
+                  currentSpeaker === "professional"
+                    ? COLORS.primaryDark
+                    : COLORS.secondary,
+              },
+            ]}
           >
-            <Ionicons name="backspace-outline" size={32} color="#333" />
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => {
-              if (isTextMode) {
-                if (!typedText.trim()) return;
+            {currentSpeaker === "professional"
+              ? "Interação do profissional"
+              : "Interação do paciente"}
+          </Text>
+          <View style={styles.listSelectedPictograms}>
+            {/* Visor: scroll list of selected terms */}
+            <ScrollView horizontal={true}>
+              {selectedTerms.map((term, index) => {
+                const display = resolveTermDisplay(term, displayMode);
+                return (
+                  <View
+                    key={`${term.uuid}-${index}`}
+                    style={styles.selectedPictogramDiv}
+                  >
+                    <Image
+                      source={{ uri: display.imageSource }}
+                      style={styles.selectedPictogramImage}
+                    />
+                    <Text style={styles.pictogramText} numberOfLines={1}>
+                      {display.label}
+                    </Text>
+                  </View>
+                );
+              })}
+            </ScrollView>
+          </View>
+          <View style={styles.actionsContainer}>
+            <TouchableOpacity
+              onPress={handleDeleteLast}
+              style={styles.deleteButton}
+            >
+              <Ionicons name="backspace-outline" size={32} color="#333" />
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => {
+                if (isTextMode) {
+                  if (!typedText.trim()) return;
 
-                if (!isInConsultation) {
+                  if (!isInConsultation) {
+                    setTypedText("");
+                    console.log(
+                      "Modo triagem: mensagem de texto não registrada.",
+                    );
+                    return;
+                  }
+
                   setTypedText("");
-                  console.log(
-                    "Modo triagem: mensagem de texto não registrada.",
+
+                  setCurrentSpeaker(
+                    currentSpeaker === "professional"
+                      ? "patient"
+                      : "professional",
                   );
-                  return;
-                }
 
-                setTypedText("");
+                  navigation.navigate("FeedbackScreen", {
+                    terms: [],
+                    textContent: typedText.trim(),
+                    senderSpeaker: currentSpeaker,
+                    displayMode,
+                  });
+                } else {
+                  if (selectedTerms.length === 0) return;
 
-                setCurrentSpeaker(
-                  currentSpeaker === "professional"
-                    ? "patient"
-                    : "professional",
-                );
+                  // The visor empties, the suggestion does not: it is still the
+                  // right next step when the user lands back here.
+                  setSentPhraseUuid(matchedPhrase?.uuid ?? null);
 
-                navigation.navigate("FeedbackScreen", {
-                  terms: [],
-                  textContent: typedText.trim(),
-                  senderSpeaker: currentSpeaker,
-                  displayMode,
-                });
-              } else {
-                if (selectedTerms.length === 0) return;
+                  if (!isInConsultation) {
+                    setSelectedTerms([]);
+                    console.log("Modo triagem: mensagem não registrada.");
+                    return;
+                  }
 
-                // The visor empties, the suggestion does not: it is still the
-                // right next step when the user lands back here.
-                setSentPhraseUuid(matchedPhrase?.uuid ?? null);
-
-                if (!isInConsultation) {
                   setSelectedTerms([]);
-                  console.log("Modo triagem: mensagem não registrada.");
-                  return;
+
+                  setCurrentSpeaker(
+                    currentSpeaker === "professional"
+                      ? "patient"
+                      : "professional",
+                  );
+
+                  navigation.navigate("FeedbackScreen", {
+                    terms: selectedTerms,
+                    senderSpeaker: currentSpeaker,
+                    displayMode,
+                  });
                 }
-
-                setSelectedTerms([]);
-
-                setCurrentSpeaker(
-                  currentSpeaker === "professional"
-                    ? "patient"
-                    : "professional",
-                );
-
-                navigation.navigate("FeedbackScreen", {
-                  terms: selectedTerms,
-                  senderSpeaker: currentSpeaker,
-                  displayMode,
-                });
-              }
-            }}
-            style={styles.sendButton}
-          >
-            <Ionicons name="send-outline" size={32} color="#333" />
-          </TouchableOpacity>
+              }}
+              style={styles.sendButton}
+            >
+              <Ionicons name="send-outline" size={32} color="#333" />
+            </TouchableOpacity>
+          </View>
         </View>
-      </View>
+      )}
 
       <View style={styles.gridContainer}>
-        {/* Text Mode Input */}
+        {isBodyMapMode ? (
+          <View style={{ flex: 1, width: "100%", backgroundColor: COLORS.surface.primary, borderRadius: CONTAINERS.radius.md, overflow: "hidden" }}>
+             {/* Componente independente BodyMap */}
+             <BodyMap
+               onSend={(regionsText) => {
+                 if (!isInConsultation) {
+                   console.log("Modo triagem: bodyMap não registrado.", regionsText);
+                   setIsBodyMapMode(false);
+                   return;
+                 }
+                 addInteraction({
+                   id: Math.random().toString(36).substr(2, 9),
+                   speaker: currentSpeaker,
+                   type: "bodyMap",
+                   content: regionsText,
+                   timestamp: new Date().toISOString(),
+                   understood: true,
+                 });
+                 // Alterna quem fala e sai do mapa
+                 setCurrentSpeaker(currentSpeaker === "professional" ? "patient" : "professional");
+                 setIsBodyMapMode(false);
+               }}
+             />
+          </View>
+        ) : (
+          <>
+            {/* Text Mode Input */}
         {isTextMode && (
           <View style={{ marginBottom: 16 }}>
             <View style={styles.textModeInputContainer}>
@@ -497,10 +536,15 @@ export default function CommBoardScreen() {
             />
           )}
         </View>
+          </>
+        )}
       </View>
       <AccessibilityMenu
         isTextMode={isTextMode}
-        onToggleTextMode={() => setIsTextMode(!isTextMode)}
+        onToggleTextMode={() => {
+          setIsTextMode(!isTextMode);
+          setIsBodyMapMode(false);
+        }}
       />
       {currentSpeaker === "patient" && (
         <PainScaleTrigger onPress={() => setIsPainScaleVisible(true)} />

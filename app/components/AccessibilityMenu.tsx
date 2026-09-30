@@ -43,6 +43,8 @@ export function AccessibilityMenu({ isTextMode, onToggleTextMode }: Props) {
             </Text>
           </TouchableOpacity>
 
+
+
           {/* Modo Libras */}
           <TouchableOpacity 
             style={[styles.optionPill, displayMode === "signWriting" && styles.activePill]} 
