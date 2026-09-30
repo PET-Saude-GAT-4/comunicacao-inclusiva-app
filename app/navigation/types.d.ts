@@ -55,7 +55,7 @@ export type MainTabParamList = {
 export type CommBoardStackParamList = {
   NoConsultationScreen: { showPhrasePrompt?: boolean } | undefined;
   CommBoardScreen:
-    { initialTerms?: Term[]; triggerPhraseUuid?: string } | undefined;
+    { mode?: "bodyMap"; initialTerms?: Term[]; triggerPhraseUuid?: string } | undefined;
   SelectProfessionScreen: undefined;
   SelectSpecialityScreen: { profession: Profession };
   ConfirmConsultationScreen: { profession: Profession; speciality: Speciality };
