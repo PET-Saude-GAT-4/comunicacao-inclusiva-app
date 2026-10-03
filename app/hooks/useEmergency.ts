@@ -14,9 +14,13 @@ export function useEmergency() {
       const cacheData = await AsyncStorage.getItem(EMERGENCY_BOARDS_CACHE_KEY);
 
       if (cacheData) {
-        const parsed = JSON.parse(cacheData);
-        if (parsed.length > 0) {
-          setBoards(parsed);
+        const parsed: Board[] = JSON.parse(cacheData);
+        // Only emergency-typed boards belong in the emergency modules.
+        const emergencyBoards = parsed.filter(
+          (board) => board.type === "emergency",
+        );
+        if (emergencyBoards.length > 0) {
+          setBoards(emergencyBoards);
         } else {
           setBoards(emergencyBoardsMock);
         }
