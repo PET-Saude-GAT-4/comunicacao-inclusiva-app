@@ -1,5 +1,5 @@
 import { EMERGENCY_BOARDS_CACHE_KEY } from "@/constants/cache";
-import { emergencyBoardsMock } from "@/mocks/modulesMock";
+import { bundledEmergencyBoards } from "@/content/emergency";
 import { Board } from "@/types/board.types";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useEffect, useState } from "react";
@@ -22,15 +22,15 @@ export function useEmergency() {
         if (emergencyBoards.length > 0) {
           setBoards(emergencyBoards);
         } else {
-          setBoards(emergencyBoardsMock);
+          setBoards(bundledEmergencyBoards);
         }
       } else {
-        // 2. If cache is completely empty, fall back to Mock
-        setBoards(emergencyBoardsMock);
+        // 2. If cache is completely empty, fall back to the bundled content
+        setBoards(bundledEmergencyBoards);
       }
     } catch (error) {
-      console.log("Failed to load boards from cache. Using Mock.");
-      setBoards(emergencyBoardsMock);
+      console.log("Failed to load boards from cache. Using bundled content.");
+      setBoards(bundledEmergencyBoards);
     } finally {
       setIsLoading(false);
     }

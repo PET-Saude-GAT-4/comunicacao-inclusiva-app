@@ -6,7 +6,7 @@ import { TriageStep } from "@/types/triage.types";
 // Emergency boards and triage levels come from the API; the definitions below,
 // which its seed mirrors, keep the emergency tab usable offline and before
 // anything has been synced.
-export const moduleBoardTermsMock: Record<string, Term[]> = {
+export const bundledEmergencyBoardTerms: Record<string, Term[]> = {
   // Quick Emergency triage levels
   "triage-board-level-1": [
     TERMS["shortness-of-breath"],
@@ -70,33 +70,33 @@ export const moduleBoardTermsMock: Record<string, Term[]> = {
 
 // Quick Emergency triage boards, mirroring the API seed's levels (level 1 is the
 // most urgent). Only shown until the API's triage steps have been synced.
-const triageBoardsMock: Board[] = [
+const bundledTriageBoards: Board[] = [
   createBoard(
     "triage-board-level-1",
     "Triagem Nível 1",
     TERMS["shortness-of-breath"],
-    moduleBoardTermsMock["triage-board-level-1"],
+    bundledEmergencyBoardTerms["triage-board-level-1"],
     "emergency",
   ),
   createBoard(
     "triage-board-level-2",
     "Triagem Nível 2",
     TERMS.fever,
-    moduleBoardTermsMock["triage-board-level-2"],
+    bundledEmergencyBoardTerms["triage-board-level-2"],
     "emergency",
   ),
   createBoard(
     "triage-board-level-3",
     "Triagem Nível 3",
     TERMS.fatigue,
-    moduleBoardTermsMock["triage-board-level-3"],
+    bundledEmergencyBoardTerms["triage-board-level-3"],
     "emergency",
   ),
 ];
 
 // In the cache's shape, so the app reads bundled and synced levels the same
 // way. Levels 4 and 5 have no content yet.
-export const triageStepsMock: TriageStep[] = triageBoardsMock.map(
+export const bundledTriageSteps: TriageStep[] = bundledTriageBoards.map(
   (board, index) => ({
     uuid: `triage-step-level-${index + 1}`,
     level: index + 1,
@@ -108,33 +108,33 @@ export const triageStepsMock: TriageStep[] = triageBoardsMock.map(
 
 // Categorized Emergency specialties. Only shown until the API's emergency
 // boards have been synced.
-export const emergencyBoardsMock: Board[] = [
+export const bundledEmergencyBoards: Board[] = [
   createBoard(
     "module-board-cat-emergency-cardiologia",
     "Cardiologia",
     TERMS.heart,
-    moduleBoardTermsMock["module-board-cat-emergency-cardiologia"],
+    bundledEmergencyBoardTerms["module-board-cat-emergency-cardiologia"],
     "emergency",
   ),
   createBoard(
     "module-board-cat-emergency-neurologia",
     "Neurologia",
     TERMS.head,
-    moduleBoardTermsMock["module-board-cat-emergency-neurologia"],
+    bundledEmergencyBoardTerms["module-board-cat-emergency-neurologia"],
     "emergency",
   ),
   createBoard(
     "module-board-cat-emergency-ortopedia",
     "Ortopedia",
     TERMS.leg,
-    moduleBoardTermsMock["module-board-cat-emergency-ortopedia"],
+    bundledEmergencyBoardTerms["module-board-cat-emergency-ortopedia"],
     "emergency",
   ),
   createBoard(
     "module-board-cat-emergency-geral",
     "Geral",
     TERMS.malaise,
-    moduleBoardTermsMock["module-board-cat-emergency-geral"],
+    bundledEmergencyBoardTerms["module-board-cat-emergency-geral"],
     "emergency",
   ),
 ];

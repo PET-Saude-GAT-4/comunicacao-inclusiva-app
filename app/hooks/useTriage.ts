@@ -1,5 +1,5 @@
 import { TRIAGE_STEPS_CACHE_KEY } from "@/constants/cache";
-import { triageStepsMock } from "@/mocks/modulesMock";
+import { bundledTriageSteps } from "@/content/emergency";
 import { TriageStep } from "@/types/triage.types";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useEffect, useState } from "react";
@@ -20,11 +20,11 @@ export function useTriage() {
         setSteps([...parsed].sort((a, b) => a.level - b.level));
       } else {
         // 2. Never synced, or no level filled yet: fall back to the bundled levels
-        setSteps(triageStepsMock);
+        setSteps(bundledTriageSteps);
       }
     } catch (error) {
-      console.log("Failed to load triage steps from cache. Using Mock.");
-      setSteps(triageStepsMock);
+      console.log("Failed to load triage steps from cache. Using bundled content.");
+      setSteps(bundledTriageSteps);
     } finally {
       setIsLoading(false);
     }
