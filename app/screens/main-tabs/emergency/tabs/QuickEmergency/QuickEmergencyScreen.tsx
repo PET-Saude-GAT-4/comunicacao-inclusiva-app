@@ -1,4 +1,4 @@
-import { quickEmergencyBoardsMock } from "@/mocks/modulesMock";
+import { useTriage } from "@/hooks/useTriage";
 import { QuickEmergencyStackParamList } from "@/navigation/types";
 import { ScrollIndicator } from "@/screens/main-tabs/components/ScrollIndicator/ScrollIndicator";
 import { Board } from "@/types/board.types";
@@ -18,7 +18,9 @@ export function QuickEmergencyScreen() {
         "QuickEmergency"
       >
     >();
-  const boards = quickEmergencyBoardsMock;
+  // One board per triage level, most urgent first.
+  const { steps } = useTriage();
+  const boards = steps.map((step) => step.board);
 
   const [activeIndex, setActiveIndex] = useState(0);
 
@@ -40,7 +42,10 @@ export function QuickEmergencyScreen() {
     }
   });
 
-  const selectedBoard: Board | undefined = boards[activeIndex];
+  // The levels load after the first render, and the synced list can be shorter
+  // than the bundled one, so the index is kept inside whatever is there now.
+  const selectedBoard: Board | undefined =
+    boards[Math.min(activeIndex, boards.length - 1)];
 
   return (
     <GestureDetector gesture={panGesture}>

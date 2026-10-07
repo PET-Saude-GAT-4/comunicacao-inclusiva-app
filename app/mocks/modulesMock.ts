@@ -1,13 +1,14 @@
 import { createBoard, TERMS } from "@/mocks/termsMock";
 import { Board } from "@/types/board.types";
 import { Term } from "@/types/term.types";
+import { TriageStep } from "@/types/triage.types";
 
-// Emergency boards come from the API (boards typed "emergency"), but its seed
-// defines none yet, so the board definitions below, the ones the app already
-// shipped, keep the emergency tab usable before anything has been synced.
+// Emergency boards and triage levels come from the API; the definitions below,
+// which its seed mirrors, keep the emergency tab usable offline and before
+// anything has been synced.
 export const moduleBoardTermsMock: Record<string, Term[]> = {
   // Quick Emergency triage levels
-  "module-board-quick-emergency-level-3": [
+  "triage-board-level-1": [
     TERMS["shortness-of-breath"],
     TERMS["bleeding-cut"],
     TERMS["vehicle-crash"],
@@ -15,7 +16,7 @@ export const moduleBoardTermsMock: Record<string, Term[]> = {
     TERMS.allergy,
     TERMS["sharp-pain"],
   ],
-  "module-board-quick-emergency-level-2": [
+  "triage-board-level-2": [
     TERMS.fever,
     TERMS.dizziness,
     TERMS.tingling,
@@ -23,7 +24,7 @@ export const moduleBoardTermsMock: Record<string, Term[]> = {
     TERMS.confused,
     TERMS.malaise,
   ],
-  "module-board-quick-emergency-level-1": [
+  "triage-board-level-3": [
     TERMS.fatigue,
     TERMS.cold,
     TERMS.irritated,
@@ -67,31 +68,43 @@ export const moduleBoardTermsMock: Record<string, Term[]> = {
   ],
 };
 
-// Quick Emergency triage levels. The API's board type can't tell a triage level
-// from a specialty module, so these stay bundled with the app.
-export const quickEmergencyBoardsMock: Board[] = [
+// Quick Emergency triage boards, mirroring the API seed's levels (level 1 is the
+// most urgent). Only shown until the API's triage steps have been synced.
+const triageBoardsMock: Board[] = [
   createBoard(
-    "module-board-quick-emergency-level-3",
-    "Emergência Nível 3",
+    "triage-board-level-1",
+    "Triagem Nível 1",
     TERMS["shortness-of-breath"],
-    moduleBoardTermsMock["module-board-quick-emergency-level-3"],
+    moduleBoardTermsMock["triage-board-level-1"],
     "emergency",
   ),
   createBoard(
-    "module-board-quick-emergency-level-2",
-    "Emergência Nível 2",
+    "triage-board-level-2",
+    "Triagem Nível 2",
     TERMS.fever,
-    moduleBoardTermsMock["module-board-quick-emergency-level-2"],
+    moduleBoardTermsMock["triage-board-level-2"],
     "emergency",
   ),
   createBoard(
-    "module-board-quick-emergency-level-1",
-    "Emergência Nível 1",
+    "triage-board-level-3",
+    "Triagem Nível 3",
     TERMS.fatigue,
-    moduleBoardTermsMock["module-board-quick-emergency-level-1"],
+    moduleBoardTermsMock["triage-board-level-3"],
     "emergency",
   ),
 ];
+
+// In the cache's shape, so the app reads bundled and synced levels the same
+// way. Levels 4 and 5 have no content yet.
+export const triageStepsMock: TriageStep[] = triageBoardsMock.map(
+  (board, index) => ({
+    uuid: `triage-step-level-${index + 1}`,
+    level: index + 1,
+    board,
+    createdAt: board.createdAt,
+    updatedAt: board.updatedAt,
+  }),
+);
 
 // Categorized Emergency specialties. Only shown until the API's emergency
 // boards have been synced.
