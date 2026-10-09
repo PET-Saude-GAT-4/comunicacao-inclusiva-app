@@ -1,4 +1,4 @@
-import { Board } from "@/types/board.types";
+import { Board, BoardType } from "@/types/board.types";
 import { Pictogram } from "@/types/pictogram.types";
 import { SignWriting } from "@/types/signWriting.types";
 import { Term } from "@/types/term.types";
@@ -255,10 +255,12 @@ export function createBoard(
   title: string,
   representative: Term,
   terms: Term[],
+  type: BoardType = "common",
 ): Board {
   return {
     uuid,
     title,
+    type,
     representativePictogram: representative.pictogram,
     termCount: terms.length,
     ...timestamp(),

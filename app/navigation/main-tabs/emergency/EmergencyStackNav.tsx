@@ -1,5 +1,6 @@
 import GlobalHeader from "@/components/GlobalHeaderComponent";
 import ModuleVisualizationScreen from "@/screens/main-tabs/emergency/ModuleVisualizationScreen";
+import { UrgencyResponseScreen } from "@/screens/main-tabs/emergency/tabs/QuickEmergency/UrgencyResponseScreen";
 import { COLORS } from "@/styles/themes";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { Platform } from "react-native";
@@ -34,6 +35,13 @@ export default function EmergencyStackNav() {
         name="ModuleVisualization"
         component={ModuleVisualizationScreen}
         options={{ title: "Visualização do Módulo" }}
+      />
+      {/* The categorized flow answers a tapped symptom with the same screen
+          Quick Emergency does. */}
+      <Stack.Screen
+        name="UrgencyResponse"
+        component={UrgencyResponseScreen}
+        options={{ title: "Sintoma Apontado" }}
       />
     </Stack.Navigator>
   );

@@ -1,20 +1,25 @@
 import {
   BOARDS_CACHE_KEY,
   boardTermsCacheKey,
+  EMERGENCY_BOARDS_CACHE_KEY,
   nextBoardsCacheKey,
   phraseNextBoardsCacheKey,
   PHRASES_CACHE_KEY,
   PROFESSIONS_CACHE_KEY,
   specialitiesCacheKey,
+  TRIAGE_STEPS_CACHE_KEY,
 } from "@/constants/cache";
 import { BoardService } from "@/services/boards";
 import { PhraseService } from "@/services/phrases";
+import { TriageService } from "@/services/triage";
+import { Board, BoardType } from "@/types/board.types";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { ProfessionService } from "./ProfessionService";
 
 const boardService = new BoardService();
 const phraseService = new PhraseService();
 const professionService = new ProfessionService();
+const triageService = new TriageService();
 
 export class SyncService {
   /**
@@ -28,9 +33,16 @@ export class SyncService {
 
     const professionsOk = await this.syncProfessions();
     const boardsOk = await this.syncBoards();
+    const emergencyBoardsOk = await this.syncEmergencyBoards();
+    const triageStepsOk = await this.syncTriageSteps();
     const phrasesOk = await this.syncPhrases();
 
-    const allOk = professionsOk && boardsOk && phrasesOk;
+    const allOk =
+      professionsOk &&
+      boardsOk &&
+      emergencyBoardsOk &&
+      triageStepsOk &&
+      phrasesOk;
 
     if (allOk) {
       console.log("Sync completed successfully!");
@@ -90,33 +102,75 @@ export class SyncService {
   }
 
   private async syncBoards(): Promise<boolean> {
+    return this.syncBoardList("common", BOARDS_CACHE_KEY);
+  }
+
+  // The API only lists emergency boards when asked for them by type, so they
+  // are pulled and cached apart from the common ones.
+  private async syncEmergencyBoards(): Promise<boolean> {
+    return this.syncBoardList("emergency", EMERGENCY_BOARDS_CACHE_KEY);
+  }
+
+  // Quick Emergency levels come from their own endpoint, in level order, each
+  // with its board; only the boards' terms need a request of their own.
+  private async syncTriageSteps(): Promise<boolean> {
     try {
-      // 1. Download all boards
-      const boards = await boardService.getBoards();
+      const steps = await triageService.getTriageSteps();
+
+      // No level being filled is a valid state, so the empty list is cached as
+      // well; the app then falls back to its bundled levels.
+      await AsyncStorage.setItem(TRIAGE_STEPS_CACHE_KEY, JSON.stringify(steps));
+      console.log("Synchronized triage steps saved in the cache.");
+
+      for (const step of steps) {
+        await this.syncBoardTerms(step.board);
+      }
+
+      return true;
+    } catch (error) {
+      // Silent failure. We don't pass 'error' to avoid freezing the React Native console.
+      console.log(
+        "Triage steps sync failed (API offline or server error). Using current cache.",
+      );
+      return false;
+    }
+  }
+
+  // Failures stay isolated to one board, so the rest of a list still syncs.
+  private async syncBoardTerms(board: Board): Promise<void> {
+    try {
+      const boardTerms = await boardService.getBoardTerms(board.uuid);
+
+      if (boardTerms && boardTerms.length > 0) {
+        const cacheKey = boardTermsCacheKey(board.uuid);
+        await AsyncStorage.setItem(cacheKey, JSON.stringify(boardTerms));
+        console.log(`BoardTerms synced for board: ${board.title}`);
+      }
+    } catch (picError) {
+      console.log(`Failed to sync BoardTerms for board: ${board.uuid}`);
+    }
+  }
+
+  private async syncBoardList(
+    type: BoardType,
+    cacheKey: string,
+  ): Promise<boolean> {
+    try {
+      // 1. Download all boards of this type
+      const boards = await boardService.getBoards(type);
 
       if (!boards || boards.length === 0) {
-        console.log("No boards found in the API.");
+        console.log(`No ${type} boards found in the API.`);
         return true;
       }
 
       // Save boards to cache
-      await AsyncStorage.setItem(BOARDS_CACHE_KEY, JSON.stringify(boards));
-      console.log("Synchronized boards saved in the cache.");
+      await AsyncStorage.setItem(cacheKey, JSON.stringify(boards));
+      console.log(`Synchronized ${type} boards saved in the cache.`);
 
       // 2. For each board, download its terms and its next boards
       for (const board of boards) {
-        try {
-          const boardTerms = await boardService.getBoardTerms(board.uuid);
-
-          if (boardTerms && boardTerms.length > 0) {
-            const cacheKey = boardTermsCacheKey(board.uuid);
-            await AsyncStorage.setItem(cacheKey, JSON.stringify(boardTerms));
-            console.log(`BoardTerms synced for board: ${board.title}`);
-          }
-        } catch (picError) {
-          // Catches isolated error from a specific board to avoid stopping the entire loop
-          console.log(`Failed to sync BoardTerms for board: ${board.uuid}`);
-        }
+        await this.syncBoardTerms(board);
 
         try {
           const nextBoards = await boardService.getNextBoards(board.uuid);
@@ -136,7 +190,7 @@ export class SyncService {
     } catch (error) {
       // Silent failure. We don't pass 'error' to avoid freezing the React Native console.
       console.log(
-        "Boards sync failed (API offline or server error). Using current cache.",
+        `${type} boards sync failed (API offline or server error). Using current cache.`,
       );
       return false;
     }
