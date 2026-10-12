@@ -7,6 +7,7 @@ import { Pictogram } from "@/types/pictogram.types";
 import { Term } from "@/types/term.types";
 import { resolveTermDisplay } from "@/utils/resolveTermDisplay";
 import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { Image } from "expo-image";
 import { useEffect } from "react";
 import {
@@ -31,7 +32,8 @@ export default function ModuleVisualizationScreen({
   board: boardProp,
   onPictogramPress,
 }: Props) {
-  const navigation = useNavigation();
+  const navigation =
+    useNavigation<NativeStackNavigationProp<EmergencyStackParamList>>();
   const route = useRoute<ModuleVisualizationRouteProp>();
   const board = boardProp ?? route.params?.board;
   const { displayMode } = usePreferences();
@@ -44,7 +46,9 @@ export default function ModuleVisualizationScreen({
     if (onPictogramPress) {
       onPictogramPress(term.pictogram);
     } else {
-      console.log(term.description);
+      // Opened as a categorized module: show the symptom the way Quick
+      // Emergency does, rather than nothing at all.
+      navigation.navigate("UrgencyResponse", { pictogram: term.pictogram });
     }
   }
 

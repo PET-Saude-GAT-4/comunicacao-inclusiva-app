@@ -1,10 +1,10 @@
-import { useEmergency } from "@/hooks/useEmergency";
+import { useTriage } from "@/hooks/useTriage";
 import { QuickEmergencyStackParamList } from "@/navigation/types";
 import { ScrollIndicator } from "@/screens/main-tabs/components/ScrollIndicator/ScrollIndicator";
 import { Board } from "@/types/board.types";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import { runOnJS } from "react-native-reanimated";
@@ -18,19 +18,14 @@ export function QuickEmergencyScreen() {
         "QuickEmergency"
       >
     >();
-  const searchQuery = "module-board-quick-emergency";
-  const { boards } = useEmergency();
-
-  const filteredBoards = useMemo(() => {
-    return boards.filter((board) =>
-      board.uuid.toLowerCase().includes(searchQuery.toLowerCase()),
-    );
-  }, [searchQuery, boards]);
+  // One board per triage level, most urgent first.
+  const { steps } = useTriage();
+  const boards = steps.map((step) => step.board);
 
   const [activeIndex, setActiveIndex] = useState(0);
 
   function goToNext() {
-    setActiveIndex((prev) => Math.min(prev + 1, filteredBoards.length - 1));
+    setActiveIndex((prev) => Math.min(prev + 1, boards.length - 1));
   }
 
   function goToPrevious() {
@@ -47,7 +42,10 @@ export function QuickEmergencyScreen() {
     }
   });
 
-  const selectedBoard: Board | undefined = filteredBoards[activeIndex];
+  // The levels load after the first render, and the synced list can be shorter
+  // than the bundled one, so the index is kept inside whatever is there now.
+  const selectedBoard: Board | undefined =
+    boards[Math.min(activeIndex, boards.length - 1)];
 
   return (
     <GestureDetector gesture={panGesture}>
@@ -62,7 +60,7 @@ export function QuickEmergencyScreen() {
         )}
         <View style={styles.indicatorWrapper}>
           <ScrollIndicator
-            count={filteredBoards.length}
+            count={boards.length}
             activeIndex={activeIndex}
           />
         </View>

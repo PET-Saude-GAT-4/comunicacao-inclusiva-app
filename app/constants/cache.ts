@@ -1,9 +1,12 @@
 export const BOARDS_CACHE_KEY = "@boards_cachekey";
 
-// Emergency modules are cached apart from the public boards. Nothing writes this
-// key yet. syncService has no specialty-board endpoint to pull
-// so the read always falls through to the mock for now.
-export const EMERGENCY_BOARDS_CACHE_KEY = "@boards_cache";
+// Emergency boards are cached apart from the common ones, since the API only
+// lists them when asked for with `?type=emergency`.
+export const EMERGENCY_BOARDS_CACHE_KEY = "@emergency_boards_cachekey";
+
+// Quick Emergency levels, each with its board. Their terms are cached under
+// boardTermsCacheKey like any other board's.
+export const TRIAGE_STEPS_CACHE_KEY = "@triage_steps_cachekey";
 
 export const PHRASES_CACHE_KEY = "@phrases_cachekey";
 

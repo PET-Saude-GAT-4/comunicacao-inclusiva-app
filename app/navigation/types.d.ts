@@ -89,6 +89,7 @@ export type LibraryPhraseStackParamList = {
 export type EmergencyStackParamList = {
   EmergencyTab: undefined;
   ModuleVisualization: { board: Board };
+  UrgencyResponse: { pictogram: Pictogram };
 };
 
 export type EmergencyTabParamList = {

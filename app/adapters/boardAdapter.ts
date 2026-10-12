@@ -62,6 +62,7 @@ export const boardAdapter = {
     return {
       uuid: apiData.uuid,
       title: apiData.title,
+      type: apiData.type,
       representativePictogram: this.toPictogram(
         apiData.representativePictogram,
       ),
