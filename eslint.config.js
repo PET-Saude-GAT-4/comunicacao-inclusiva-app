@@ -7,6 +7,7 @@ import typescriptEslint from "@typescript-eslint/eslint-plugin";
 import tsParser from "@typescript-eslint/parser";
 import expoConfig from "eslint-config-expo/flat.js";
 import eslintPluginPrettierRecommended from "eslint-plugin-prettier/recommended";
+import simpleImportSort from "eslint-plugin-simple-import-sort";
 import { defineConfig, globalIgnores } from "eslint/config";
 import globals from "globals";
 
@@ -34,6 +35,7 @@ export default defineConfig([
 
     plugins: {
       "@typescript-eslint": typescriptEslint,
+      "simple-import-sort": simpleImportSort,
     },
 
     extends: compat.extends(
