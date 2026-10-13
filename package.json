@@ -60,5 +60,6 @@
     "react-native-svg-transformer": "^1.5.3",
     "typescript": "~6.0.3"
   },
-  "private": true
+  "private": true,
+  "packageManager": "yarn@4.12.0"
 }
