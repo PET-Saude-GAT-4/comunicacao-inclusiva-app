@@ -1,5 +1,6 @@
-import { COLORS } from "../../../styles/themes"; 
 import { StyleSheet } from "react-native";
+
+import { COLORS } from "../../../styles/themes";
 
 export const styles = StyleSheet.create({
   container: {
@@ -24,21 +25,6 @@ export const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "bold",
     color: "#000000",
-  },
-  icons: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap:15
-  },
-  delete: {
-    backgroundColor: "#ff0000b5",
-    borderRadius: 50,
-    padding: 10,
-  },
-  edit: {
-    backgroundColor: COLORS.surface.secondary,
-    borderRadius: 50,
-    padding: 10,
   },
   listContainer: {
     paddingBottom: 24,
