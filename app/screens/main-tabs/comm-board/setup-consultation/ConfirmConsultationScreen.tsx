@@ -1,16 +1,19 @@
-import { StepProgressBar } from "@/components/setup-consultation/StepProgressBar";
-import { useProfessionHistory } from "@/hooks/useProfessionHistory";
-import { useSession } from "@/hooks/useSession";
-import { CommBoardStackParamList } from "@/navigation/types";
-import { COLORS } from "@/styles/themes";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import {
   NativeStackNavigationProp,
   NativeStackScreenProps,
 } from "@react-navigation/native-stack";
+import React from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
+
+import { StepProgressBar } from "@/components/setup-consultation/StepProgressBar";
+import { useProfessionHistory } from "@/hooks/useProfessionHistory";
+import { useSession } from "@/hooks/useSession";
+import { CommBoardStackParamList } from "@/navigation/types";
+import { COLORS } from "@/styles/themes";
+
 import { styles } from "./ConfirmConsultationScreen.styles";
 
 type Props = NativeStackScreenProps<
@@ -32,9 +35,6 @@ export default function ConfirmConsultationScreen({ route }: Props) {
 
     // 2. Inicia a sessão de atendimento
     startConsultation();
-
-    // 3. Redireciona para o quadro de comunicação
-    navigation.replace("CommBoardScreen");
   };
 
   return (
@@ -45,7 +45,8 @@ export default function ConfirmConsultationScreen({ route }: Props) {
         <View style={styles.header}>
           <Text style={styles.title}>Confirmar Atendimento</Text>
           <Text style={styles.subtitle}>
-            Revise a área e especialidade selecionadas para iniciar o atendimento.
+            Revise a área e especialidade selecionadas para iniciar o
+            atendimento.
           </Text>
         </View>
 
@@ -101,4 +102,3 @@ export default function ConfirmConsultationScreen({ route }: Props) {
     </SafeAreaProvider>
   );
 }
-
