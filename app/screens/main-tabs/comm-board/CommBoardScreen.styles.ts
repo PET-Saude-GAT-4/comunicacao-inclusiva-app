@@ -68,6 +68,10 @@ export const styles = StyleSheet.create({
     width: 80,
     height: 80,
   },
+  pictogramItem: {
+    width: "25%",
+    alignItems: "center",
+  },
   pictogramDiv: {
     flexDirection: "column",
     alignItems: "center",

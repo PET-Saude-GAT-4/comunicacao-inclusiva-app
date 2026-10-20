@@ -519,7 +519,10 @@ export default function CommBoardScreen() {
               renderItem={({ item }) => {
                 const display = resolveTermDisplay(item, displayMode);
                 return (
-                  <TouchableOpacity onPress={() => handleSelect(item)}>
+                  <TouchableOpacity
+                    style={styles.pictogramItem}
+                    onPress={() => handleSelect(item)}
+                  >
                     <View style={styles.pictogramDiv}>
                       <Image
                         source={{ uri: display.imageSource }}
@@ -532,7 +535,6 @@ export default function CommBoardScreen() {
                   </TouchableOpacity>
                 );
               }}
-              columnWrapperStyle={{ justifyContent: "space-between" }}
             />
           )}
         </View>
