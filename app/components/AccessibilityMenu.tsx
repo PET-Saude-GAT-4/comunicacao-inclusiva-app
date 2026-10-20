@@ -1,8 +1,9 @@
-import { usePreferences } from "@/hooks/usePreferences";
-import { COLORS, CONTAINERS, TYPOGRAPHY } from "@/styles/themes";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import React, { useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+
+import { usePreferences } from "@/hooks/usePreferences";
+import { COLORS, CONTAINERS, TYPOGRAPHY } from "@/styles/themes";
 
 interface Props {
   isTextMode: boolean;
@@ -12,6 +13,8 @@ interface Props {
 export function AccessibilityMenu({ isTextMode, onToggleTextMode }: Props) {
   const [isOpen, setIsOpen] = useState(false);
   const { displayMode, toggleDisplayMode } = usePreferences();
+
+  const isSignWriting = displayMode === "signWriting";
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
@@ -43,22 +46,22 @@ export function AccessibilityMenu({ isTextMode, onToggleTextMode }: Props) {
             </Text>
           </TouchableOpacity>
 
-
-
           {/* Modo Libras */}
-          <TouchableOpacity 
-            style={[styles.optionPill, displayMode === "signWriting" && styles.activePill]} 
+          <TouchableOpacity
+            style={[styles.optionPill, isSignWriting && styles.activePill]}
             onPress={() => {
               toggleDisplayMode();
               setIsOpen(false);
             }}
           >
             <MaterialCommunityIcons
-              name="sign-language"
+              name={isSignWriting ? "image-outline" : "sign-language"}
               size={20}
               color="#FFF"
             />
-            <Text style={styles.optionText}>Modo Libras</Text>
+            <Text style={styles.optionText}>
+              {isSignWriting ? "Modo Pictogramas" : "Modo Libras"}
+            </Text>
           </TouchableOpacity>
         </View>
       )}
