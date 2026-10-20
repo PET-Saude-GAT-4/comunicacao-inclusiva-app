@@ -1,12 +1,12 @@
+import { Image } from "expo-image";
+import { FlatList, Text, View } from "react-native";
+
 import { useBoardTerms } from "@/hooks/useBoardTerms";
 import { usePreferences } from "@/hooks/usePreferences";
 import { Board } from "@/types/board.types";
 import { Term } from "@/types/term.types";
 import { resolveTermDisplay } from "@/utils/resolveTermDisplay";
-import Feather from "@expo/vector-icons/Feather";
-import MaterialIcons from "@expo/vector-icons/MaterialIcons";
-import { Image } from "expo-image";
-import { FlatList, Text, View } from "react-native";
+
 import { styles } from "./BoardDetailScreen.style";
 
 type Props = {
@@ -28,15 +28,6 @@ export default function BoardDetailScreen({ route }: Props) {
           style={styles.boardImg}
         />
         <Text style={styles.boardTitle}>{board.title}</Text>
-        <View style={styles.icons}>
-          <MaterialIcons
-            name="delete-outline"
-            size={25}
-            color="black"
-            style={styles.delete}
-          />
-          <Feather name="edit-2" size={25} color="black" style={styles.edit} />
-        </View>
       </View>
 
       <FlatList
