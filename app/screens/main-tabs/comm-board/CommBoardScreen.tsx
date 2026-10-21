@@ -47,12 +47,7 @@ export default function CommBoardScreen() {
     setCurrentSpeaker,
   } = useSession();
   const { displayMode } = usePreferences();
-  // Redirect to NoConsultationScreen when consultation ends
-  useEffect(() => {
-    if (!isInConsultation) {
-      navigation.replace("NoConsultationScreen");
-    }
-  }, [isInConsultation]);
+
 
   const [isTextMode, setIsTextMode] = useState(false);
   const [isBodyMapMode, setIsBodyMapMode] = useState(false);
