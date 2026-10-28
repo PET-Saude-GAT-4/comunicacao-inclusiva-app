@@ -16,9 +16,12 @@ interface Props {
 export function BodyMap({ onSend }: Props) {
   const [selectedRegions, setSelectedRegions] = useState<BodyRegionSlug[]>([]);
   const [isFrontView, setIsFrontView] = useState(true);
-  const { isInConsultation } = useSession(); // Will only send if it's triage or consultation
+  const { isInConsultation, currentSpeaker } = useSession();
+
+  const isPatient = currentSpeaker === "patient";
 
   const handleRegionPress = (slug: BodyRegionSlug) => {
+    if (!isPatient) return;
     setSelectedRegions((prev) => {
       if (prev.includes(slug)) {
         return prev.filter((r) => r !== slug);
@@ -28,7 +31,7 @@ export function BodyMap({ onSend }: Props) {
   };
 
   const handleSend = () => {
-    if (selectedRegions.length === 0) return;
+    if (!isPatient || selectedRegions.length === 0) return;
     const regions = selectedRegions.map((slug) => ({ slug, label: BODY_REGIONS[slug] }));
     onSend({ regions });
     setSelectedRegions([]); // Clear selection after send
@@ -47,11 +50,22 @@ export function BodyMap({ onSend }: Props) {
 
         {/* Tooltip Badge */}
         <View style={styles.tooltipBadge}>
-          <MaterialCommunityIcons name="gesture-tap" size={24} color={COLORS.text.onPrimary} />
-          <Text style={styles.helperText}>Toque no{"\n"}local do{"\n"}sintoma</Text>
+          <MaterialCommunityIcons
+            name={isPatient ? "gesture-tap" : "lock-outline"}
+            size={24}
+            color={COLORS.text.onPrimary}
+          />
+          <Text style={styles.helperText}>
+            {isPatient
+              ? "Toque no\nlocal do\nsintoma"
+              : "Apenas o\npaciente pode\nescolher"}
+          </Text>
         </View>
 
-        <View style={styles.mapWrapper}>
+        <View
+          style={styles.mapWrapper}
+          pointerEvents={isPatient ? "auto" : "none"}
+        >
           {isFrontView ? (
             <BodyFrontView
               selectedRegions={selectedRegions}
@@ -68,10 +82,10 @@ export function BodyMap({ onSend }: Props) {
         <TouchableOpacity
           style={[
             styles.sendButton,
-            selectedRegions.length === 0 && styles.sendButtonDisabled,
+            (selectedRegions.length === 0 || !isPatient) && styles.sendButtonDisabled,
           ]}
           onPress={handleSend}
-          disabled={selectedRegions.length === 0}
+          disabled={selectedRegions.length === 0 || !isPatient}
         >
           <Text style={styles.sendButtonText}>Enviar Seleção</Text>
         </TouchableOpacity>

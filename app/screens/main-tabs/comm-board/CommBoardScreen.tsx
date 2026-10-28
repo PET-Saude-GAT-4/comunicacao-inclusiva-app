@@ -187,15 +187,24 @@ export default function CommBoardScreen() {
     boards,
   ]);
 
-  // Activate BodyMapMode via route param from ConsultationMenuModal
+  // Activate BodyMapMode via route param from ConsultationMenuModal (only for patient)
   useEffect(() => {
     if (route.params?.mode === "bodyMap") {
-      setIsBodyMapMode(true);
-      setIsTextMode(false);
+      if (currentSpeaker === "patient") {
+        setIsBodyMapMode(true);
+        setIsTextMode(false);
+      }
       // Reset param so it doesn't trigger again on re-focus if unmounted
       navigation.setParams({ mode: undefined });
     }
-  }, [route.params?.mode]);
+  }, [route.params?.mode, currentSpeaker]);
+
+  // Exit BodyMapMode if speaker changes to professional
+  useEffect(() => {
+    if (isBodyMapMode && currentSpeaker === "professional") {
+      setIsBodyMapMode(false);
+    }
+  }, [currentSpeaker, isBodyMapMode]);
 
   // add terms to the visor list
   const handleSelect = (term: Term) => {
@@ -373,14 +382,14 @@ export default function CommBoardScreen() {
                  }
                  addInteraction({
                    id: Math.random().toString(36).substr(2, 9),
-                   speaker: currentSpeaker,
+                   speaker: "patient",
                    type: "bodyMap",
                    content: regionsText,
                    timestamp: new Date().toISOString(),
                    understood: true,
                  });
                  // Alterna quem fala e sai do mapa
-                 setCurrentSpeaker(currentSpeaker === "professional" ? "patient" : "professional");
+                 setCurrentSpeaker("professional");
                  setIsBodyMapMode(false);
                }}
              />

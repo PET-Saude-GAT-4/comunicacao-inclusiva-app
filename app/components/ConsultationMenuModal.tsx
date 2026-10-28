@@ -94,30 +94,32 @@ export function ConsultationMenuModal({ visible, onClose }: Props) {
               color="#000"
             />
           </TouchableOpacity>
-          <TouchableOpacity
-            style={[
-              styles.optionButton,
-              { backgroundColor: COLORS.surface.secondary },
-            ]}
-            onPress={() => {
-              onClose();
-              // @ts-ignore - bypassing strict type for nested nav
-              navigation.navigate("MainTabNav", {
-                screen: "CommBoardStackNav",
-                params: {
-                  screen: "CommBoardScreen",
-                  params: { mode: "bodyMap" }
-                }
-              });
-            }}
-          >
-            <Text style={styles.optionText}>Localização de Sintoma</Text>
-            <MaterialCommunityIcons
-              name="chevron-right"
-              size={24}
-              color="#000"
-            />
-          </TouchableOpacity>
+          {currentSpeaker === "patient" && (
+            <TouchableOpacity
+              style={[
+                styles.optionButton,
+                { backgroundColor: COLORS.surface.secondary },
+              ]}
+              onPress={() => {
+                onClose();
+                // @ts-ignore - bypassing strict type for nested nav
+                navigation.navigate("MainTabNav", {
+                  screen: "CommBoardStackNav",
+                  params: {
+                    screen: "CommBoardScreen",
+                    params: { mode: "bodyMap" },
+                  },
+                });
+              }}
+            >
+              <Text style={styles.optionText}>Localização de Sintoma</Text>
+              <MaterialCommunityIcons
+                name="chevron-right"
+                size={24}
+                color="#000"
+              />
+            </TouchableOpacity>
+          )}
           <TouchableOpacity
             style={[
               styles.optionButton,
