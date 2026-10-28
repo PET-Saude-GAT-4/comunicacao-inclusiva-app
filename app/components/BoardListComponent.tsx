@@ -46,7 +46,7 @@ export default function BoardListComponent({
         ListEmptyComponent={
           emptyMessage ? (
             <Text style={styles.emptyMessage}>{emptyMessage}</Text>
-          ) : null
+          ) : undefined
         }
         renderItem={({ item }) => (
           <TouchableOpacity onPress={() => onBoardPress(item)}>

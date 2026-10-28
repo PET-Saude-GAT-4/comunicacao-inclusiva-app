@@ -25,7 +25,6 @@ export default function App() {
                 <NavigationContainer theme={navTheme}>
                   <StatusBar
                     barStyle={theme.dark ? "light-content" : "dark-content"}
-                    backgroundColor={theme.colors.background}
                   />
                   <RootStackNavigator />
                 </NavigationContainer>

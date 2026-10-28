@@ -9,7 +9,7 @@ const now = new Date().toISOString();
 const timestamp = () => ({ createdAt: now, updatedAt: now });
 
 function img(asset: any): string {
-  return Image.resolveAssetSource(asset).uri;
+  return Image.resolveAssetSource(asset)?.uri ?? "";
 }
 
 // Mirrors TERM_FILES in the api repo. Both halves of
