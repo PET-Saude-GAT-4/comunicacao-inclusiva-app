@@ -9,10 +9,12 @@ import { useState } from "react";
 import { FlatList, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { styles } from "./SelectSpecialityScreen.styles";
+import { useHotBarInset } from "@/hooks/useHotBarInset";
 
 type Props = NativeStackScreenProps<CommBoardStackParamList, "SelectSpecialityScreen">;
 
 export default function SelectSpecialityScreen({ route }: Props) {
+  const hotBarInset = useHotBarInset();
   const { profession } = route.params;
   const { specialities } = useSpecialities(profession.code);
   const [selectedSpeciality, setSelectedSpeciality] = useState<Speciality>();
@@ -37,7 +39,7 @@ export default function SelectSpecialityScreen({ route }: Props) {
 
   return (
     <SafeAreaProvider style={styles.safeArea}>
-      <View style={styles.container}>
+      <View style={[styles.container, { paddingBottom: hotBarInset }]}>
         <StepProgressBar currentStep={2} />
 
         <View style={styles.header}>

@@ -8,12 +8,14 @@ import { Term } from "@/types/term.types";
 import { resolveTermDisplay } from "@/utils/resolveTermDisplay";
 
 import { styles } from "./BoardDetailScreen.style";
+import { useHotBarInset } from "@/hooks/useHotBarInset";
 
 type Props = {
   route: { params: { board: Board } };
 };
 
 export default function BoardDetailScreen({ route }: Props) {
+  const hotBarInset = useHotBarInset();
   const { board } = route.params;
   const { displayMode } = usePreferences();
 
@@ -34,7 +36,10 @@ export default function BoardDetailScreen({ route }: Props) {
         data={terms}
         numColumns={4}
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.listContainer}
+        contentContainerStyle={[
+          styles.listContainer,
+          { paddingBottom: hotBarInset },
+        ]}
         keyExtractor={(item: Term) => item.uuid}
         renderItem={({ item }: { item: Term }) => {
           const display = resolveTermDisplay(item, displayMode);

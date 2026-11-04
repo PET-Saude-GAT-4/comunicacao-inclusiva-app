@@ -7,6 +7,7 @@ import React, { useMemo, useState } from "react";
 import { FlatList, Text, TouchableOpacity, View } from "react-native";
 import { styles } from "./BoardListComponent.style";
 import { SearchBar } from "./SearchBar";
+import { useHotBarInset } from "@/hooks/useHotBarInset";
 
 type Props = {
   boards: Board[];
@@ -21,6 +22,7 @@ export default function BoardListComponent({
   emptyMessage,
   showSaveButton = true,
 }: Props) {
+  const hotBarInset = useHotBarInset();
   const [searchQuery, setSearchQuery] = useState("");
   const { isSaved, toggleSaved } = useMyCollection();
 
@@ -42,6 +44,7 @@ export default function BoardListComponent({
       <FlatList
         data={filteredBoards}
         showsVerticalScrollIndicator={false}
+        contentContainerStyle={{ paddingBottom: hotBarInset }}
         keyExtractor={(item) => item.uuid}
         ListEmptyComponent={
           emptyMessage ? (

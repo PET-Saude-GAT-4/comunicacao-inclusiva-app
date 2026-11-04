@@ -10,6 +10,7 @@ import {
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import {CONTAINERS, TYPOGRAPHY, COLORS} from "@/styles/themes";
 import { Pictogram } from "@/types/pictogram.types";
+import { useHotBarInset } from "@/hooks/useHotBarInset";
 
 type Board = {
   uuid: string;
@@ -30,6 +31,7 @@ export default function BoardList({
     keyExtractor = (item: Board) => item.uuid,
     renderListEmptyComponent
 } : BoardListProps) {
+  const hotBarInset = useHotBarInset();
 
 
   return (
@@ -37,6 +39,7 @@ export default function BoardList({
         <FlatList
           data={filteredBoards}
           showsVerticalScrollIndicator={false}
+          contentContainerStyle={{ paddingBottom: hotBarInset }}
           keyExtractor={keyExtractor}
           renderItem={({ item }) => (
             <TouchableOpacity

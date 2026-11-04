@@ -7,6 +7,7 @@ import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
 import { Image } from "expo-image";
 import React from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { useHotBarInset } from "@/hooks/useHotBarInset";
 
 type UrgencyRouteProp = RouteProp<
   QuickEmergencyStackParamList,
@@ -22,6 +23,7 @@ export function UrgencyResponseScreen({
   pictogram: propPictogram,
   onPickAnotherSymptom,
 }: Props) {
+  const hotBarInset = useHotBarInset();
   const navigation = useNavigation<any>();
   const route = useRoute<UrgencyRouteProp>();
   const { displayMode } = usePreferences();
@@ -58,7 +60,7 @@ export function UrgencyResponseScreen({
   }
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { paddingBottom: hotBarInset }]}>
       <Text style={styles.title}>Sintoma Apontado</Text>
 
       <View style={styles.content}>

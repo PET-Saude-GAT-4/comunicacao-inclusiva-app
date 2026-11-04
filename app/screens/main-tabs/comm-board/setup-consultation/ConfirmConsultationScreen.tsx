@@ -15,6 +15,7 @@ import { CommBoardStackParamList } from "@/navigation/types";
 import { COLORS } from "@/styles/themes";
 
 import { styles } from "./ConfirmConsultationScreen.styles";
+import { useHotBarInset } from "@/hooks/useHotBarInset";
 
 type Props = NativeStackScreenProps<
   CommBoardStackParamList,
@@ -22,6 +23,7 @@ type Props = NativeStackScreenProps<
 >;
 
 export default function ConfirmConsultationScreen({ route }: Props) {
+  const hotBarInset = useHotBarInset();
   const { profession, speciality } = route.params;
   const { startConsultation } = useSession();
   const { addHistoryEntry } = useProfessionHistory();
@@ -39,7 +41,7 @@ export default function ConfirmConsultationScreen({ route }: Props) {
 
   return (
     <SafeAreaProvider style={styles.safeArea}>
-      <View style={styles.container}>
+      <View style={[styles.container, { paddingBottom: hotBarInset }]}>
         <StepProgressBar currentStep={3} />
 
         <View style={styles.header}>
