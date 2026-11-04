@@ -22,7 +22,7 @@ import MyCollectionStackNav from "./main-tabs/my-collection/MyCollectionStackNav
 
 import { MaterialIcons } from "@expo/vector-icons";
 
-import { screenOptions } from "./MainTab.style";
+import { HOT_BAR, screenOptions, styling } from "./MainTab.style";
 
 const MORE_ICON = Platform.OS === "ios" ? "dots-horizontal" : "dots-vertical";
 
@@ -47,13 +47,21 @@ export default function MainTabNav() {
           header: (props) => <GlobalHeader {...props} />,
         }}
         tabBar={(props) => (
-          <>
+          // Float the hot-bar above the system navigation bar / home
+          // indicator instead of letting it stretch underneath it.
+          <View
+            pointerEvents="box-none"
+            style={[
+              styling.container,
+              { bottom: props.insets.bottom + HOT_BAR.bottomGap },
+            ]}
+          >
             <OfflineBanner
               visible={bannerVisible}
               onClose={() => setBannerVisible(false)}
             />
-            <BottomTabBar {...props} />
-          </>
+            <BottomTabBar {...props} insets={{ ...props.insets, bottom: 0 }} />
+          </View>
         )}
       >
         <MainTabs.Screen
@@ -79,10 +87,10 @@ export default function MainTabNav() {
                   />
                 </View>
               ) : null,
-            tabBarIcon: ({ color, size, focused }) => (
+            tabBarIcon: ({ color }) => (
               <MaterialIcons
-                name={focused ? "content-paste-search" : "content-paste-search"}
-                size={size}
+                name="content-paste-search"
+                size={HOT_BAR.iconSize}
                 color={color}
               />
             ),
@@ -101,10 +109,10 @@ export default function MainTabNav() {
                 onPress={() => setMenuVisible(true)}
               />
             ),
-            tabBarIcon: ({ color, size, focused }) => (
+            tabBarIcon: ({ color }) => (
               <MaterialIcons
-                name={focused ? "content-paste" : "content-paste"}
-                size={size}
+                name="content-paste"
+                size={HOT_BAR.iconSize}
                 color={color}
               />
             ),
@@ -117,10 +125,10 @@ export default function MainTabNav() {
             headerShown: false,
             title: "Emergência",
             headerRight: () => <></>,
-            tabBarIcon: ({ color, size, focused }) => (
+            tabBarIcon: ({ color }) => (
               <MaterialIcons
-                name={focused ? "warning" : "warning"}
-                size={size}
+                name="warning"
+                size={HOT_BAR.iconSize}
                 color={color}
               />
             ),
@@ -133,10 +141,10 @@ export default function MainTabNav() {
             headerShown: false,
             title: "Biblioteca",
             headerRight: () => <></>,
-            tabBarIcon: ({ color, size, focused }) => (
+            tabBarIcon: ({ color }) => (
               <MaterialIcons
-                name={focused ? "library-books" : "library-books"}
-                size={size}
+                name="library-books"
+                size={HOT_BAR.iconSize}
                 color={color}
               />
             ),
@@ -148,13 +156,8 @@ export default function MainTabNav() {
           options={{
             title: "Configurações",
             headerRight: () => <></>,
-            tabBarIcon: ({ color, size, focused }) => (
-              <MaterialIcons
-                name={focused ? "settings" : "settings"}
-                size={size}
-                color={color}
-              />
-            ),
+            // Soft-excluded: still routable, but no longer shown in the hot-bar.
+            tabBarItemStyle: { display: "none" },
           }}
         />
       </MainTabs.Navigator>
