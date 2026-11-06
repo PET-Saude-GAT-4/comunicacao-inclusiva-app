@@ -33,8 +33,10 @@ import {
   View,
 } from "react-native";
 import { styles } from "./CommBoardScreen.styles";
+import { useHotBarInset } from "@/hooks/useHotBarInset";
 
 export default function CommBoardScreen() {
+  const hotBarInset = useHotBarInset();
   const navigation =
     useNavigation<NativeStackNavigationProp<CommBoardStackParamList>>();
   const route =
@@ -518,6 +520,7 @@ export default function CommBoardScreen() {
             <FlatList
               numColumns={4}
               showsVerticalScrollIndicator={false}
+              contentContainerStyle={{ paddingBottom: hotBarInset }}
               data={terms}
               keyExtractor={(item) => item.uuid}
               renderItem={({ item }) => {

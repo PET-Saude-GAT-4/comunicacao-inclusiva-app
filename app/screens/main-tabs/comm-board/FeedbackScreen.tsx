@@ -11,8 +11,10 @@ import { Image } from "expo-image";
 import React from "react";
 import { ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { styles } from "./FeedbackScreen.styles";
+import { useHotBarInset } from "@/hooks/useHotBarInset";
 
 export default function FeedbackScreen() {
+  const hotBarInset = useHotBarInset();
   const route = useRoute<RouteProp<RootStackParamList, "FeedbackScreen">>();
   const navigation = useNavigation();
   const { addInteraction, setCurrentSpeaker } = useSession();
@@ -62,7 +64,7 @@ export default function FeedbackScreen() {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { paddingBottom: hotBarInset }]}>
       {/* Speaker indication */}
       <Text
         style={[

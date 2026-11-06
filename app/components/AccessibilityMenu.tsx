@@ -2,6 +2,7 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import React, { useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
+import { useHotBarInset } from "@/hooks/useHotBarInset";
 import { usePreferences } from "@/hooks/usePreferences";
 import { COLORS, CONTAINERS, TYPOGRAPHY } from "@/styles/themes";
 
@@ -13,6 +14,7 @@ interface Props {
 export function AccessibilityMenu({ isTextMode, onToggleTextMode }: Props) {
   const [isOpen, setIsOpen] = useState(false);
   const { displayMode, toggleDisplayMode } = usePreferences();
+  const hotBarInset = useHotBarInset();
 
   const isSignWriting = displayMode === "signWriting";
 
@@ -21,7 +23,12 @@ export function AccessibilityMenu({ isTextMode, onToggleTextMode }: Props) {
   };
 
   return (
-    <View style={styles.container}>
+    <View
+      style={[
+        styles.container,
+        hotBarInset ? { bottom: hotBarInset } : null,
+      ]}
+    >
       {isOpen && (
         <View style={styles.optionsContainer}>
           {/* Alto-contraste 

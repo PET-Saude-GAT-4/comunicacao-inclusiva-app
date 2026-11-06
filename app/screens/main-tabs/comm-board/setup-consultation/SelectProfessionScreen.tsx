@@ -10,8 +10,10 @@ import { useState } from "react";
 import { FlatList, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { styles } from "./SelectProfessionScreen.styles";
+import { useHotBarInset } from "@/hooks/useHotBarInset";
 
 export default function SelectProfessionScreen() {
+  const hotBarInset = useHotBarInset();
   const { professions } = useProfessions();
   const [selectedProfession, setSelectedProfession] = useState<Profession>();
 
@@ -20,7 +22,7 @@ export default function SelectProfessionScreen() {
 
   return (
     <SafeAreaProvider style={styles.safeArea}>
-      <View style={styles.container}>
+      <View style={[styles.container, { paddingBottom: hotBarInset }]}>
         <StepProgressBar currentStep={1} />
 
         <View style={styles.header}>

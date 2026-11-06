@@ -11,8 +11,10 @@ import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { useNavigation } from "@react-navigation/native";
 import React, { useMemo, useState } from "react";
 import { FlatList, Text, TouchableOpacity, View } from "react-native";
+import { useHotBarInset } from "@/hooks/useHotBarInset";
 
 export default function MyPhraseScreen() {
+  const hotBarInset = useHotBarInset();
   const [searchQuery, setSearchQuery] = useState("");
   const { listedPhrases, isLoading } = usePhrases();
   const { savedUuids } = useMyCollection();
@@ -65,7 +67,10 @@ export default function MyPhraseScreen() {
       <FlatList
         data={savedPhrases}
         keyExtractor={(item) => item.uuid}
-        contentContainerStyle={styles.listContent}
+        contentContainerStyle={[
+          styles.listContent,
+          { paddingBottom: hotBarInset },
+        ]}
         showsVerticalScrollIndicator={false}
         ListEmptyComponent={
           <View style={styles.emptyContainer}>

@@ -8,8 +8,10 @@ import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import React, { useMemo, useState } from "react";
 import { FlatList, Text, TouchableOpacity, View } from "react-native";
 import { styles } from "./PhrasesScreen.styles";
+import { useHotBarInset } from "@/hooks/useHotBarInset";
 
 export default function PhrasesScreen() {
+  const hotBarInset = useHotBarInset();
   const [searchQuery, setSearchQuery] = useState("");
   const { listedPhrases, isLoading } = usePhrases();
   const { isSaved, toggleSaved } = useMyCollection();
@@ -40,7 +42,10 @@ export default function PhrasesScreen() {
       <FlatList
         data={filteredPhrases}
         keyExtractor={(item) => item.uuid}
-        contentContainerStyle={styles.listContent}
+        contentContainerStyle={[
+          styles.listContent,
+          { paddingBottom: hotBarInset },
+        ]}
         showsVerticalScrollIndicator={false}
         ListEmptyComponent={
           <View style={styles.emptyContainer}>

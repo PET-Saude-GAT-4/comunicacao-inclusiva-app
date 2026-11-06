@@ -17,8 +17,10 @@ import {
   View,
 } from "react-native";
 import { styles } from "./ReportScreen.styles";
+import { useHotBarInset } from "@/hooks/useHotBarInset";
 
 export default function ReportScreen() {
+  const hotBarInset = useHotBarInset();
   const navigation = useNavigation();
   const { interactions, endConsultation } = useSession();
 
@@ -35,7 +37,7 @@ export default function ReportScreen() {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { paddingBottom: hotBarInset }]}>
       <Text style={styles.header}>Atendimento — {consultationDate}</Text>
       <FlatList
         data={interactions}
