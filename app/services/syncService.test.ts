@@ -156,4 +156,26 @@ describe("SyncService.syncAll", () => {
     expect((await cached(TRIAGE_STEPS_CACHE_KEY))[0].level).toBe(1);
     expect((await cached(PHRASES_CACHE_KEY))[0].uuid).toBe("phrase-1");
   });
+
+  it("isolates a failure on one board's terms to that board", async () => {
+    const previous = [{ uuid: "old-term" }];
+    await AsyncStorage.setItem(
+      boardTermsCacheKey("common-1"),
+      JSON.stringify(previous),
+    );
+    serve({
+      ...defaultRoutes(),
+      [`${API}/boards/common-1/terms`]: new Error("timeout"),
+    });
+
+    await new SyncService().syncAll();
+
+    expect(await cached(boardTermsCacheKey("common-1"))).toEqual(previous);
+    expect((await cached(nextBoardsCacheKey("common-1")))[0].uuid).toBe(
+      "emergency-1",
+    );
+    expect((await cached(boardTermsCacheKey("emergency-1")))[0].uuid).toBe(
+      "t-emergency",
+    );
+  });
 });
