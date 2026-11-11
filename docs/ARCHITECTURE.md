@@ -110,7 +110,11 @@ API ──request()──▶ services ──adapters──▶ syncService ──
    emergency boards, every board's terms and next boards, triage steps, phrases
    and each phrase's next boards. Each resource syncs on its own: a failure
    keeps that resource's previous cache and does not stop the others.
-   `syncAll` returns `false` if anything failed.
+   `syncAll` returns `false` when a top-level list (professions, common boards,
+   emergency boards, triage steps, phrases) fails to download. A failure on a
+   single board's terms or next boards, a phrase's next boards or a
+   profession's specialities is only logged: that entry keeps its previous
+   cache and `syncAll` still returns `true`.
 5. **Read.** Hooks (`useBoards`, `usePhrases`, `useTriage`, …) read the cache.
    When it is empty they fall back to `app/mocks/` or, for emergency content,
    to `app/content/emergency.ts`, so the app is usable on first launch without
@@ -120,7 +124,10 @@ API ──request()──▶ services ──adapters──▶ syncService ──
    `OfflineBanner` above the hot-bar until it is dismissed.
 
 Empty lists of next boards and triage steps are cached too: "no
-recommendation" has to be distinguishable from "never synced".
+recommendation" has to be distinguishable from "never synced". The other
+resources are not: an empty list of professions, boards, phrases, a board's
+terms or a profession's specialities skips the write and leaves whatever was
+cached before.
 
 Image files are not part of the sync; terms and boards cache only their URLs.
 
