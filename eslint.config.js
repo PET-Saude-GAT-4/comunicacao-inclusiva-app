@@ -58,36 +58,4 @@ export default defineConfig([
       "@typescript-eslint/no-empty-object-type": "off",
     },
   },
-  {
-    // These files broke the React Compiler rules before CI existed. They stay
-    // warnings here, and only here, until #97 fixes them in code: the
-    // data-loading hooks, the pain scale and the speaker toggle have no screen
-    // tests to catch a regression. Remove a file from the list once it is
-    // clean; everywhere else the rules are errors.
-    files: [
-      "app/components/BoardSkeleton.tsx",
-      "app/components/SpeakerToggleButton.tsx",
-      "app/components/pain-scale/PainScaleSlider.tsx",
-      "app/components/pain-scale/PainScaleTray.tsx",
-      "app/hooks/useBoardTerms.ts",
-      "app/hooks/useBoards.ts",
-      "app/hooks/useEmergency.ts",
-      "app/hooks/useModuleBoardTerms.ts",
-      "app/hooks/useNextBoards.ts",
-      "app/hooks/usePhraseNextBoards.ts",
-      "app/hooks/usePhrases.ts",
-      "app/hooks/useProfession.ts",
-      "app/hooks/useSpecialities.ts",
-      "app/hooks/useSyncEngine.ts",
-      "app/hooks/useTriage.ts",
-      "app/navigation/MainTabNav.tsx",
-      "app/screens/main-tabs/comm-board/CommBoardScreen.tsx",
-      "app/screens/main-tabs/comm-board/NoConsultationScreen.tsx",
-    ],
-    rules: {
-      "react-hooks/set-state-in-effect": "warn",
-      "react-hooks/immutability": "warn",
-      "react-hooks/refs": "warn",
-    },
-  },
 ]);

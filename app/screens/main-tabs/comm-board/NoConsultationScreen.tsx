@@ -1,7 +1,7 @@
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 import { Snackbar } from "react-native-paper";
 
@@ -17,14 +17,9 @@ export default function NoConsultationScreen() {
   const route =
     useRoute<RouteProp<CommBoardStackParamList, "NoConsultationScreen">>();
 
-  const [snackbarVisible, setSnackbarVisible] = useState(false);
-
-  useEffect(() => {
-    if (route.params?.showPhrasePrompt) {
-      setSnackbarVisible(true);
-      navigation.setParams({ showPhrasePrompt: undefined });
-    }
-  }, [route.params?.showPhrasePrompt]);
+  // The param is the prompt's state: it shows while the param is set, and
+  // dismissing it clears the param so a return visit does not prompt again.
+  const snackbarVisible = route.params?.showPhrasePrompt === true;
 
   return (
     <View style={styles.container}>
@@ -54,7 +49,7 @@ export default function NoConsultationScreen() {
       </View>
       <Snackbar
         visible={snackbarVisible}
-        onDismiss={() => setSnackbarVisible(false)}
+        onDismiss={() => navigation.setParams({ showPhrasePrompt: undefined })}
         duration={2500}
       >
         Inicie um atendimento para usar frases prontas.
