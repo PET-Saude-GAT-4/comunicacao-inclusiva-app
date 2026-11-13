@@ -283,8 +283,9 @@ export class SyncService {
       const removed: string[] = [];
 
       for (const [prefix, lists] of families) {
-        if (lists.some((list) => list.ids === null)) continue;
-        const live = new Set(lists.flatMap((list) => list.ids ?? []));
+        const listed = lists.map((list) => list.ids);
+        if (!listed.every((ids): ids is string[] => ids !== null)) continue;
+        const live = new Set(listed.flat());
         for (const key of keys) {
           if (key.startsWith(prefix) && !live.has(key.slice(prefix.length))) {
             removed.push(key);
