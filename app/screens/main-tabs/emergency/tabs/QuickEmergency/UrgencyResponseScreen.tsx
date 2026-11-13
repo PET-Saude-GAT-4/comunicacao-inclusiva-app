@@ -19,7 +19,8 @@ import {
   QuickEmergencyStackParamList,
 } from "@/navigation/types";
 import { COLORS, CONTAINERS, TYPOGRAPHY } from "@/styles/themes";
-import { Pictogram } from "@/types/pictogram.types";
+import { Term } from "@/types/term.types";
+import { resolveTermDisplay } from "@/utils/resolveTermDisplay";
 
 type UrgencyRouteProp = RouteProp<
   QuickEmergencyStackParamList,
@@ -27,12 +28,12 @@ type UrgencyRouteProp = RouteProp<
 >;
 
 type Props = {
-  pictogram?: Pictogram;
+  term?: Term;
   onPickAnotherSymptom?: () => void;
 };
 
 export function UrgencyResponseScreen({
-  pictogram: propPictogram,
+  term: propTerm,
   onPickAnotherSymptom,
 }: Props) {
   const hotBarInset = useHotBarInset();
@@ -56,7 +57,7 @@ export function UrgencyResponseScreen({
   const { displayMode } = usePreferences();
   const isSignWriting = displayMode === "signWriting";
 
-  const pictogram = propPictogram ?? route.params?.pictogram;
+  const term = propTerm ?? route.params?.term;
 
   const handleBackToQuickEmergency = () => {
     if (onPickAnotherSymptom) {
@@ -72,7 +73,7 @@ export function UrgencyResponseScreen({
     navigation.navigate("CommBoardStackNav");
   };
 
-  if (!pictogram) {
+  if (!term) {
     return (
       <View style={styles.centered}>
         <Text style={styles.errorText}>Nenhum sintoma selecionado.</Text>
@@ -85,6 +86,8 @@ export function UrgencyResponseScreen({
       </View>
     );
   }
+
+  const display = resolveTermDisplay(term, displayMode);
 
   return (
     <View style={[styles.container, { paddingBottom: hotBarInset }]}>
@@ -99,7 +102,7 @@ export function UrgencyResponseScreen({
             ]}
           >
             <Image
-              source={pictogram.imageSource}
+              source={display.imageSource}
               style={styles.image}
               contentFit="contain"
             />
@@ -110,7 +113,7 @@ export function UrgencyResponseScreen({
             adjustsFontSizeToFit
             minimumFontScale={0.6}
           >
-            {pictogram.description.toUpperCase()}
+            {display.label}
           </Text>
         </View>
 

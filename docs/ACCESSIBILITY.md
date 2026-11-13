@@ -17,9 +17,6 @@ transcription. Which one is shown is a single app-wide preference.
   single place that picks the image and the label for a term. Screens and
   components call it instead of reading `term.pictogram` or `term.signWriting`
   directly, so every surface switches together. The label is upper-cased.
-  One exception remains: tapping a symptom in an emergency module opens
-  `UrgencyResponseScreen` with the term's pictogram, so that screen shows the
-  pictogram even in SignWriting mode.
 - Board covers (category chips, board cards) are not terms and keep using
   `board.representativePictogram`.
 - Each interaction records the `displayMode` active when it was sent, so the

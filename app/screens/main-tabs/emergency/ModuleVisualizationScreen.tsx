@@ -15,7 +15,6 @@ import { usePreferences } from "@/hooks/usePreferences";
 import { EmergencyStackParamList } from "@/navigation/types";
 import { COLORS, CONTAINERS, TYPOGRAPHY } from "@/styles/themes";
 import { Board } from "@/types/board.types";
-import { Pictogram } from "@/types/pictogram.types";
 import { Term } from "@/types/term.types";
 import { resolveTermDisplay } from "@/utils/resolveTermDisplay";
 
@@ -26,12 +25,12 @@ type ModuleVisualizationRouteProp = RouteProp<
 
 type Props = {
   board?: Board;
-  onPictogramPress?: (pictogram: Pictogram) => void;
+  onTermPress?: (term: Term) => void;
 };
 
 export default function ModuleVisualizationScreen({
   board: boardProp,
-  onPictogramPress,
+  onTermPress,
 }: Props) {
   const navigation =
     useNavigation<NativeStackNavigationProp<EmergencyStackParamList>>();
@@ -44,12 +43,12 @@ export default function ModuleVisualizationScreen({
   );
 
   function onTap(term: Term) {
-    if (onPictogramPress) {
-      onPictogramPress(term.pictogram);
+    if (onTermPress) {
+      onTermPress(term);
     } else {
       // Opened as a categorized module: show the symptom the way Quick
       // Emergency does, rather than nothing at all.
-      navigation.navigate("UrgencyResponse", { pictogram: term.pictogram });
+      navigation.navigate("UrgencyResponse", { term });
     }
   }
 

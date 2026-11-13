@@ -1,6 +1,5 @@
 import { NavigatorScreenParams } from "@react-navigation/native";
 
-import { Pictogram } from "@/types/pictogram.types";
 import { Profession } from "@/types/profession.types";
 import { Term } from "@/types/term.types";
 
@@ -87,7 +86,7 @@ export type LibraryPhraseStackParamList = {
 export type EmergencyStackParamList = {
   EmergencyTab: undefined;
   ModuleVisualization: { board: Board };
-  UrgencyResponse: { pictogram: Pictogram };
+  UrgencyResponse: { term: Term };
 };
 
 export type EmergencyTabParamList = {
@@ -97,5 +96,5 @@ export type EmergencyTabParamList = {
 
 export type QuickEmergencyStackParamList = {
   QuickEmergency: undefined;
-  UrgencyResponse: { pictogram: Pictogram };
+  UrgencyResponse: { term: Term };
 };

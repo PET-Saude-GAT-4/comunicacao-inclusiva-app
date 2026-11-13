@@ -52,8 +52,8 @@ export function QuickEmergencyScreen() {
         {selectedBoard && (
           <ModuleVisualizationScreen
             board={selectedBoard}
-            onPictogramPress={(pictogram) => {
-              navigation.navigate("UrgencyResponse", { pictogram });
+            onTermPress={(term) => {
+              navigation.navigate("UrgencyResponse", { term });
             }}
           />
         )}
