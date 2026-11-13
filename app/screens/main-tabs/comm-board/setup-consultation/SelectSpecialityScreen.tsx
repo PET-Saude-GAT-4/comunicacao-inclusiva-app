@@ -1,17 +1,25 @@
-import { RadioOption } from "@/components/setup-consultation/RadioOption";
-import { StepProgressBar } from "@/components/setup-consultation/StepProgressBar";
-import { useSpecialities } from "@/hooks/useSpecialities";
-import { CommBoardStackParamList } from "@/navigation/types";
-import { Speciality } from "@/types/speciality.types";
 import { useNavigation } from "@react-navigation/native";
-import { NativeStackNavigationProp, NativeStackScreenProps } from "@react-navigation/native-stack";
+import {
+  NativeStackNavigationProp,
+  NativeStackScreenProps,
+} from "@react-navigation/native-stack";
 import { useState } from "react";
 import { FlatList, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
-import { styles } from "./SelectSpecialityScreen.styles";
-import { useHotBarInset } from "@/hooks/useHotBarInset";
 
-type Props = NativeStackScreenProps<CommBoardStackParamList, "SelectSpecialityScreen">;
+import { RadioOption } from "@/components/setup-consultation/RadioOption";
+import { StepProgressBar } from "@/components/setup-consultation/StepProgressBar";
+import { useHotBarInset } from "@/hooks/useHotBarInset";
+import { useSpecialities } from "@/hooks/useSpecialities";
+import { CommBoardStackParamList } from "@/navigation/types";
+import { Speciality } from "@/types/speciality.types";
+
+import { styles } from "./SelectSpecialityScreen.styles";
+
+type Props = NativeStackScreenProps<
+  CommBoardStackParamList,
+  "SelectSpecialityScreen"
+>;
 
 export default function SelectSpecialityScreen({ route }: Props) {
   const hotBarInset = useHotBarInset();
@@ -28,7 +36,7 @@ export default function SelectSpecialityScreen({ route }: Props) {
     code: "GERAL",
     professionId: profession.id,
     createdAt: new Date().toISOString(),
-    updatedAt: new  Date().toISOString(),
+    updatedAt: new Date().toISOString(),
   };
 
   // if the list of specialities is empty
@@ -96,4 +104,3 @@ export default function SelectSpecialityScreen({ route }: Props) {
     </SafeAreaProvider>
   );
 }
-

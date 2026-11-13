@@ -1,27 +1,25 @@
-import { useSession } from "@/hooks/useSession";
-import { useSyncEngine } from "@/hooks/useSyncEngine";
+import { MaterialIcons } from "@expo/vector-icons";
 import {
   BottomTabBar,
   createBottomTabNavigator,
 } from "@react-navigation/bottom-tabs";
 import React, { useEffect, useState } from "react";
-
-import GlobalHeader from "@/components/GlobalHeaderComponent";
+import { Platform, View } from "react-native";
 import { Appbar } from "react-native-paper";
-import CommBoardStackNavigator from "./main-tabs/comm-board/CommBoardStackNav";
-import SettingsStackNav from "./main-tabs/settings/SettingsStackNav";
 
 import { ConsultationMenuModal } from "@/components/ConsultationMenuModal";
+import GlobalHeader from "@/components/GlobalHeaderComponent";
 import { OfflineBanner } from "@/components/OfflineBanner";
 import { SpeakerToggleButton } from "@/components/SpeakerToggleButton";
+import { useSession } from "@/hooks/useSession";
+import { useSyncEngine } from "@/hooks/useSyncEngine";
 import { COLORS } from "@/styles/themes";
-import { Platform, View } from "react-native";
+
+import CommBoardStackNavigator from "./main-tabs/comm-board/CommBoardStackNav";
 import EmergencyStackNav from "./main-tabs/emergency/EmergencyStackNav";
 import LibraryStackNav from "./main-tabs/library/LibraryStackNav";
 import MyCollectionStackNav from "./main-tabs/my-collection/MyCollectionStackNav";
-
-import { MaterialIcons } from "@expo/vector-icons";
-
+import SettingsStackNav from "./main-tabs/settings/SettingsStackNav";
 import { HOT_BAR, screenOptions, styling } from "./MainTab.style";
 
 const MORE_ICON = Platform.OS === "ios" ? "dots-horizontal" : "dots-vertical";

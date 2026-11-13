@@ -1,7 +1,8 @@
-import { HOT_BAR } from "@/navigation/MainTab.style";
 import { BottomTabBarHeightContext } from "@react-navigation/bottom-tabs";
 import { useContext } from "react";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+
+import { HOT_BAR } from "@/navigation/MainTab.style";
 
 /**
  * Bottom space a screen must leave free so its content can scroll out from

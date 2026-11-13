@@ -1,8 +1,9 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useEffect, useMemo, useState } from "react";
+
 import { PHRASES_CACHE_KEY } from "@/constants/cache";
 import { phrasesMock } from "@/mocks/phraseMock";
 import { Phrase } from "@/types/phrase.types";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useEffect, useMemo, useState } from "react";
 
 // The cache holds whatever the app wrote the last time it synced, so a phrase
 // stored before `listedInLibrary` existed carries no value for it. Reading that

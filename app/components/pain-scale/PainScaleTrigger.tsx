@@ -1,7 +1,8 @@
-import { COLORS, CONTAINERS } from "@/styles/themes";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import React from "react";
 import { Pressable, StyleSheet } from "react-native";
+
+import { COLORS, CONTAINERS } from "@/styles/themes";
 
 interface Props {
   onPress: () => void;

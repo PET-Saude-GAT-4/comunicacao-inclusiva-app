@@ -1,6 +1,7 @@
-import { CatEmergencyScreen } from "@/screens/main-tabs/emergency/tabs/CatEmergencyScreen";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import React from "react";
+
+import { CatEmergencyScreen } from "@/screens/main-tabs/emergency/tabs/CatEmergencyScreen";
 
 const Stack = createNativeStackNavigator();
 

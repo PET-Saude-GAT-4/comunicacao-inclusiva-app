@@ -1,10 +1,11 @@
+import { useNavigation } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import React, { useMemo } from "react";
+
 import BoardListComponent from "@/components/BoardListComponent";
 import { useBoards } from "@/hooks/useBoards";
 import { useMyCollection } from "@/hooks/useMyCollection";
 import { MyCollectionStackParamList } from "@/navigation/types";
-import { useNavigation } from "@react-navigation/native";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import React, { useMemo } from "react";
 
 export default function MyBoardScreen() {
   type NavProp = NativeStackNavigationProp<

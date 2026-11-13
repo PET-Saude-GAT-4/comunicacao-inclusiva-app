@@ -1,13 +1,25 @@
-import { usePreferences } from "@/hooks/usePreferences";
-import { QuickEmergencyStackParamList } from "@/navigation/types";
-import { COLORS, CONTAINERS, TYPOGRAPHY } from "@/styles/themes";
-import { Pictogram } from "@/types/pictogram.types";
 import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
-import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
+import {
+  CompositeNavigationProp,
+  NavigationProp,
+  RouteProp,
+  useNavigation,
+  useRoute,
+} from "@react-navigation/native";
 import { Image } from "expo-image";
 import React from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+
 import { useHotBarInset } from "@/hooks/useHotBarInset";
+import { usePreferences } from "@/hooks/usePreferences";
+import {
+  EmergencyStackParamList,
+  EmergencyTabParamList,
+  MainTabParamList,
+  QuickEmergencyStackParamList,
+} from "@/navigation/types";
+import { COLORS, CONTAINERS, TYPOGRAPHY } from "@/styles/themes";
+import { Pictogram } from "@/types/pictogram.types";
 
 type UrgencyRouteProp = RouteProp<
   QuickEmergencyStackParamList,
@@ -24,7 +36,22 @@ export function UrgencyResponseScreen({
   onPickAnotherSymptom,
 }: Props) {
   const hotBarInset = useHotBarInset();
-  const navigation = useNavigation<any>();
+  // Typed after the deeper of its two mounts: QuickEmergencyStackNav, inside
+  // the emergency top tabs, inside EmergencyStackNav, inside the main tabs.
+  // EmergencyStackNav also mounts it directly, one level up the same chain.
+  const navigation =
+    useNavigation<
+      CompositeNavigationProp<
+        NavigationProp<QuickEmergencyStackParamList>,
+        CompositeNavigationProp<
+          NavigationProp<EmergencyTabParamList>,
+          CompositeNavigationProp<
+            NavigationProp<EmergencyStackParamList>,
+            NavigationProp<MainTabParamList>
+          >
+        >
+      >
+    >();
   const route = useRoute<UrgencyRouteProp>();
   const { displayMode } = usePreferences();
   const isSignWriting = displayMode === "signWriting";

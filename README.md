@@ -1,40 +1,134 @@
-# Welcome to your Expo app 👋
+# SAP — Suporte Assistivo ao Paciente (app)
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+SAP is the mobile app used during a health consultation by a professional and a
+patient who does not communicate by speech, deaf Libras users in particular.
+The professional and the patient talk through boards of terms and ready-made
+phrases shown as pictograms or SignWriting, record pain on a scale and a body
+map, and reach emergency content that works offline. It is an Expo (React
+Native) app; its content comes from the
+[SAP API](https://github.com/PET-Saude-GAT-4/comunicacao-inclusiva-api).
 
-## Get started
+## Requirements
 
-1. Install dependencies
+- **Node 22**, the version in [`.nvmrc`](.nvmrc) (`nvm use` picks it up).
+- **Yarn 4**, through Corepack: run `corepack enable` once. Never use npm; the
+  version is pinned by `packageManager` in `package.json`.
+- **Expo Go** on an Android or iOS phone, or an Android emulator / iOS
+  simulator.
+- **A running API**, the
+  [SAP API](https://github.com/PET-Saude-GAT-4/comunicacao-inclusiva-api),
+  which needs Docker to run locally (see below).
 
-   ```bash
-   yarn install
-   ```
+## Running the API locally
 
-2. Start the app
+The API repository is the reference for its own setup. In short, from a clone
+of it, with Docker running:
 
-   ```bash
-   yarn start
-   ```
+```bash
+cp .env.example .env
+yarn install
+yarn docker:dev            # Postgres, Mailpit and the API on port 8080
+yarn prisma:migrate:dev    # create the schema
+yarn prisma:seed           # load the boards, terms and phrases
+```
 
-In the output, you'll find options to open the app in a
+`curl http://localhost:8080/public/boards` should then answer with a list of
+boards. These commands belong to the API's `package.json`, not the app's.
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+## Getting started
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+```bash
+git clone https://github.com/PET-Saude-GAT-4/comunicacao-inclusiva-app.git
+cd comunicacao-inclusiva-app
+corepack enable
+yarn install
+cp .env.example .env
+```
 
-## Learn more
+Set `API_BASE_URL` in `.env` to the API's address as seen **from the device**,
+with no trailing slash and no path:
 
-To learn more about developing your project with Expo, look at the following resources:
+| Where the app runs              | `API_BASE_URL`                         |
+| ------------------------------- | -------------------------------------- |
+| Android emulator                | `http://10.0.2.2:8080`                 |
+| iOS simulator                   | `http://localhost:8080`                |
+| Phone with Expo Go (same Wi-Fi) | `http://<your computer's LAN IP>:8080` |
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+On a phone, `localhost` is the phone itself, so it never reaches the API. The
+app also rewrites the host of every image URL the API returns to
+`API_BASE_URL`, so a wrong value shows up as missing images too.
 
-## Join the community
+Then start Metro:
 
-Join our community of developers creating universal apps.
+```bash
+yarn start
+```
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+Scan the QR code with Expo Go (Android) or the Camera app (iOS), or press `a`
+for the Android emulator or `i` for the iOS simulator.
+
+`app.config.ts` reads `.env` when Metro starts: after changing it, stop
+`yarn start` and run it again. The app syncs with the API once when its tabs
+open. If the API cannot be reached, an offline banner appears and the app
+keeps working from what it cached before, from bundled emergency content and
+from built-in sample data.
+
+## Commands
+
+| Command              | What it does                                               |
+| -------------------- | ---------------------------------------------------------- |
+| `yarn start`         | Start Metro and the Expo dev server                        |
+| `yarn android`       | Start Metro and open the app on an Android device/emulator |
+| `yarn ios`           | Start Metro and open the app on the iOS simulator          |
+| `yarn web`           | Start Metro for the web build                              |
+| `yarn lint`          | ESLint over the repository (`expo lint`)                   |
+| `yarn format`        | Format every file with Prettier                            |
+| `yarn format:check`  | Fail if Prettier would change a file                       |
+| `yarn typecheck`     | Type-check with `tsc --noEmit`                             |
+| `yarn test`          | Run the Jest suite once                                    |
+| `yarn test:watch`    | Run Jest in watch mode                                     |
+| `yarn test:coverage` | Run Jest with a coverage report                            |
+
+## Layout
+
+| Path              | Holds                                            |
+| ----------------- | ------------------------------------------------ |
+| `App.tsx`         | Provider tree and the navigation container       |
+| `app/navigation/` | Navigators, one folder per hot-bar tab           |
+| `app/screens/`    | Screens, mirroring the navigator folders         |
+| `app/components/` | Shared components                                |
+| `app/contexts/`   | Session, display preferences and saved boards    |
+| `app/hooks/`      | Hooks that read the cache, plus the sync trigger |
+| `app/services/`   | API calls and the sync                           |
+| `app/adapters/`   | Wire format → app model                          |
+| `app/content/`    | Emergency content bundled with the app           |
+| `test/`           | Shared test fixtures and stubs                   |
+
+The full table, with the remaining folders, is in
+[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md#layout).
+
+## Documentation
+
+- [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md): navigation, state, the offline
+  sync and the tests.
+- [docs/ACCESSIBILITY.md](docs/ACCESSIBILITY.md): display modes, the
+  accessibility menu, and the rules every new screen follows.
+- [CHANGELOG.md](CHANGELOG.md): what changed in each version.
+- [AGENTS.md](AGENTS.md): conventions, and what is easy to get wrong here.
+- [.github/workflows/README.md](.github/workflows/README.md): the checks every
+  pull request must pass.
+- The domain terms (board, term, placement, phrase, triage step…) are defined
+  in the
+  [API glossary](https://github.com/PET-Saude-GAT-4/comunicacao-inclusiva-api/blob/main/docs/GLOSSARY.md)
+  (it becomes available once the API's documentation reaches `main`).
+
+## Contributing
+
+- Branch from `develop`, named `type/short-slug` (`feat/pain-scale-labels`,
+  `fix/offline-banner`).
+- Commits follow [Conventional Commits](https://www.conventionalcommits.org/)
+  in the imperative: `feat: …`, `fix: …`, `docs: …`.
+- Run `yarn lint`, `yarn format:check`, `yarn typecheck` and `yarn test`
+  before pushing: CI runs the same commands and blocks the merge if one fails.
+- Open the pull request into `develop`. Changes a user would notice go under
+  `[Unreleased]` in the [CHANGELOG](CHANGELOG.md).

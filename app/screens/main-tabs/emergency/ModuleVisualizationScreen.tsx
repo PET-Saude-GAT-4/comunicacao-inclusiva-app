@@ -1,11 +1,3 @@
-import { useModuleBoardTerms } from "@/hooks/useModuleBoardTerms";
-import { usePreferences } from "@/hooks/usePreferences";
-import { EmergencyStackParamList } from "@/navigation/types";
-import { COLORS, CONTAINERS, TYPOGRAPHY } from "@/styles/themes";
-import { Board } from "@/types/board.types";
-import { Pictogram } from "@/types/pictogram.types";
-import { Term } from "@/types/term.types";
-import { resolveTermDisplay } from "@/utils/resolveTermDisplay";
 import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { Image } from "expo-image";
@@ -17,6 +9,15 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+
+import { useModuleBoardTerms } from "@/hooks/useModuleBoardTerms";
+import { usePreferences } from "@/hooks/usePreferences";
+import { EmergencyStackParamList } from "@/navigation/types";
+import { COLORS, CONTAINERS, TYPOGRAPHY } from "@/styles/themes";
+import { Board } from "@/types/board.types";
+import { Pictogram } from "@/types/pictogram.types";
+import { Term } from "@/types/term.types";
+import { resolveTermDisplay } from "@/utils/resolveTermDisplay";
 
 type ModuleVisualizationRouteProp = RouteProp<
   EmergencyStackParamList,

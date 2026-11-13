@@ -24,10 +24,7 @@ export function AccessibilityMenu({ isTextMode, onToggleTextMode }: Props) {
 
   return (
     <View
-      style={[
-        styles.container,
-        hotBarInset ? { bottom: hotBarInset } : null,
-      ]}
+      style={[styles.container, hotBarInset ? { bottom: hotBarInset } : null]}
     >
       {isOpen && (
         <View style={styles.optionsContainer}>

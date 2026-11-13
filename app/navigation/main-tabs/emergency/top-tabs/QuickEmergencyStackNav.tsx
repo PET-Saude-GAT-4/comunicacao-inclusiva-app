@@ -1,8 +1,9 @@
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import React from "react";
+
 import { QuickEmergencyStackParamList } from "@/navigation/types";
 import { QuickEmergencyScreen } from "@/screens/main-tabs/emergency/tabs/QuickEmergency/QuickEmergencyScreen";
 import { UrgencyResponseScreen } from "@/screens/main-tabs/emergency/tabs/QuickEmergency/UrgencyResponseScreen";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import React from "react";
 
 const Stack = createNativeStackNavigator<QuickEmergencyStackParamList>();
 

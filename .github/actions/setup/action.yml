@@ -1,0 +1,19 @@
+name: Set up Node and dependencies
+description: Installs Node from .nvmrc and the dependencies with the Yarn release committed under .yarn/releases.
+
+runs:
+  using: composite
+  steps:
+    # No Corepack: .yarnrc.yml points yarnPath at the committed Yarn 4 release,
+    # and the runner's Yarn 1 hands every command over to it, including the
+    # cache-folder lookup setup-node makes. Corepack would download Yarn again.
+    - uses: actions/setup-node@v4
+      with:
+        node-version-file: .nvmrc
+        cache: yarn
+
+    # --immutable fails the run when yarn.lock is out of date instead of
+    # rewriting it on the runner.
+    - name: Install dependencies
+      shell: bash
+      run: yarn install --immutable

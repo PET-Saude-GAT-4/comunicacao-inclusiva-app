@@ -1,13 +1,15 @@
-import { useMyCollection } from "@/hooks/useMyCollection";
-import { COLORS } from "@/styles/themes";
-import { Board } from "@/types/board.types";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { Image } from "expo-image";
 import React, { useMemo, useState } from "react";
 import { FlatList, Text, TouchableOpacity, View } from "react-native";
+
+import { useHotBarInset } from "@/hooks/useHotBarInset";
+import { useMyCollection } from "@/hooks/useMyCollection";
+import { COLORS } from "@/styles/themes";
+import { Board } from "@/types/board.types";
+
 import { styles } from "./BoardListComponent.style";
 import { SearchBar } from "./SearchBar";
-import { useHotBarInset } from "@/hooks/useHotBarInset";
 
 type Props = {
   boards: Board[];

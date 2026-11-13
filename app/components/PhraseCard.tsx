@@ -1,10 +1,12 @@
+import { Image } from "expo-image";
+import React from "react";
+import { ScrollView, Text, View } from "react-native";
+
 import { usePreferences } from "@/hooks/usePreferences";
 import { Phrase } from "@/types/phrase.types";
 import { Term } from "@/types/term.types";
 import { resolveTermDisplay } from "@/utils/resolveTermDisplay";
-import { Image } from "expo-image";
-import React from "react";
-import { ScrollView, Text, View } from "react-native";
+
 import { styles } from "./PhraseCard.styles";
 
 type Props = {

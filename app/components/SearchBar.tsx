@@ -1,7 +1,9 @@
-import { COLORS } from "@/styles/themes";
 import { Ionicons } from "@expo/vector-icons";
 import React from "react";
 import { TextInput, TouchableOpacity, View } from "react-native";
+
+import { COLORS } from "@/styles/themes";
+
 import { styles } from "./SearchBar.styles";
 
 type Props = {

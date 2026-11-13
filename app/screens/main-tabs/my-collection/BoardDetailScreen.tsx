@@ -2,13 +2,13 @@ import { Image } from "expo-image";
 import { FlatList, Text, View } from "react-native";
 
 import { useBoardTerms } from "@/hooks/useBoardTerms";
+import { useHotBarInset } from "@/hooks/useHotBarInset";
 import { usePreferences } from "@/hooks/usePreferences";
 import { Board } from "@/types/board.types";
 import { Term } from "@/types/term.types";
 import { resolveTermDisplay } from "@/utils/resolveTermDisplay";
 
 import { styles } from "./BoardDetailScreen.style";
-import { useHotBarInset } from "@/hooks/useHotBarInset";
 
 type Props = {
   route: { params: { board: Board } };

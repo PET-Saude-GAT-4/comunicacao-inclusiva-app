@@ -1,8 +1,9 @@
+import Constants from "expo-constants";
+
 import { ApiBoard, Board } from "@/types/board.types";
 import { ApiPictogram, Pictogram } from "@/types/pictogram.types";
 import { ApiSignWriting, SignWriting } from "@/types/signWriting.types";
 import { ApiTerm, Term } from "@/types/term.types";
-import Constants from "expo-constants";
 
 const API_BASE_URL =
   (Constants.expoConfig?.extra?.API_BASE_URL as string) ?? "";

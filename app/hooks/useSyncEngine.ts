@@ -1,5 +1,6 @@
-import { syncService } from "@/services/syncService";
 import { useEffect, useState } from "react";
+
+import { syncService } from "@/services/syncService";
 
 export function useSyncEngine() {
   const [isSyncing, setIsSyncing] = useState(false);

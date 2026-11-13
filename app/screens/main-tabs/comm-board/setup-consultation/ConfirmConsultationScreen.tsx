@@ -9,13 +9,13 @@ import { Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
 import { StepProgressBar } from "@/components/setup-consultation/StepProgressBar";
+import { useHotBarInset } from "@/hooks/useHotBarInset";
 import { useProfessionHistory } from "@/hooks/useProfessionHistory";
 import { useSession } from "@/hooks/useSession";
 import { CommBoardStackParamList } from "@/navigation/types";
 import { COLORS } from "@/styles/themes";
 
 import { styles } from "./ConfirmConsultationScreen.styles";
-import { useHotBarInset } from "@/hooks/useHotBarInset";
 
 type Props = NativeStackScreenProps<
   CommBoardStackParamList,

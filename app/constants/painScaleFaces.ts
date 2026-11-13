@@ -1,10 +1,11 @@
-import type { ScaleItem } from "@/components/pain-scale/types";
 import Face0 from "@assets/images/pain-scale/face-0.svg";
 import Face1 from "@assets/images/pain-scale/face-1.svg";
 import Face2 from "@assets/images/pain-scale/face-2.svg";
 import Face3 from "@assets/images/pain-scale/face-3.svg";
 import Face4 from "@assets/images/pain-scale/face-4.svg";
 import Face5 from "@assets/images/pain-scale/face-5.svg";
+
+import type { ScaleItem } from "@/components/pain-scale/types";
 
 const FACES = [Face0, Face1, Face2, Face3, Face4, Face5];
 

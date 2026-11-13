@@ -1,7 +1,8 @@
-import React from "react";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
-import BoardLibStackNav from "./Tabs/BoardStackNav";
+import React from "react";
+
 import { screenOptions } from "../TopTabs.style";
+import BoardLibStackNav from "./Tabs/BoardStackNav";
 import PhraseLibStackNav from "./Tabs/PhraseLibStackNav";
 
 const TopTabs = createMaterialTopTabNavigator();

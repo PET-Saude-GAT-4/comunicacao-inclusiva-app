@@ -1,5 +1,6 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import React from "react";
+
 import MainTabNavigator from "./MainTabNav";
 
 const Stack = createNativeStackNavigator();
@@ -18,7 +19,7 @@ export default function TutorialStackNav() {
         name="MainTabNav"
         component={MainTabNavigator}
         options={{}}
-      />      
+      />
     </Stack.Navigator>
   );
 }

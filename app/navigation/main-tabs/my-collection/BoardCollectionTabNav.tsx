@@ -1,14 +1,14 @@
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import React from "react";
 
-import BoardStackNav from "./tabs/BoardStackNav";
-import { screenOptions } from "../TopTabs.style";
-
 import MyPhraseScreen from "@/screens/main-tabs/my-collection/tabs/MyPhraseScreen";
+
+import { screenOptions } from "../TopTabs.style";
+import BoardStackNav from "./tabs/BoardStackNav";
 
 const TopTabs = createMaterialTopTabNavigator();
 
-export default function () {
+export default function BoardCollectionTabNav() {
   return (
     <TopTabs.Navigator
       screenOptions={{

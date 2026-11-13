@@ -1,16 +1,18 @@
-import { ProfessionHistory } from "@/components/ProfessionHistoryComponent";
-import { RadioOption } from "@/components/setup-consultation/RadioOption";
-import { StepProgressBar } from "@/components/setup-consultation/StepProgressBar";
-import { useProfessions } from "@/hooks/useProfession";
-import { CommBoardStackParamList } from "@/navigation/types";
-import { Profession } from "@/types/profession.types";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useState } from "react";
 import { FlatList, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
-import { styles } from "./SelectProfessionScreen.styles";
+
+import { ProfessionHistory } from "@/components/ProfessionHistoryComponent";
+import { RadioOption } from "@/components/setup-consultation/RadioOption";
+import { StepProgressBar } from "@/components/setup-consultation/StepProgressBar";
 import { useHotBarInset } from "@/hooks/useHotBarInset";
+import { useProfessions } from "@/hooks/useProfession";
+import { CommBoardStackParamList } from "@/navigation/types";
+import { Profession } from "@/types/profession.types";
+
+import { styles } from "./SelectProfessionScreen.styles";
 
 export default function SelectProfessionScreen() {
   const hotBarInset = useHotBarInset();
@@ -46,7 +48,7 @@ export default function SelectProfessionScreen() {
             )}
             contentContainerStyle={styles.flatListContent}
           />
-          <ProfessionHistory professions={professions}/>
+          <ProfessionHistory professions={professions} />
         </View>
 
         <View style={styles.footer}>

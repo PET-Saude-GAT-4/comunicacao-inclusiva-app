@@ -1,12 +1,14 @@
-import { useSession } from "@/hooks/useSession";
-import { CommBoardStackParamList } from "@/navigation/types";
-import { COLORS } from "@/styles/themes";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import React, { useEffect, useState } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 import { Snackbar } from "react-native-paper";
+
+import { useSession } from "@/hooks/useSession";
+import { CommBoardStackParamList } from "@/navigation/types";
+import { COLORS } from "@/styles/themes";
+
 import { styles } from "./NoConsultationScreen.styles";
 
 export default function NoConsultationScreen() {

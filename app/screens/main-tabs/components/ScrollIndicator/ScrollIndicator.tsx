@@ -1,14 +1,9 @@
 // components/EmergencyPageIndicator.tsx
-import { View, StyleSheet } from "react-native";
+import { StyleSheet, View } from "react-native";
+
 import { CONTAINERS } from "@/styles/themes";
 
-const DOT_COLORS = [
-  "#E8A0A0",
-  "#F0B87A",
-  "#F0DD8A",
-  "#8ECFA6",
-  "#9CB8DB",
-];
+const DOT_COLORS = ["#E8A0A0", "#F0B87A", "#F0DD8A", "#8ECFA6", "#9CB8DB"];
 
 type Props = {
   count: number;

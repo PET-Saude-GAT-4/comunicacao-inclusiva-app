@@ -1,5 +1,6 @@
-import { COLORS, CONTAINERS, TYPOGRAPHY } from "@/styles/themes";
 import { StyleSheet } from "react-native";
+
+import { COLORS, CONTAINERS, TYPOGRAPHY } from "@/styles/themes";
 
 // Hot-bar geometry from the Figma "Mobile / Barra de navegação" component:
 // a floating bar 8px from the sides and 12px above the bottom safe area.

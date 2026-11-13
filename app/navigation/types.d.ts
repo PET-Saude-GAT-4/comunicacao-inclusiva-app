@@ -1,3 +1,5 @@
+import { NavigatorScreenParams } from "@react-navigation/native";
+
 import { Pictogram } from "@/types/pictogram.types";
 import { Profession } from "@/types/profession.types";
 import { Term } from "@/types/term.types";
@@ -21,7 +23,7 @@ export type Speaker = "patient" | "professional";
 // RootStackParamList is the default list of Params for useNavigation()
 export type RootStackParamList = {
   AuthNav: undefined;
-  MainTabNav: undefined;
+  MainTabNav: NavigatorScreenParams<MainTabParamList> | undefined;
   FeedbackScreen: {
     terms: Term[];
     textContent?: string;
@@ -40,12 +42,7 @@ export type AuthStackParamList = {
 };
 
 export type MainTabParamList = {
-  CommBoardStackNav:
-    | {
-        screen?: keyof CommBoardStackParamList;
-        params?: any;
-      }
-    | undefined;
+  CommBoardStackNav: NavigatorScreenParams<CommBoardStackParamList> | undefined;
   BoardCollection: undefined;
   Emergency: undefined;
   Library: undefined;
@@ -55,7 +52,8 @@ export type MainTabParamList = {
 export type CommBoardStackParamList = {
   NoConsultationScreen: { showPhrasePrompt?: boolean } | undefined;
   CommBoardScreen:
-    { mode?: "bodyMap"; initialTerms?: Term[]; triggerPhraseUuid?: string } | undefined;
+    | { mode?: "bodyMap"; initialTerms?: Term[]; triggerPhraseUuid?: string }
+    | undefined;
   SelectProfessionScreen: undefined;
   SelectSpecialityScreen: { profession: Profession };
   ConfirmConsultationScreen: { profession: Profession; speciality: Speciality };

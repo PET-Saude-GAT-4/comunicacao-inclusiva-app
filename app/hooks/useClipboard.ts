@@ -1,8 +1,9 @@
+import { useMemo } from "react";
+
 import { InteractionEntry } from "@/types/interaction.types";
 import { assertNever } from "@/utils/assertNever";
 import { formatDateBR, formatTimeBR } from "@/utils/dateFormatter";
 import { formatBodyMapRecord, formatPainRecord } from "@/utils/interactionText";
-import { useMemo } from "react";
 
 export function useClipboard(interactions: InteractionEntry[]): string {
   return useMemo(() => {

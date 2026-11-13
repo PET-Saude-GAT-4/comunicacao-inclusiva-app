@@ -1,4 +1,5 @@
 import "dotenv/config";
+
 import { ConfigContext, ExpoConfig } from "expo/config";
 
 export default ({ config }: ConfigContext): ExpoConfig => ({
@@ -10,4 +11,3 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     API_BASE_URL: process.env.API_BASE_URL,
   },
 });
-

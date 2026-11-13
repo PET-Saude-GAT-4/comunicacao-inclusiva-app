@@ -9,5 +9,11 @@
       "@test/*": ["./test/*"]
     }
   },
-  "include": ["App.tsx", "app/**/*", "test/**/*", "jest.setup.ts"]
+  "include": [
+    "App.tsx",
+    "app.config.ts",
+    "app/**/*",
+    "test/**/*",
+    "jest.setup.ts"
+  ]
 }
