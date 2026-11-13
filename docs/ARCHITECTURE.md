@@ -1,7 +1,7 @@
 # Architecture
 
-Comunicação Inclusiva is an Expo (React Native) app used during a health
-consultation: the patient and the professional exchange pictograms or
+SAP (Suporte Assistivo ao Paciente) is an Expo (React Native) app used during
+a health consultation: the patient and the professional exchange pictograms or
 SignWriting (Libras) symbols instead of relying on speech alone. This document
 explains how the app is put together and, above all, why. For the domain terms
 (board, term, placement, phrase, triage step…) see the
