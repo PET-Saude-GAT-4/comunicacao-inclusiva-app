@@ -1,5 +1,5 @@
 import * as Haptics from "expo-haptics";
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import {
   AccessibilityActionEvent,
   LayoutChangeEvent,
@@ -57,11 +57,11 @@ interface Props {
   /** Called when the value stops changing (finger released, or face tapped). */
   onSettle?: (value: number) => void;
   /**
-   * The tray changes this number every time it resets `value` (when it opens).
-   * We use it to update the copy of the value that the screen reader reads,
-   * so it does not announce the value from the previous time.
+   * The value the screen reader announces: a copy of `value` taken only when it
+   * stops changing, since copying it on every frame would slow the drag down.
+   * The tray owns it so that opening the tray resets it together with `value`.
    */
-  resetToken?: number;
+  settledValue: number;
 }
 
 export function PainScaleSlider({
@@ -70,16 +70,10 @@ export function PainScaleSlider({
   disabled = false,
   onInteract,
   onSettle,
-  resetToken = 0,
+  settledValue,
 }: Props) {
   const count = items.length;
   const [height, setHeight] = useState(0);
-  /**
-   * A copy of the value kept in React state, updated only when the value stops
-   * changing. It is used only to tell the screen reader the current value.
-   * Copying it on every frame would slow the drag down.
-   */
-  const [settledValue, setSettledValue] = useState(value.value);
 
   /** True from the moment the finger touches the track. */
   const isDragging = useSharedValue(false);
@@ -97,17 +91,12 @@ export function PainScaleSlider({
 
   const faceSize = height > 0 ? faceSizeFor(height, count) : 0;
 
-  useEffect(() => {
-    setSettledValue(value.value);
-  }, [resetToken, value]);
-
   const onLayout = useCallback((e: LayoutChangeEvent) => {
     setHeight(e.nativeEvent.layout.height);
   }, []);
 
   const handleSettle = useCallback(
     (v: number) => {
-      setSettledValue(v);
       onSettle?.(v);
     },
     [onSettle],
@@ -128,9 +117,9 @@ export function PainScaleSlider({
   // Instead we measure how far the thumb is from the closest dot. We multiply
   // the value by (count - 1) so the dots sit on whole numbers: 0, 1, 2, 3...
   useAnimatedReaction(
-    () => value.value * (count - 1),
+    () => value.get() * (count - 1),
     (position) => {
-      if (!isTracking.value) return;
+      if (!isTracking.get()) return;
 
       const nearest = Math.round(position);
       const distance = Math.abs(position - nearest);
@@ -138,15 +127,15 @@ export function PainScaleSlider({
       if (distance <= TICK_ENTER_BAND) {
         // The thumb is on a dot. We save which dot it was, so holding the
         // thumb still on the dot vibrates only one time.
-        if (lastTickIndex.value !== nearest) {
-          lastTickIndex.value = nearest;
+        if (lastTickIndex.get() !== nearest) {
+          lastTickIndex.set(nearest);
           scheduleOnRN(tickHaptic);
         }
       } else if (distance >= TICK_EXIT_BAND) {
         // The thumb is far from any dot, so the next dot may vibrate again.
         // We use two different distances (ENTER and EXIT) on purpose: with only
         // one, a thumb stopped near that distance would vibrate many times.
-        lastTickIndex.value = -1;
+        lastTickIndex.set(-1);
       }
     },
     [count],
@@ -161,33 +150,33 @@ export function PainScaleSlider({
         .minDistance(0)
         .enabled(!disabled && height > 0)
         .onBegin((e) => {
-          isDragging.value = true;
-          isTracking.value = false;
+          isDragging.set(true);
+          isTracking.set(false);
           const target = yToValue(e.y, height, count);
           // Save the dot closest to the touch point. Without this, the first
           // small finger movement would vibrate on the dot we just arrived at.
-          lastTickIndex.value = Math.round(target * (count - 1));
+          lastTickIndex.set(Math.round(target * (count - 1)));
           // A short animation, so the thumb looks like it moves to the touched
           // point instead of jumping there. When the finger moves, onUpdate
           // sets the value directly and this animation stops by itself.
-          value.value = withTiming(target, { duration: 120 });
-          if (!hasInteracted.value) {
-            hasInteracted.value = true;
+          value.set(withTiming(target, { duration: 120 }));
+          if (!hasInteracted.get()) {
+            hasInteracted.set(true);
             scheduleOnRN(markInteracted);
           }
         })
         .onUpdate((e) => {
           // Only real finger movement turns the haptics on.
-          isTracking.value = true;
+          isTracking.set(true);
           // We set the value directly, with no animation, so the thumb follows
           // the finger exactly. This also stops any animation still running
           // from onBegin or from a face tap.
-          value.value = yToValue(e.y, height, count);
+          value.set(yToValue(e.y, height, count));
         })
         .onFinalize(() => {
-          isDragging.value = false;
-          isTracking.value = false;
-          scheduleOnRN(handleSettle, value.value);
+          isDragging.set(false);
+          isTracking.set(false);
+          scheduleOnRN(handleSettle, value.get());
         }),
     [
       disabled,
@@ -209,12 +198,14 @@ export function PainScaleSlider({
       Haptics.selectionAsync();
       // We write to the same value the drag uses. Because both use one value,
       // a face tap and a drag can never show different results.
-      value.value = withTiming(item.value, {
-        duration: 220,
-        easing: Easing.out(Easing.cubic),
-      });
-      if (!hasInteracted.value) {
-        hasInteracted.value = true;
+      value.set(
+        withTiming(item.value, {
+          duration: 220,
+          easing: Easing.out(Easing.cubic),
+        }),
+      );
+      if (!hasInteracted.get()) {
+        hasInteracted.set(true);
         markInteracted();
       }
       handleSettle(item.value);
@@ -230,12 +221,12 @@ export function PainScaleSlider({
       const delta = action === "increment" ? 1 : -1;
       const nextIndex = Math.min(
         count - 1,
-        Math.max(0, nearestIndexFor(value.value, count) + delta),
+        Math.max(0, nearestIndexFor(value.get(), count) + delta),
       );
       const next = nextIndex / (count - 1);
-      value.value = withTiming(next, { duration: 180 });
-      if (!hasInteracted.value) {
-        hasInteracted.value = true;
+      value.set(withTiming(next, { duration: 180 }));
+      if (!hasInteracted.get()) {
+        hasInteracted.set(true);
         markInteracted();
       }
       handleSettle(next);
@@ -248,11 +239,11 @@ export function PainScaleSlider({
     return {
       opacity: 1,
       transform: [
-        { translateY: valueToY(value.value, height, count) - THUMB_HEIGHT / 2 },
+        { translateY: valueToY(value.get(), height, count) - THUMB_HEIGHT / 2 },
         // The thumb grows while pressed. We use withTiming, not withSpring,
         // so it stops at 1.15 without passing it and coming back.
         {
-          scale: withTiming(isDragging.value ? 1.15 : 1, {
+          scale: withTiming(isDragging.get() ? 1.15 : 1, {
             duration: 140,
             easing: Easing.out(Easing.quad),
           }),
@@ -358,7 +349,7 @@ function ScaleFace({
     // We calculate it from the exact value instead of only checking which face
     // is closest. This way the highlight moves slowly from one face to the
     // next while the thumb travels, instead of jumping.
-    const t = Math.min(1, Math.abs(value.value - item.value) / step);
+    const t = Math.min(1, Math.abs(value.get() - item.value) / step);
     return {
       opacity: 0.45 + (1 - t) * 0.55,
       transform: [{ scale: 1 + (1 - t) * 0.06 }],

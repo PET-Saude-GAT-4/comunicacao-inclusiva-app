@@ -3,7 +3,7 @@ import {
   BottomTabBar,
   createBottomTabNavigator,
 } from "@react-navigation/bottom-tabs";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Platform, View } from "react-native";
 import { Appbar } from "react-native-paper";
 
@@ -29,12 +29,10 @@ const MainTabs = createBottomTabNavigator();
 export default function MainTabNav() {
   const { isError } = useSyncEngine();
   const { isInConsultation } = useSession();
-  const [bannerVisible, setBannerVisible] = useState(false);
+  const [isBannerDismissed, setIsBannerDismissed] = useState(false);
   const [menuVisible, setMenuVisible] = useState(false);
 
-  useEffect(() => {
-    if (isError) setBannerVisible(true);
-  }, [isError]);
+  const bannerVisible = isError && !isBannerDismissed;
 
   return (
     <View style={{ flex: 1 }}>
@@ -56,7 +54,7 @@ export default function MainTabNav() {
           >
             <OfflineBanner
               visible={bannerVisible}
-              onClose={() => setBannerVisible(false)}
+              onClose={() => setIsBannerDismissed(true)}
             />
             <BottomTabBar {...props} insets={{ ...props.insets, bottom: 0 }} />
           </View>

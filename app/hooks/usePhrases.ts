@@ -1,7 +1,8 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo } from "react";
 
 import { PHRASES_CACHE_KEY } from "@/constants/cache";
+import { useCachedValue } from "@/hooks/useCachedValue";
 import { phrasesMock } from "@/mocks/phraseMock";
 import { Phrase } from "@/types/phrase.types";
 
@@ -15,34 +16,33 @@ const withListingDefault = (cached: Phrase[]): Phrase[] =>
     listedInLibrary: phrase.listedInLibrary ?? true,
   }));
 
+type CachedPhrases = { phrases: Phrase[]; isError: boolean };
+
+const NO_PHRASES: CachedPhrases = { phrases: [], isError: false };
+
+async function readPhrases(cacheKey: string): Promise<CachedPhrases> {
+  try {
+    const cacheData = await AsyncStorage.getItem(cacheKey);
+
+    return {
+      phrases: cacheData
+        ? withListingDefault(JSON.parse(cacheData))
+        : phrasesMock,
+      isError: false,
+    };
+  } catch {
+    console.log("Failed to load phrases from cache. Using Mock.");
+    return { phrases: phrasesMock, isError: true };
+  }
+}
+
 export function usePhrases() {
-  const [phrases, setPhrases] = useState<Phrase[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [isError, setIsError] = useState(false);
-
-  const loadPhrases = async () => {
-    setIsError(false);
-
-    try {
-      const cacheData = await AsyncStorage.getItem(PHRASES_CACHE_KEY);
-
-      if (cacheData) {
-        setPhrases(withListingDefault(JSON.parse(cacheData)));
-      } else {
-        setPhrases(phrasesMock);
-      }
-    } catch (error) {
-      console.log("Failed to load phrases from cache. Using Mock.");
-      setPhrases(phrasesMock);
-      setIsError(true);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    loadPhrases();
-  }, []);
+  const { value, isLoading } = useCachedValue(
+    PHRASES_CACHE_KEY,
+    readPhrases,
+    NO_PHRASES,
+  );
+  const { phrases, isError } = value;
 
   // The screens that let someone browse show only the listed phrases, while the
   // term-sequence matcher needs every cached one. Both lists come from here, so
@@ -52,5 +52,5 @@ export function usePhrases() {
     [phrases],
   );
 
-  return { phrases, listedPhrases, isLoading, isError, refetch: loadPhrases };
+  return { phrases, listedPhrases, isLoading, isError };
 }
