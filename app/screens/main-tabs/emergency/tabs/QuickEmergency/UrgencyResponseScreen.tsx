@@ -13,6 +13,8 @@ import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useHotBarInset } from "@/hooks/useHotBarInset";
 import { usePreferences } from "@/hooks/usePreferences";
 import {
+  EmergencyStackParamList,
+  EmergencyTabParamList,
   MainTabParamList,
   QuickEmergencyStackParamList,
 } from "@/navigation/types";
@@ -34,11 +36,20 @@ export function UrgencyResponseScreen({
   onPickAnotherSymptom,
 }: Props) {
   const hotBarInset = useHotBarInset();
+  // Typed after the deeper of its two mounts: QuickEmergencyStackNav, inside
+  // the emergency top tabs, inside EmergencyStackNav, inside the main tabs.
+  // EmergencyStackNav also mounts it directly, one level up the same chain.
   const navigation =
     useNavigation<
       CompositeNavigationProp<
         NavigationProp<QuickEmergencyStackParamList>,
-        NavigationProp<MainTabParamList>
+        CompositeNavigationProp<
+          NavigationProp<EmergencyTabParamList>,
+          CompositeNavigationProp<
+            NavigationProp<EmergencyStackParamList>,
+            NavigationProp<MainTabParamList>
+          >
+        >
       >
     >();
   const route = useRoute<UrgencyRouteProp>();

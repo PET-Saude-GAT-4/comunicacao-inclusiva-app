@@ -20,8 +20,9 @@ Each check is its own job, so a red check names what broke:
 | `bundle` | `yarn expo export --platform android` | An import Metro cannot resolve, a broken bundle |
 
 Every job starts with [`.github/actions/setup`](../actions/setup/action.yml):
-Node from [`.nvmrc`](../../.nvmrc), Yarn from `packageManager` through
-Corepack, and `yarn install --immutable`, which fails when `yarn.lock` is out of
+Node from [`.nvmrc`](../../.nvmrc), the Yarn 4 release committed under
+`.yarn/releases` (which `yarnPath` in `.yarnrc.yml` points to, so no Corepack
+download is needed), and `yarn install --immutable`, which fails when `yarn.lock` is out of
 date instead of rewriting it.
 
 The five jobs are **required status checks** on `main` and `develop`: a pull
@@ -51,5 +52,6 @@ API_BASE_URL=http://localhost:8080 yarn expo export --platform android
 ```
 
 Lint warnings do not fail the `lint` job. The `react-hooks` rules
-`set-state-in-effect`, `immutability` and `refs` are warnings until [#97](https://github.com/PET-Saude-GAT-4/comunicacao-inclusiva-app/issues/97) fixes
-the code that breaks them.
+`set-state-in-effect`, `immutability` and `refs` are errors everywhere except in
+the files listed in `eslint.config.js`, which broke them before CI existed and
+stay warnings until [#97](https://github.com/PET-Saude-GAT-4/comunicacao-inclusiva-app/issues/97) fixes them.

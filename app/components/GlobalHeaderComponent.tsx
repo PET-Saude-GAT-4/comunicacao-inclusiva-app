@@ -34,7 +34,8 @@ const GlobalHeader = ({
           fontWeight: TYPOGRAPHY.weights.bold,
         }}
       />
-      {options.headerRight && options.headerRight({ canGoBack })}
+      {options.headerRight &&
+        options.headerRight({ tintColor: COLORS.text.onPrimary, canGoBack })}
     </Appbar.Header>
   );
 };
