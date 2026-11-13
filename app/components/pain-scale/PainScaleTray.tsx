@@ -64,8 +64,22 @@ export function PainScaleTray({
   const [hasInteracted, setHasInteracted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
-  /** We add 1 on each open, to tell the slider to update its saved value. */
-  const [resetToken, setResetToken] = useState(0);
+  /** What the slider announces to the screen reader; see its `settledValue`. */
+  const [settledValue, setSettledValue] = useState(initialValue);
+  const [wasVisible, setWasVisible] = useState(visible);
+
+  // The tray is opening again, so nothing is chosen yet and Send is off. This
+  // runs during render, not in the effect below, so the reset and the opening
+  // land in the same render.
+  if (visible !== wasVisible) {
+    setWasVisible(visible);
+    if (visible) {
+      setHasInteracted(false);
+      setSubmitError(null);
+      setSettledValue(initialValue);
+      setMounted(true);
+    }
+  }
 
   // We use a ref, not state, because a ref changes immediately. With state,
   // two fast taps in the same frame would both see the old value and send twice.
@@ -84,23 +98,26 @@ export function PainScaleTray({
 
   useEffect(() => {
     if (visible) {
-      // The tray is opening again, so nothing is chosen yet and Send is off.
-      value.value = initialValue;
-      setHasInteracted(false);
-      setSubmitError(null);
-      setResetToken((token) => token + 1);
-      setMounted(true);
-      progress.value = withTiming(1, {
-        duration: 240,
-        easing: Easing.out(Easing.cubic),
-      });
+      value.set(initialValue);
+      progress.set(
+        withTiming(1, {
+          duration: 240,
+          easing: Easing.out(Easing.cubic),
+        }),
+      );
     } else {
-      progress.value = withTiming(
-        0,
-        { duration: 200, easing: Easing.in(Easing.cubic) },
-        (finished) => {
-          if (finished) scheduleOnRN(setMounted, false);
-        },
+      progress.set(
+        withTiming(
+          0,
+          { duration: 200, easing: Easing.in(Easing.cubic) },
+          (finished) => {
+            if (!finished) return;
+            // Resetting the thumb here, while nothing is on screen, means the
+            // next opening mounts the slider with it already in place.
+            value.set(initialValue);
+            scheduleOnRN(setMounted, false);
+          },
+        ),
       );
     }
   }, [visible, initialValue, value, progress]);
@@ -108,14 +125,22 @@ export function PainScaleTray({
   const panelStyle = useAnimatedStyle(() => ({
     transform: [
       {
-        translateX: -(panelWidth + PANEL_LEFT_MARGIN) * (1 - progress.value),
+        translateX: -(panelWidth + PANEL_LEFT_MARGIN) * (1 - progress.get()),
       },
     ],
   }));
 
-  const scrimStyle = useAnimatedStyle(() => ({ opacity: progress.value }));
+  const scrimStyle = useAnimatedStyle(() => ({ opacity: progress.get() }));
 
   const handleInteract = useCallback(() => setHasInteracted(true), []);
+
+  const handleSettle = useCallback(
+    (settled: number) => {
+      setSettledValue(settled);
+      onValueChange?.(settled);
+    },
+    [onValueChange],
+  );
 
   const handleClose = useCallback(() => {
     if (submittingRef.current) return;
@@ -130,7 +155,7 @@ export function PainScaleTray({
 
     // We can read a shared value from normal code, so we get the thumb position
     // here, at send time. We do not need to copy it into state on every frame.
-    const current = value.value;
+    const current = value.get();
     const submission: PainScaleSubmission = {
       value: current,
       nearestIndex: nearestIndexFor(current, items.length),
@@ -202,8 +227,8 @@ export function PainScaleTray({
             value={value}
             disabled={isSubmitting}
             onInteract={handleInteract}
-            onSettle={onValueChange}
-            resetToken={resetToken}
+            onSettle={handleSettle}
+            settledValue={settledValue}
           />
 
           {submitError && (

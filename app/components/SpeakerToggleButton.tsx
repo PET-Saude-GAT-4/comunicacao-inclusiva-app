@@ -1,5 +1,5 @@
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import { Animated, StyleSheet, TouchableOpacity } from "react-native";
 
 import { useSession } from "@/hooks/useSession";
@@ -7,9 +7,9 @@ import { COLORS } from "@/styles/themes";
 
 export function SpeakerToggleButton() {
   const { currentSpeaker, setCurrentSpeaker } = useSession();
-  const animatedValue = useRef(
-    new Animated.Value(currentSpeaker === "professional" ? 1 : 0),
-  ).current;
+  const [animatedValue] = useState(
+    () => new Animated.Value(currentSpeaker === "professional" ? 1 : 0),
+  );
 
   useEffect(() => {
     Animated.timing(animatedValue, {

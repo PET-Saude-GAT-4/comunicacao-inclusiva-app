@@ -16,9 +16,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   phrases, professions, boards, terms of a board or specialities, the next sync
   empties them in the app too, instead of keeping the old ones or showing
   sample content.
+- **No areas to choose from.** When the server publishes no professions,
+  "Selecione a Área" says that no area is available and how to sync again,
+  instead of showing a blank list.
 - **Offline banner on a partial sync.** "Servidor indisponível. Exibindo dados
   salvos." also appears when only some boards, phrases or specialities fail to
   download, instead of only when a whole list does.
+- **Web build opens.** `yarn web` no longer stops on load with
+  "Image.default.resolveAssetSource is not a function"; the bundled terms'
+  images now resolve on every platform.
 - **"Mal-Estar" on Sintomas Gerais.** The board now lists "Mal-Estar", so
   "Estou com dor de cabeça" can be composed by tapping and suggests its boards.
 

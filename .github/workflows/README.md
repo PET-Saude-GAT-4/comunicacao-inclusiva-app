@@ -51,7 +51,4 @@ yarn test
 API_BASE_URL=http://localhost:8080 yarn expo export --platform android
 ```
 
-Lint warnings do not fail the `lint` job. The `react-hooks` rules
-`set-state-in-effect`, `immutability` and `refs` are errors everywhere except in
-the files listed in `eslint.config.js`, which broke them before CI existed and
-stay warnings until [#97](https://github.com/PET-Saude-GAT-4/comunicacao-inclusiva-app/issues/97) fixes them.
+Lint warnings do not fail the `lint` job.

@@ -23,10 +23,10 @@ Library. Prettier formats every file with the repository's `.prettierrc`; run
 
 Every pull request must pass five CI jobs (lint, format, types, test, bundle),
 and each is one local command — see
-[.github/workflows/README.md](.github/workflows/README.md). Three
-`react-hooks` rules (`set-state-in-effect`, `immutability`, `refs`) are only
-warnings in the files listed in `eslint.config.js`, until [#97](https://github.com/PET-Saude-GAT-4/comunicacao-inclusiva-app/issues/97) fixes
-them; take a file off the list once it is clean, never add one.
+[.github/workflows/README.md](.github/workflows/README.md). The React
+Compiler's `react-hooks` rules are errors: derive a value during render, or set
+state from a callback such as a promise's `then`, never directly in an effect
+body. `app/hooks/useCachedValue.ts` is the pattern for reading the cache.
 
 ## Architecture in a few lines
 

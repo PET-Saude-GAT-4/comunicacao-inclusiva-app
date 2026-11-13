@@ -1,53 +1,40 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useEffect, useState } from "react";
 
 import { boardTermsCacheKey } from "@/constants/cache";
 import { bundledEmergencyBoardTerms } from "@/content/emergency";
+import { useCachedValue } from "@/hooks/useCachedValue";
 import { Term } from "@/types/term.types";
 
-export function useModuleBoardTerms(uuid: string) {
-  const [terms, setTerms] = useState<Term[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
+const NO_TERMS: Term[] = [];
 
-  const CACHE_KEY = boardTermsCacheKey(uuid);
+async function readModuleTerms(uuid: string): Promise<Term[]> {
+  const bundled = bundledEmergencyBoardTerms[uuid] || [];
 
-  const loadTerms = async () => {
-    if (!uuid) return;
+  try {
+    // 1. Try to read from cache (where SyncEngine saves data)
+    const cacheData = await AsyncStorage.getItem(boardTermsCacheKey(uuid));
 
-    setIsLoading(true);
-
-    try {
-      // 1. Try to read from cache (where SyncEngine saves data)
-      const cacheData = await AsyncStorage.getItem(CACHE_KEY);
-
-      if (cacheData) {
-        const parsed = JSON.parse(cacheData);
-        if (parsed.length > 0) {
-          setTerms(parsed);
-        } else {
-          setTerms(bundledEmergencyBoardTerms[uuid] || []);
-        }
-      } else {
-        // 2. If not in cache, fall back to the bundled content
-        setTerms(bundledEmergencyBoardTerms[uuid] || []);
-      }
-    } catch (error) {
-      console.log(
-        `Failed to load cache for UUID: ${uuid}. Using bundled content.`,
-      );
-      setTerms(bundledEmergencyBoardTerms[uuid] || []);
-    } finally {
-      setIsLoading(false);
+    if (cacheData) {
+      const parsed: Term[] = JSON.parse(cacheData);
+      return parsed.length > 0 ? parsed : bundled;
     }
-  };
 
-  useEffect(() => {
-    loadTerms();
-  }, [uuid]);
+    // 2. If not in cache, fall back to the bundled content
+    return bundled;
+  } catch {
+    console.log(
+      `Failed to load cache for UUID: ${uuid}. Using bundled content.`,
+    );
+    return bundled;
+  }
+}
 
-  return {
-    terms,
-    isLoading,
-    refetch: loadTerms,
-  };
+export function useModuleBoardTerms(uuid: string) {
+  const { value: terms, isLoading } = useCachedValue(
+    uuid,
+    readModuleTerms,
+    NO_TERMS,
+  );
+
+  return { terms, isLoading };
 }
