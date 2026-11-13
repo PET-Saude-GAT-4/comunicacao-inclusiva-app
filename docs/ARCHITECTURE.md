@@ -110,11 +110,11 @@ API ──request()──▶ services ──adapters──▶ syncService ──
    emergency boards, every board's terms and next boards, triage steps, phrases
    and each phrase's next boards. Each resource syncs on its own: a failure
    keeps that resource's previous cache and does not stop the others.
-   `syncAll` returns `false` when a top-level list (professions, common boards,
-   emergency boards, triage steps, phrases) fails to download. A failure on a
+   `syncAll` returns `false` when any request fails: a top-level list
+   (professions, common boards, emergency boards, triage steps, phrases) or a
    single board's terms or next boards, a phrase's next boards or a
-   profession's specialities is only logged: that entry keeps its previous
-   cache and `syncAll` still returns `true`.
+   profession's specialities. A failed entry keeps its previous cache and does
+   not stop the remaining boards, phrases or professions from syncing.
 5. **Read.** Hooks (`useBoards`, `usePhrases`, `useTriage`, …) read the cache.
    When a key was never written they fall back to `app/mocks/` or, for
    emergency content, to `app/content/emergency.ts`, so the app is usable on

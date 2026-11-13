@@ -209,7 +209,7 @@ describe("SyncService.syncAll", () => {
       [`${API}/boards/common-1/terms`]: new Error("timeout"),
     });
 
-    await new SyncService().syncAll();
+    await expect(new SyncService().syncAll()).resolves.toBe(false);
 
     expect(await cached(boardTermsCacheKey("common-1"))).toEqual(previous);
     expect((await cached(nextBoardsCacheKey("common-1")))[0].uuid).toBe(
@@ -219,4 +219,27 @@ describe("SyncService.syncAll", () => {
       "t-emergency",
     );
   });
+
+  it.each([
+    ["a board's next boards", `${API}/boards/common-1/next-boards`],
+    ["a phrase's next boards", `${API}/phrases/phrase-1/next-boards`],
+    ["a profession's specialities", `${API}/professions/MED/specialities`],
+    ["a triage level's terms", `${API}/boards/triage-board-1/terms`],
+  ])(
+    "reports a failure on %s and still caches the rest",
+    async (_, failingUrl) => {
+      serve({ ...defaultRoutes(), [failingUrl]: new Error("500") });
+
+      await expect(new SyncService().syncAll()).resolves.toBe(false);
+
+      expect(await cached(PROFESSIONS_CACHE_KEY)).toEqual([profession]);
+      expect((await cached(BOARDS_CACHE_KEY))[0].uuid).toBe("common-1");
+      expect((await cached(boardTermsCacheKey("emergency-1")))[0].uuid).toBe(
+        "t-emergency",
+      );
+      expect(await cached(nextBoardsCacheKey("emergency-1"))).toEqual([]);
+      expect((await cached(TRIAGE_STEPS_CACHE_KEY))[0].level).toBe(1);
+      expect((await cached(PHRASES_CACHE_KEY))[0].uuid).toBe("phrase-1");
+    },
+  );
 });

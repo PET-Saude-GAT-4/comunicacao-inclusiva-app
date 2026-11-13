@@ -16,6 +16,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   phrases, professions, boards, terms of a board or specialities, the next sync
   empties them in the app too, instead of keeping the old ones or showing
   sample content.
+- **Offline banner on a partial sync.** "Servidor indisponível. Exibindo dados
+  salvos." also appears when only some boards, phrases or specialities fail to
+  download, instead of only when a whole list does.
 
 ## [0.1.0] - 2026-11-11
 
