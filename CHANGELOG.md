@@ -19,6 +19,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Offline banner on a partial sync.** "Servidor indisponível. Exibindo dados
   salvos." also appears when only some boards, phrases or specialities fail to
   download, instead of only when a whole list does.
+- **Board suggestions no longer vanish.** When the terms in the visor match a
+  phrase that only recommends the board already open, or a board the device
+  never downloaded, the carousel keeps suggesting the open board's next boards
+  instead of suggesting none.
 
 ## [0.1.0] - 2026-11-11
 
