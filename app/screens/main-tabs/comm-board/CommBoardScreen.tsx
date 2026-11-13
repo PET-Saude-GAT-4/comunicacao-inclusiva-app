@@ -253,9 +253,21 @@ export default function CommBoardScreen() {
   }, [searchQuery, boards]);
 
   // A phrase speaks for the whole composition, so its recommendations outrank
-  // the open board's successors while the suggestion stands.
+  // the open board's successors while the suggestion stands. It only outranks
+  // them with a board it can actually badge: one that is not already open and
+  // that this device has synced. Otherwise the carousel would show no
+  // suggestion at all.
+  const phraseSuggestions = useMemo(
+    () =>
+      phraseNextBoards.filter(
+        (recommended) =>
+          recommended.uuid !== selectedBoardUuid &&
+          boards.some((board) => board.uuid === recommended.uuid),
+      ),
+    [phraseNextBoards, selectedBoardUuid, boards],
+  );
   const promotedBoards =
-    phraseNextBoards.length > 0 ? phraseNextBoards : nextBoards;
+    phraseSuggestions.length > 0 ? phraseSuggestions : nextBoards;
 
   // The open board leads the carousel whether it has a chain or not, so its
   // position never depends on data the user cannot see.
