@@ -108,7 +108,10 @@ API ──request()──▶ services ──adapters──▶ syncService ──
 4. **Cache.** `syncService` writes each resource under the keys in
    `app/constants/cache.ts`: professions and their specialities, common boards,
    emergency boards, every board's terms and next boards, triage steps, phrases
-   and each phrase's next boards. Each resource syncs on its own: a failure
+   and each phrase's next boards. A board's terms are requested once per sync,
+   by the first list that reaches the board: a triage level's board is also an
+   emergency board, and the triage step reuses that outcome, a failure
+   included. Each resource syncs on its own: a failure
    keeps that resource's previous cache and does not stop the others.
    `syncAll` returns `false` when any request fails: a top-level list
    (professions, common boards, emergency boards, triage steps, phrases) or a

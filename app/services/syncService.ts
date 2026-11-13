@@ -23,6 +23,12 @@ const phraseService = new PhraseService();
 const professionService = new ProfessionService();
 const triageService = new TriageService();
 
+// Outcome of each board's terms sync within one syncAll run, keyed by board
+// uuid. A triage level's board is also listed among emergency boards, so the
+// second list reuses the first one's outcome, failure included, instead of
+// requesting the same terms again.
+type SyncedBoardTerms = Map<string, Promise<boolean>>;
+
 // Every list is cached as the API returned it, the empty list included: "the
 // server has none" must replace what an earlier sync saved, and stay
 // distinguishable from "never synced", which is when the hooks fall back to
@@ -39,10 +45,11 @@ export class SyncService {
   async syncAll(): Promise<boolean> {
     console.log("Starting background synchronization...");
 
+    const syncedBoardTerms: SyncedBoardTerms = new Map();
     const professionsOk = await this.syncProfessions();
-    const boardsOk = await this.syncBoards();
-    const emergencyBoardsOk = await this.syncEmergencyBoards();
-    const triageStepsOk = await this.syncTriageSteps();
+    const boardsOk = await this.syncBoards(syncedBoardTerms);
+    const emergencyBoardsOk = await this.syncEmergencyBoards(syncedBoardTerms);
+    const triageStepsOk = await this.syncTriageSteps(syncedBoardTerms);
     const phrasesOk = await this.syncPhrases();
 
     const allOk =
@@ -103,19 +110,21 @@ export class SyncService {
     }
   }
 
-  private async syncBoards(): Promise<boolean> {
-    return this.syncBoardList("common", BOARDS_CACHE_KEY);
+  private async syncBoards(synced: SyncedBoardTerms): Promise<boolean> {
+    return this.syncBoardList("common", BOARDS_CACHE_KEY, synced);
   }
 
   // The API only lists emergency boards when asked for them by type, so they
   // are pulled and cached apart from the common ones.
-  private async syncEmergencyBoards(): Promise<boolean> {
-    return this.syncBoardList("emergency", EMERGENCY_BOARDS_CACHE_KEY);
+  private async syncEmergencyBoards(
+    synced: SyncedBoardTerms,
+  ): Promise<boolean> {
+    return this.syncBoardList("emergency", EMERGENCY_BOARDS_CACHE_KEY, synced);
   }
 
   // Quick Emergency levels come from their own endpoint, in level order, each
   // with its board; only the boards' terms need a request of their own.
-  private async syncTriageSteps(): Promise<boolean> {
+  private async syncTriageSteps(synced: SyncedBoardTerms): Promise<boolean> {
     try {
       const steps = await triageService.getTriageSteps();
 
@@ -125,7 +134,7 @@ export class SyncService {
 
       let allOk = true;
       for (const step of steps) {
-        if (!(await this.syncBoardTerms(step.board))) allOk = false;
+        if (!(await this.syncBoardTerms(step.board, synced))) allOk = false;
       }
 
       return allOk;
@@ -139,7 +148,19 @@ export class SyncService {
   }
 
   // Failures stay isolated to one board, so the rest of a list still syncs.
-  private async syncBoardTerms(board: Board): Promise<boolean> {
+  private syncBoardTerms(
+    board: Board,
+    synced: SyncedBoardTerms,
+  ): Promise<boolean> {
+    let outcome = synced.get(board.uuid);
+    if (!outcome) {
+      outcome = this.requestBoardTerms(board);
+      synced.set(board.uuid, outcome);
+    }
+    return outcome;
+  }
+
+  private async requestBoardTerms(board: Board): Promise<boolean> {
     try {
       const boardTerms = await boardService.getBoardTerms(board.uuid);
 
@@ -156,6 +177,7 @@ export class SyncService {
   private async syncBoardList(
     type: BoardType,
     cacheKey: string,
+    synced: SyncedBoardTerms,
   ): Promise<boolean> {
     try {
       // 1. Download all boards of this type
@@ -167,7 +189,7 @@ export class SyncService {
       // 2. For each board, download its terms and its next boards
       let allOk = true;
       for (const board of boards) {
-        if (!(await this.syncBoardTerms(board))) allOk = false;
+        if (!(await this.syncBoardTerms(board, synced))) allOk = false;
 
         try {
           const nextBoards = await boardService.getNextBoards(board.uuid);

@@ -84,6 +84,19 @@ function serve(routes: Record<string, unknown>) {
   });
 }
 
+function requestsTo(url: string) {
+  return mockedRequest.mock.calls.filter(([called]) => called === url).length;
+}
+
+/** Routes in which the triage level's board is also listed as emergency. */
+function triageBoardAlsoEmergency(): Record<string, unknown> {
+  return {
+    ...defaultRoutes(),
+    [`${API}/boards?type=emergency`]: { boards: [emergencyBoard, triageBoard] },
+    [`${API}/boards/triage-board-1/next-boards`]: { boards: [] },
+  };
+}
+
 async function cached(key: string) {
   const raw = await AsyncStorage.getItem(key);
   return raw === null ? null : JSON.parse(raw);
@@ -242,4 +255,56 @@ describe("SyncService.syncAll", () => {
       expect((await cached(PHRASES_CACHE_KEY))[0].uuid).toBe("phrase-1");
     },
   );
+});
+
+describe("SyncService.syncAll board terms", () => {
+  const triageTerms = `${API}/boards/triage-board-1/terms`;
+
+  it("requests a board's terms once when it is both an emergency board and a triage level", async () => {
+    serve(triageBoardAlsoEmergency());
+
+    await expect(new SyncService().syncAll()).resolves.toBe(true);
+
+    expect(requestsTo(triageTerms)).toBe(1);
+    expect((await cached(boardTermsCacheKey("triage-board-1")))[0].uuid).toBe(
+      "t-triage",
+    );
+  });
+
+  it("still syncs the terms of a triage board that is not an emergency board", async () => {
+    serve(defaultRoutes());
+
+    await new SyncService().syncAll();
+
+    expect(requestsTo(triageTerms)).toBe(1);
+    expect((await cached(boardTermsCacheKey("triage-board-1")))[0].uuid).toBe(
+      "t-triage",
+    );
+  });
+
+  it("does not retry a failed terms request for the next list that reaches the board", async () => {
+    const previous = [{ uuid: "old-term" }];
+    await AsyncStorage.setItem(
+      boardTermsCacheKey("triage-board-1"),
+      JSON.stringify(previous),
+    );
+    serve({ ...triageBoardAlsoEmergency(), [triageTerms]: new Error("500") });
+
+    await expect(new SyncService().syncAll()).resolves.toBe(false);
+
+    expect(requestsTo(triageTerms)).toBe(1);
+    expect(await cached(boardTermsCacheKey("triage-board-1"))).toEqual(
+      previous,
+    );
+  });
+
+  it("requests every board's terms again on the next sync", async () => {
+    serve(triageBoardAlsoEmergency());
+    const service = new SyncService();
+
+    await service.syncAll();
+    await service.syncAll();
+
+    expect(requestsTo(triageTerms)).toBe(2);
+  });
 });
