@@ -19,6 +19,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Offline banner on a partial sync.** "Servidor indisponível. Exibindo dados
   salvos." also appears when only some boards, phrases or specialities fail to
   download, instead of only when a whole list does.
+- **Web build opens.** `yarn web` no longer stops on load with
+  "Image.default.resolveAssetSource is not a function"; the bundled terms'
+  images now resolve on every platform.
 
 ## [0.1.0] - 2026-11-11
 
