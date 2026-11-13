@@ -1,4 +1,4 @@
-import { Image, ImageSourcePropType } from "react-native";
+import { Asset } from "expo-asset";
 
 import { Board, BoardType } from "@/types/board.types";
 import { Pictogram } from "@/types/pictogram.types";
@@ -9,8 +9,11 @@ const now = new Date().toISOString();
 
 const timestamp = () => ({ createdAt: now, updatedAt: now });
 
-function img(asset: ImageSourcePropType): string {
-  return Image.resolveAssetSource(asset)?.uri ?? "";
+// React Native's Image.resolveAssetSource does not exist on react-native-web,
+// and this runs at import time, so using it broke `yarn web` on load.
+// expo-asset resolves the same URI on every platform.
+function img(asset: number): string {
+  return Asset.fromModule(asset).uri;
 }
 
 // Mirrors TERM_FILES in the api repo. Both halves of
