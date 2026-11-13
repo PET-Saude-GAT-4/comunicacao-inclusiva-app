@@ -47,6 +47,19 @@ export default function SelectProfessionScreen() {
               />
             )}
             contentContainerStyle={styles.flatListContent}
+            ListEmptyComponent={
+              isLoading ? undefined : (
+                <View style={styles.emptyContainer}>
+                  <Text style={styles.emptyText}>
+                    Nenhuma área disponível no momento.
+                  </Text>
+                  <Text style={styles.emptyHint}>
+                    As áreas são cadastradas no painel administrativo. Conecte o
+                    aparelho à internet e abra o app novamente para sincronizar.
+                  </Text>
+                </View>
+              )
+            }
           />
           {/* Until the list is read, its empty initial state would hide the
               whole history. */}

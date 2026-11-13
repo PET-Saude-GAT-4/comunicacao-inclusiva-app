@@ -31,6 +31,23 @@ export const styles = StyleSheet.create({
   flatListContent: {
     paddingBottom: 24,
   },
+  emptyContainer: {
+    paddingVertical: 32,
+    alignItems: "center",
+  },
+  emptyText: {
+    fontSize: 16,
+    fontWeight: "600",
+    color: COLORS.text.onPrimary,
+    textAlign: "center",
+    marginBottom: 8,
+  },
+  emptyHint: {
+    fontSize: 14,
+    color: COLORS.text.onPrimaryVariant,
+    textAlign: "center",
+    lineHeight: 20,
+  },
   footer: {
     flexDirection: "row",
     justifyContent: "center",
