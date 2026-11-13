@@ -25,6 +25,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Web build opens.** `yarn web` no longer stops on load with
   "Image.default.resolveAssetSource is not a function"; the bundled terms'
   images now resolve on every platform.
+- **"Mal-Estar" on Sintomas Gerais.** The board now lists "Mal-Estar", so
+  "Estou com dor de cabeça" can be composed by tapping and suggests its boards.
 
 ## [0.1.0] - 2026-11-11
 
