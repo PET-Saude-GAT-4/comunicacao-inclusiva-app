@@ -1,3 +1,4 @@
+import "@/does/not/exist";
 import { DefaultTheme, NavigationContainer } from "@react-navigation/native";
 import { StatusBar } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
