@@ -12,6 +12,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Urgency response in Libras mode.** After tapping a symptom in an
   emergency module, "Sintoma Apontado" shows its SignWriting image when the
   app is in Libras mode, as the module grid does, instead of the pictogram.
+- **Removed content leaves the app.** When the server no longer publishes any
+  phrases, professions, boards, terms of a board or specialities, the next sync
+  empties them in the app too, instead of keeping the old ones or showing
+  sample content.
 
 ## [0.1.0] - 2026-11-11
 

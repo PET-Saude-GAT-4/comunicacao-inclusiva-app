@@ -21,12 +21,7 @@ export function useBoardTerms(uuid: string) {
       const cacheData = await AsyncStorage.getItem(CACHE_KEY);
 
       if (cacheData) {
-        const parsed = JSON.parse(cacheData);
-        if (parsed.length > 0) {
-          setTerms(parsed);
-        } else {
-          setTerms(boardTermsMock[uuid] || []);
-        }
+        setTerms(JSON.parse(cacheData));
       } else {
         // 2. If not in cache, fall back to emergency Mock
         setTerms(boardTermsMock[uuid] || []);

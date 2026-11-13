@@ -23,6 +23,10 @@ const phraseService = new PhraseService();
 const professionService = new ProfessionService();
 const triageService = new TriageService();
 
+// Every list is cached as the API returned it, the empty list included: "the
+// server has none" must replace what an earlier sync saved, and stay
+// distinguishable from "never synced", which is when the hooks fall back to
+// their mocks.
 export class SyncService {
   /**
    * Downloads every resource the app can use offline and saves it to AsyncStorage.
@@ -62,12 +66,6 @@ export class SyncService {
       //1. Download All Professions
       const professions = await professionService.getProfessions();
 
-      if (!professions || professions.length === 0) {
-        console.log("No professions found in the API.");
-        return true;
-      }
-
-      // Save professions to cache
       await AsyncStorage.setItem(
         PROFESSIONS_CACHE_KEY,
         JSON.stringify(professions),
@@ -81,10 +79,8 @@ export class SyncService {
           const specialities =
             await professionService.getSpecialities(professionCode);
 
-          if (specialities && specialities.length > 0) {
-            const cacheKey = specialitiesCacheKey(professionCode);
-            await AsyncStorage.setItem(cacheKey, JSON.stringify(specialities));
-          }
+          const cacheKey = specialitiesCacheKey(professionCode);
+          await AsyncStorage.setItem(cacheKey, JSON.stringify(specialities));
         } catch (specError) {
           // Catches isolated error from a specific profession to avoid stopping the entire loop
           console.log(
@@ -119,8 +115,7 @@ export class SyncService {
     try {
       const steps = await triageService.getTriageSteps();
 
-      // No level being filled is a valid state, so the empty list is cached as
-      // well; the app then falls back to its bundled levels.
+      // With no level filled, the app falls back to its bundled levels.
       await AsyncStorage.setItem(TRIAGE_STEPS_CACHE_KEY, JSON.stringify(steps));
       console.log("Synchronized triage steps saved in the cache.");
 
@@ -143,11 +138,9 @@ export class SyncService {
     try {
       const boardTerms = await boardService.getBoardTerms(board.uuid);
 
-      if (boardTerms && boardTerms.length > 0) {
-        const cacheKey = boardTermsCacheKey(board.uuid);
-        await AsyncStorage.setItem(cacheKey, JSON.stringify(boardTerms));
-        console.log(`BoardTerms synced for board: ${board.title}`);
-      }
+      const cacheKey = boardTermsCacheKey(board.uuid);
+      await AsyncStorage.setItem(cacheKey, JSON.stringify(boardTerms));
+      console.log(`BoardTerms synced for board: ${board.title}`);
     } catch (picError) {
       console.log(`Failed to sync BoardTerms for board: ${board.uuid}`);
     }
@@ -161,12 +154,6 @@ export class SyncService {
       // 1. Download all boards of this type
       const boards = await boardService.getBoards(type);
 
-      if (!boards || boards.length === 0) {
-        console.log(`No ${type} boards found in the API.`);
-        return true;
-      }
-
-      // Save boards to cache
       await AsyncStorage.setItem(cacheKey, JSON.stringify(boards));
       console.log(`Synchronized ${type} boards saved in the cache.`);
 
@@ -176,10 +163,6 @@ export class SyncService {
 
         try {
           const nextBoards = await boardService.getNextBoards(board.uuid);
-
-          // Having no next boards is a valid state, so the empty list is cached
-          // as well. Otherwise it would be indistinguishable from a board that
-          // has never been synced.
           const cacheKey = nextBoardsCacheKey(board.uuid);
           await AsyncStorage.setItem(cacheKey, JSON.stringify(nextBoards));
           console.log(`Next boards synced for board: ${board.title}`);
@@ -203,11 +186,6 @@ export class SyncService {
       // Phrases already carry their pictograms, so a single request is enough
       const phrases = await phraseService.getPhrases();
 
-      if (!phrases || phrases.length === 0) {
-        console.log("No phrases found in the API.");
-        return true;
-      }
-
       await AsyncStorage.setItem(PHRASES_CACHE_KEY, JSON.stringify(phrases));
       console.log("Synchronized phrases saved in the cache.");
 
@@ -219,10 +197,6 @@ export class SyncService {
           const nextBoards = await phraseService.getPhraseNextBoards(
             phrase.uuid,
           );
-
-          // Having no recommendation is a valid state, so the empty list is
-          // cached as well. Otherwise it would be indistinguishable from a
-          // phrase that has never been synced.
           const cacheKey = phraseNextBoardsCacheKey(phrase.uuid);
           await AsyncStorage.setItem(cacheKey, JSON.stringify(nextBoards));
           console.log(`Next boards synced for phrase: ${phrase.description}`);
