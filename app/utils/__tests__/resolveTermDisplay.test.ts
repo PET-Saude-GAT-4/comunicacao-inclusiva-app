@@ -1,6 +1,6 @@
-import { resolveTermDisplay } from "@/utils/resolveTermDisplay";
+import { term } from "@test/fixtures";
 
-import { term } from "../../test/fixtures";
+import { resolveTermDisplay } from "@/utils/resolveTermDisplay";
 
 describe("resolveTermDisplay", () => {
   const dor = term("dor", "dor de cabeça");

@@ -8,5 +8,6 @@ export default {
     "\\.svg$": "<rootDir>/test/svgStub.tsx",
     "^@/(.*)$": "<rootDir>/app/$1",
     "^@assets/(.*)$": "<rootDir>/assets/$1",
+    "^@test/(.*)$": "<rootDir>/test/$1",
   },
 };

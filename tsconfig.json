@@ -5,7 +5,8 @@
     "types": ["jest"],
     "paths": {
       "@/*": ["./app/*"],
-      "@assets/*": ["./assets/*"]
+      "@assets/*": ["./assets/*"],
+      "@test/*": ["./test/*"]
     }
   },
   "include": ["App.tsx", "app/**/*", "test/**/*", "jest.setup.ts"]

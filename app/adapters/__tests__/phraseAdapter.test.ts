@@ -1,7 +1,7 @@
+import { apiPhrase, apiTerm } from "@test/fixtures";
+
 import { phraseAdapter } from "@/adapters/phraseAdapter";
 import { ApiPhrase } from "@/types/phrase.types";
-
-import { apiPhrase, apiTerm } from "../../test/fixtures";
 
 describe("phraseAdapter.toPhrase", () => {
   it("keeps the terms in the order the API sent them", () => {

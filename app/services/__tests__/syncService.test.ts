@@ -1,4 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { apiBoard, apiPhrase, apiTerm } from "@test/fixtures";
 
 import {
   BOARDS_CACHE_KEY,
@@ -13,8 +14,6 @@ import {
 } from "@/constants/cache";
 import { SyncService } from "@/services/syncService";
 import { request } from "@/utils/apiUtils";
-
-import { apiBoard, apiPhrase, apiTerm } from "../../test/fixtures";
 
 // Only the transport is replaced: services and adapters run for real, so the
 // cache holds what the app would actually read back.

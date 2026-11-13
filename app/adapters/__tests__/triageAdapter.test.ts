@@ -1,6 +1,6 @@
-import { triageAdapter } from "@/adapters/triageAdapter";
+import { apiBoard } from "@test/fixtures";
 
-import { apiBoard } from "../../test/fixtures";
+import { triageAdapter } from "@/adapters/triageAdapter";
 
 describe("triageAdapter.toTriageStep", () => {
   it("keeps the level and adapts the nested board", () => {

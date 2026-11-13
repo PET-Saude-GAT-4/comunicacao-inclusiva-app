@@ -1,11 +1,11 @@
-import { boardAdapter } from "@/adapters/boardAdapter";
-
 import {
   apiBoard,
   apiPictogram,
   apiSignWriting,
   apiTerm,
-} from "../../test/fixtures";
+} from "@test/fixtures";
+
+import { boardAdapter } from "@/adapters/boardAdapter";
 
 describe("boardAdapter", () => {
   describe("toTerm", () => {

@@ -1,6 +1,6 @@
-import { matchPhraseBySequence } from "@/utils/matchPhraseBySequence";
+import { phrase, term } from "@test/fixtures";
 
-import { phrase, term } from "../../test/fixtures";
+import { matchPhraseBySequence } from "@/utils/matchPhraseBySequence";
 
 const selection = (...uuids: string[]) => uuids.map((uuid) => term(uuid));
 

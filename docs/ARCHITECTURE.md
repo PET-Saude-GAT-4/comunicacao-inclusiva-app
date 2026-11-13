@@ -27,8 +27,8 @@ explains how the app is put together and, above all, why. For the domain terms
 | `app/utils/`               | Pure helpers (phrase matching, display resolution, formatting) |
 | `test/`                    | Shared test fixtures and stubs                                 |
 
-`@/` resolves to `app/` and `@assets/` to `assets/`, both in TypeScript
-(`tsconfig.json`) and in Jest (`jest.config.js`).
+`@/` resolves to `app/`, `@assets/` to `assets/` and `@test/` to `test/`, both
+in TypeScript (`tsconfig.json`) and in Jest (`jest.config.js`).
 
 ## Navigation
 
@@ -141,11 +141,13 @@ yarn test:watch
 yarn test:coverage
 ```
 
-- Tests sit next to the code they cover (`*.test.ts`, `*.test.tsx`).
+- Tests live in a `__tests__/` folder beside the code they cover, named after
+  the file under test: `app/utils/dateFormatter.ts` is tested by
+  `app/utils/__tests__/dateFormatter.test.ts`.
 - `jest.setup.ts` mocks AsyncStorage with the library's in-memory mock, fixes
   `API_BASE_URL` through `expo-constants`, and silences `console.log`.
 - `test/fixtures.ts` builds wire and app objects; `test/svgStub.tsx` stands in
-  for imported SVG files.
+  for imported SVG files. Tests import them through `@test/`.
 - Nothing reaches the network: `syncService.test.ts` mocks `request()` by URL
   and lets the real services and adapters run, so the cache holds what the app
   would read back.
