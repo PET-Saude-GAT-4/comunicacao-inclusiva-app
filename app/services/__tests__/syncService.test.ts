@@ -135,6 +135,48 @@ describe("SyncService.syncAll", () => {
     expect(await cached(nextBoardsCacheKey("emergency-1"))).toEqual([]);
   });
 
+  it("replaces a previous cache with the empty list the API now sends", async () => {
+    const stale = JSON.stringify([{ uuid: "stale" }]);
+    await AsyncStorage.multiSet([
+      [PROFESSIONS_CACHE_KEY, stale],
+      [BOARDS_CACHE_KEY, stale],
+      [EMERGENCY_BOARDS_CACHE_KEY, stale],
+      [PHRASES_CACHE_KEY, stale],
+    ]);
+    serve({
+      ...defaultRoutes(),
+      [`${API}/professions`]: { professions: [] },
+      [`${API}/boards?type=common`]: { boards: [] },
+      [`${API}/boards?type=emergency`]: { boards: [] },
+      [`${API}/phrases`]: { phrases: [] },
+    });
+
+    await expect(new SyncService().syncAll()).resolves.toBe(true);
+
+    expect(await cached(PROFESSIONS_CACHE_KEY)).toEqual([]);
+    expect(await cached(BOARDS_CACHE_KEY)).toEqual([]);
+    expect(await cached(EMERGENCY_BOARDS_CACHE_KEY)).toEqual([]);
+    expect(await cached(PHRASES_CACHE_KEY)).toEqual([]);
+  });
+
+  it("caches an empty list of a board's terms and a profession's specialities", async () => {
+    const stale = JSON.stringify([{ uuid: "stale" }]);
+    await AsyncStorage.multiSet([
+      [boardTermsCacheKey("common-1"), stale],
+      [specialitiesCacheKey("MED"), stale],
+    ]);
+    serve({
+      ...defaultRoutes(),
+      [`${API}/boards/common-1/terms`]: { terms: [] },
+      [`${API}/professions/MED/specialities`]: { specialities: [] },
+    });
+
+    await new SyncService().syncAll();
+
+    expect(await cached(boardTermsCacheKey("common-1"))).toEqual([]);
+    expect(await cached(specialitiesCacheKey("MED"))).toEqual([]);
+  });
+
   it("keeps the previous cache for a resource whose request fails", async () => {
     const previous = [{ uuid: "old-phrase" }];
     await AsyncStorage.setItem(PHRASES_CACHE_KEY, JSON.stringify(previous));
@@ -167,7 +209,7 @@ describe("SyncService.syncAll", () => {
       [`${API}/boards/common-1/terms`]: new Error("timeout"),
     });
 
-    await new SyncService().syncAll();
+    await expect(new SyncService().syncAll()).resolves.toBe(false);
 
     expect(await cached(boardTermsCacheKey("common-1"))).toEqual(previous);
     expect((await cached(nextBoardsCacheKey("common-1")))[0].uuid).toBe(
@@ -177,4 +219,27 @@ describe("SyncService.syncAll", () => {
       "t-emergency",
     );
   });
+
+  it.each([
+    ["a board's next boards", `${API}/boards/common-1/next-boards`],
+    ["a phrase's next boards", `${API}/phrases/phrase-1/next-boards`],
+    ["a profession's specialities", `${API}/professions/MED/specialities`],
+    ["a triage level's terms", `${API}/boards/triage-board-1/terms`],
+  ])(
+    "reports a failure on %s and still caches the rest",
+    async (_, failingUrl) => {
+      serve({ ...defaultRoutes(), [failingUrl]: new Error("500") });
+
+      await expect(new SyncService().syncAll()).resolves.toBe(false);
+
+      expect(await cached(PROFESSIONS_CACHE_KEY)).toEqual([profession]);
+      expect((await cached(BOARDS_CACHE_KEY))[0].uuid).toBe("common-1");
+      expect((await cached(boardTermsCacheKey("emergency-1")))[0].uuid).toBe(
+        "t-emergency",
+      );
+      expect(await cached(nextBoardsCacheKey("emergency-1"))).toEqual([]);
+      expect((await cached(TRIAGE_STEPS_CACHE_KEY))[0].level).toBe(1);
+      expect((await cached(PHRASES_CACHE_KEY))[0].uuid).toBe("phrase-1");
+    },
+  );
 });

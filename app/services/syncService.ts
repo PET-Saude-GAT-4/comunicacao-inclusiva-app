@@ -23,12 +23,18 @@ const phraseService = new PhraseService();
 const professionService = new ProfessionService();
 const triageService = new TriageService();
 
+// Every list is cached as the API returned it, the empty list included: "the
+// server has none" must replace what an earlier sync saved, and stay
+// distinguishable from "never synced", which is when the hooks fall back to
+// their mocks.
 export class SyncService {
   /**
    * Downloads every resource the app can use offline and saves it to AsyncStorage.
    * Does not block the UI and fails silently if there is no internet connection.
    * Each resource is synced on its own, so a failure in one does not discard the other.
-   * Returns true if everything was synced, false if any step failed.
+   * Returns true if every request succeeded, false if any failed, including the
+   * per-entry ones (a board's terms, a profession's specialities…), whose entry
+   * is then served from its previous cache.
    */
   async syncAll(): Promise<boolean> {
     console.log("Starting background synchronization...");
@@ -62,12 +68,6 @@ export class SyncService {
       //1. Download All Professions
       const professions = await professionService.getProfessions();
 
-      if (!professions || professions.length === 0) {
-        console.log("No professions found in the API.");
-        return true;
-      }
-
-      // Save professions to cache
       await AsyncStorage.setItem(
         PROFESSIONS_CACHE_KEY,
         JSON.stringify(professions),
@@ -75,25 +75,25 @@ export class SyncService {
       console.log("Synchronized professions saved in the cache.");
 
       //2. For each Professions, download its specilities
+      let allOk = true;
       for (const profession of professions) {
         try {
           const professionCode = profession.code;
           const specialities =
             await professionService.getSpecialities(professionCode);
 
-          if (specialities && specialities.length > 0) {
-            const cacheKey = specialitiesCacheKey(professionCode);
-            await AsyncStorage.setItem(cacheKey, JSON.stringify(specialities));
-          }
+          const cacheKey = specialitiesCacheKey(professionCode);
+          await AsyncStorage.setItem(cacheKey, JSON.stringify(specialities));
         } catch (specError) {
           // Catches isolated error from a specific profession to avoid stopping the entire loop
           console.log(
             `Failed to sync specialities of Profession: ${profession.id}`,
           );
+          allOk = false;
         }
       }
 
-      return true;
+      return allOk;
     } catch (error) {
       // Silent failure. We don't pass 'error' to avoid freezing the React Native console.
       console.log(
@@ -119,16 +119,16 @@ export class SyncService {
     try {
       const steps = await triageService.getTriageSteps();
 
-      // No level being filled is a valid state, so the empty list is cached as
-      // well; the app then falls back to its bundled levels.
+      // With no level filled, the app falls back to its bundled levels.
       await AsyncStorage.setItem(TRIAGE_STEPS_CACHE_KEY, JSON.stringify(steps));
       console.log("Synchronized triage steps saved in the cache.");
 
+      let allOk = true;
       for (const step of steps) {
-        await this.syncBoardTerms(step.board);
+        if (!(await this.syncBoardTerms(step.board))) allOk = false;
       }
 
-      return true;
+      return allOk;
     } catch (error) {
       // Silent failure. We don't pass 'error' to avoid freezing the React Native console.
       console.log(
@@ -139,17 +139,17 @@ export class SyncService {
   }
 
   // Failures stay isolated to one board, so the rest of a list still syncs.
-  private async syncBoardTerms(board: Board): Promise<void> {
+  private async syncBoardTerms(board: Board): Promise<boolean> {
     try {
       const boardTerms = await boardService.getBoardTerms(board.uuid);
 
-      if (boardTerms && boardTerms.length > 0) {
-        const cacheKey = boardTermsCacheKey(board.uuid);
-        await AsyncStorage.setItem(cacheKey, JSON.stringify(boardTerms));
-        console.log(`BoardTerms synced for board: ${board.title}`);
-      }
+      const cacheKey = boardTermsCacheKey(board.uuid);
+      await AsyncStorage.setItem(cacheKey, JSON.stringify(boardTerms));
+      console.log(`BoardTerms synced for board: ${board.title}`);
+      return true;
     } catch (picError) {
       console.log(`Failed to sync BoardTerms for board: ${board.uuid}`);
+      return false;
     }
   }
 
@@ -161,34 +161,26 @@ export class SyncService {
       // 1. Download all boards of this type
       const boards = await boardService.getBoards(type);
 
-      if (!boards || boards.length === 0) {
-        console.log(`No ${type} boards found in the API.`);
-        return true;
-      }
-
-      // Save boards to cache
       await AsyncStorage.setItem(cacheKey, JSON.stringify(boards));
       console.log(`Synchronized ${type} boards saved in the cache.`);
 
       // 2. For each board, download its terms and its next boards
+      let allOk = true;
       for (const board of boards) {
-        await this.syncBoardTerms(board);
+        if (!(await this.syncBoardTerms(board))) allOk = false;
 
         try {
           const nextBoards = await boardService.getNextBoards(board.uuid);
-
-          // Having no next boards is a valid state, so the empty list is cached
-          // as well. Otherwise it would be indistinguishable from a board that
-          // has never been synced.
           const cacheKey = nextBoardsCacheKey(board.uuid);
           await AsyncStorage.setItem(cacheKey, JSON.stringify(nextBoards));
           console.log(`Next boards synced for board: ${board.title}`);
         } catch (chainError) {
           console.log(`Failed to sync next boards for board: ${board.uuid}`);
+          allOk = false;
         }
       }
 
-      return true;
+      return allOk;
     } catch (error) {
       // Silent failure. We don't pass 'error' to avoid freezing the React Native console.
       console.log(
@@ -203,35 +195,28 @@ export class SyncService {
       // Phrases already carry their pictograms, so a single request is enough
       const phrases = await phraseService.getPhrases();
 
-      if (!phrases || phrases.length === 0) {
-        console.log("No phrases found in the API.");
-        return true;
-      }
-
       await AsyncStorage.setItem(PHRASES_CACHE_KEY, JSON.stringify(phrases));
       console.log("Synchronized phrases saved in the cache.");
 
       // One request per phrase, the same shape syncBoards uses for chains. It
       // grows with the number of phrases, which is what the offline guarantee
       // costs.
+      let allOk = true;
       for (const phrase of phrases) {
         try {
           const nextBoards = await phraseService.getPhraseNextBoards(
             phrase.uuid,
           );
-
-          // Having no recommendation is a valid state, so the empty list is
-          // cached as well. Otherwise it would be indistinguishable from a
-          // phrase that has never been synced.
           const cacheKey = phraseNextBoardsCacheKey(phrase.uuid);
           await AsyncStorage.setItem(cacheKey, JSON.stringify(nextBoards));
           console.log(`Next boards synced for phrase: ${phrase.description}`);
         } catch (chainError) {
           console.log(`Failed to sync next boards for phrase: ${phrase.uuid}`);
+          allOk = false;
         }
       }
 
-      return true;
+      return allOk;
     } catch (error) {
       // Silent failure. We don't pass 'error' to avoid freezing the React Native console.
       console.log(

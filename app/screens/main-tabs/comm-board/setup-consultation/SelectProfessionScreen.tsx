@@ -16,7 +16,7 @@ import { styles } from "./SelectProfessionScreen.styles";
 
 export default function SelectProfessionScreen() {
   const hotBarInset = useHotBarInset();
-  const { professions } = useProfessions();
+  const { professions, isLoading } = useProfessions();
   const [selectedProfession, setSelectedProfession] = useState<Profession>();
 
   const navigation =
@@ -48,7 +48,11 @@ export default function SelectProfessionScreen() {
             )}
             contentContainerStyle={styles.flatListContent}
           />
-          <ProfessionHistory professions={professions} />
+          {/* Until the list is read, its empty initial state would hide the
+              whole history. */}
+          <ProfessionHistory
+            professions={isLoading ? undefined : professions}
+          />
         </View>
 
         <View style={styles.footer}>

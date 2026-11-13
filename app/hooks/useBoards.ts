@@ -15,12 +15,7 @@ export function useBoards() {
       const cacheData = await AsyncStorage.getItem(BOARDS_CACHE_KEY);
 
       if (cacheData) {
-        const parsed = JSON.parse(cacheData);
-        if (parsed.length > 0) {
-          setBoards(parsed);
-        } else {
-          setBoards(boardsMock);
-        }
+        setBoards(JSON.parse(cacheData));
       } else {
         // 2. If cache is completely empty, fall back to Mock
         setBoards(boardsMock);

@@ -19,9 +19,10 @@ export function useProfessionHistory(avaliableProfessions?: Profession[]) {
     AsyncStorage.getItem(PROFESSIONS_HISTORIC_KEY).then((data) => {
       if (data) {
         const parsedHistory: HistoryEntry[] = JSON.parse(data);
-        setHistory(JSON.parse(data));
 
-        if (avaliableProfessions && avaliableProfessions.length > 0) {
+        // An empty list is checked against too: it means the server publishes
+        // no profession, so no saved choice may start a consultation.
+        if (avaliableProfessions) {
           const validHistory = parsedHistory.filter((item) =>
             avaliableProfessions.some((p) => p.code === item.profession.code),
           );

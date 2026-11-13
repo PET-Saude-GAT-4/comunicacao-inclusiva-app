@@ -110,24 +110,27 @@ API ──request()──▶ services ──adapters──▶ syncService ──
    emergency boards, every board's terms and next boards, triage steps, phrases
    and each phrase's next boards. Each resource syncs on its own: a failure
    keeps that resource's previous cache and does not stop the others.
-   `syncAll` returns `false` when a top-level list (professions, common boards,
-   emergency boards, triage steps, phrases) fails to download. A failure on a
+   `syncAll` returns `false` when any request fails: a top-level list
+   (professions, common boards, emergency boards, triage steps, phrases) or a
    single board's terms or next boards, a phrase's next boards or a
-   profession's specialities is only logged: that entry keeps its previous
-   cache and `syncAll` still returns `true`.
+   profession's specialities. A failed entry keeps its previous cache and does
+   not stop the remaining boards, phrases or professions from syncing.
 5. **Read.** Hooks (`useBoards`, `usePhrases`, `useTriage`, …) read the cache.
-   When it is empty they fall back to `app/mocks/` or, for emergency content,
-   to `app/content/emergency.ts`, so the app is usable on first launch without
-   a connection. Emergency content is bundled rather than mocked because it has
+   When a key was never written they fall back to `app/mocks/` or, for
+   emergency content, to `app/content/emergency.ts`, so the app is usable on
+   first launch without a connection. Emergency content is bundled rather than mocked because it has
    to work even if the device has never synced.
 6. **Offline banner.** When `syncAll` returns `false`, `MainTabNav` shows
    `OfflineBanner` above the hot-bar until it is dismissed.
 
-Empty lists of next boards and triage steps are cached too: "no
-recommendation" has to be distinguishable from "never synced". The other
-resources are not: an empty list of professions, boards, phrases, a board's
-terms or a profession's specialities skips the write and leaves whatever was
-cached before.
+Every list is cached as the API returned it, the empty list included, so
+content removed on the server leaves the app on the next sync. The hooks tell
+the two cases apart: a key that is absent (never synced) falls back to the
+mocks, while a cached `[]` is returned as is and the screen shows its empty
+state. With no professions cached, a consultation cannot be started; the API
+is the source of truth. Emergency content is the exception: emergency boards,
+their terms and triage steps still fall back to `app/content/emergency.ts` on
+`[]`, because emergencies have to work whatever the server holds.
 
 Image files are not part of the sync; terms and boards cache only their URLs.
 
