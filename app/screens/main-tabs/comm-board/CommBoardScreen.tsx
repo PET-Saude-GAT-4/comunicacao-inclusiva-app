@@ -76,29 +76,76 @@ export default function CommBoardScreen() {
   const [sentPhraseUuid, setSentPhraseUuid] = useState<string | null>(null);
   const [isSuggestionDismissed, setIsSuggestionDismissed] = useState(false);
 
-  // Load pre-filled terms from a ready-made phrase
-  useEffect(() => {
-    const incoming = route.params?.initialTerms;
-    if (incoming && incoming.length > 0) {
-      setSelectedTerms(incoming);
+  // Route params are one-shot requests. Each is acted on during the render it
+  // arrives in and then cleared by the effect below, so a return visit does not
+  // repeat it. Comparing with the last value seen keeps a re-render from acting
+  // twice; because a cleared param goes back to undefined, the same phrase sent
+  // again still counts as a new arrival.
+  const incomingTerms = route.params?.initialTerms;
+  const incomingPhraseUuid = route.params?.triggerPhraseUuid;
+  const incomingMode = route.params?.mode;
+  const [seenParams, setSeenParams] = useState<{
+    terms?: Term[];
+    phraseUuid?: string;
+    mode?: "bodyMap";
+  }>({});
+
+  if (
+    incomingTerms !== seenParams.terms ||
+    incomingPhraseUuid !== seenParams.phraseUuid ||
+    incomingMode !== seenParams.mode
+  ) {
+    setSeenParams({
+      terms: incomingTerms,
+      phraseUuid: incomingPhraseUuid,
+      mode: incomingMode,
+    });
+
+    // Load pre-filled terms from a ready-made phrase
+    if (
+      incomingTerms !== seenParams.terms &&
+      incomingTerms &&
+      incomingTerms.length > 0
+    ) {
+      setSelectedTerms(incomingTerms);
       // The screen survives in the stack, so it can be arrived at carrying a
       // suggestion the user already moved past. Filling the visor starts over,
       // exactly as composing by hand does.
       setSentPhraseUuid(null);
       setIsSuggestionDismissed(false);
-      navigation.setParams({ initialTerms: undefined });
     }
-  }, [route.params?.initialTerms]);
 
-  // The param only asks for the auto-open; the promotion comes from the terms it
-  // dropped in the visor. Clearing it is what keeps a return visit from
-  // re-opening the board.
-  useEffect(() => {
-    if (route.params?.triggerPhraseUuid) {
+    // The param only asks for the auto-open; the promotion comes from the
+    // terms it dropped in the visor.
+    if (incomingPhraseUuid !== seenParams.phraseUuid && incomingPhraseUuid) {
       setIsPhraseOpenPending(true);
-      navigation.setParams({ triggerPhraseUuid: undefined });
     }
-  }, [route.params?.triggerPhraseUuid]);
+
+    // Activate BodyMapMode via route param from ConsultationMenuModal (only for patient)
+    if (
+      incomingMode !== seenParams.mode &&
+      incomingMode === "bodyMap" &&
+      currentSpeaker === "patient"
+    ) {
+      setIsBodyMapMode(true);
+      setIsTextMode(false);
+    }
+  }
+
+  useEffect(() => {
+    if (incomingTerms || incomingPhraseUuid || incomingMode) {
+      navigation.setParams({
+        initialTerms: undefined,
+        triggerPhraseUuid: undefined,
+        mode: undefined,
+      });
+    }
+  }, [incomingTerms, incomingPhraseUuid, incomingMode, navigation]);
+
+  // Exit BodyMapMode if speaker changes to professional
+  if (isBodyMapMode && currentSpeaker === "professional") {
+    setIsBodyMapMode(false);
+  }
 
   const handlePainScaleSubmit = (submission: PainScaleSubmission) => {
     if (!isInConsultation) {
@@ -131,7 +178,7 @@ export default function CommBoardScreen() {
     selectedBoardUuid || "",
   );
   const { nextBoards } = useNextBoards(selectedBoardUuid || "");
-  const { phrases } = usePhrases();
+  const { phrases, isLoading: isLoadingPhrases } = usePhrases();
 
   // The sequence in the visor is the trigger, whether the terms got there by
   // being tapped or by a ready-made phrase filling them in. One path, one rule.
@@ -147,67 +194,40 @@ export default function CommBoardScreen() {
   const { nextBoards: phraseNextBoards, isReady: arePhraseBoardsReady } =
     usePhraseNextBoards(suggestingPhraseUuid ?? "");
 
-  useEffect(() => {
-    // Holding the default back while an arrival is still resolving keeps the
-    // first board from flashing before the recommended one replaces it.
-    if (boards.length > 0 && !selectedBoardUuid && !isPhraseOpenPending) {
-      setSelectedBoardUuid(boards[0].uuid);
-    }
-  }, [boards, isPhraseOpenPending]);
+  // Holding the default back while an arrival is still resolving keeps the
+  // first board from flashing before the recommended one replaces it.
+  if (boards.length > 0 && !selectedBoardUuid && !isPhraseOpenPending) {
+    setSelectedBoardUuid(boards[0].uuid);
+  }
 
   // Open the first recommendation this device actually has. One naming a board
   // that was never synced is skipped rather than opening a blank board, and a
   // phrase whose recommendations are all missing leaves the board unchanged.
-  useEffect(() => {
-    if (!isPhraseOpenPending || boards.length === 0) return;
-
-    // The two params land in separate effects, so the terms may not be in the
-    // visor yet. Waiting for them matters because usePhraseNextBoards reports
-    // isReady for an empty uuid — the pair matches trivially — and acting on
-    // that would clear the flag before there was anything to open.
-    if (selectedTerms.length === 0) return;
-
+  // Every branch that acts also clears the flag, so this settles in one pass.
+  //
+  // Waiting for terms in the visor matters because usePhraseNextBoards reports
+  // isReady for an empty uuid — the pair matches trivially — and acting on that
+  // would clear the flag before there was anything to open. Waiting for the
+  // phrases matters too: before they load, no phrase can match, and that would
+  // read as the phrase being gone.
+  if (
+    isPhraseOpenPending &&
+    boards.length > 0 &&
+    selectedTerms.length > 0 &&
+    !isLoadingPhrases
+  ) {
     if (!matchedPhrase) {
       setIsPhraseOpenPending(false);
-      return;
+    } else if (arePhraseBoardsReady) {
+      const opened = phraseNextBoards.find((recommended) =>
+        boards.some((board) => board.uuid === recommended.uuid),
+      );
+
+      setIsPhraseOpenPending(false);
+
+      if (opened) setSelectedBoardUuid(opened.uuid);
     }
-
-    if (!arePhraseBoardsReady) return;
-
-    const opened = phraseNextBoards.find((recommended) =>
-      boards.some((board) => board.uuid === recommended.uuid),
-    );
-
-    setIsPhraseOpenPending(false);
-
-    if (opened) setSelectedBoardUuid(opened.uuid);
-  }, [
-    isPhraseOpenPending,
-    selectedTerms,
-    matchedPhrase,
-    arePhraseBoardsReady,
-    phraseNextBoards,
-    boards,
-  ]);
-
-  // Activate BodyMapMode via route param from ConsultationMenuModal (only for patient)
-  useEffect(() => {
-    if (route.params?.mode === "bodyMap") {
-      if (currentSpeaker === "patient") {
-        setIsBodyMapMode(true);
-        setIsTextMode(false);
-      }
-      // Reset param so it doesn't trigger again on re-focus if unmounted
-      navigation.setParams({ mode: undefined });
-    }
-  }, [route.params?.mode, currentSpeaker]);
-
-  // Exit BodyMapMode if speaker changes to professional
-  useEffect(() => {
-    if (isBodyMapMode && currentSpeaker === "professional") {
-      setIsBodyMapMode(false);
-    }
-  }, [currentSpeaker, isBodyMapMode]);
+  }
 
   // add terms to the visor list
   const handleSelect = (term: Term) => {

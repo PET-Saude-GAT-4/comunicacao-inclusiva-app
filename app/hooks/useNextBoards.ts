@@ -1,53 +1,42 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useEffect, useState } from "react";
 
 import { nextBoardsCacheKey } from "@/constants/cache";
+import { useCachedValue } from "@/hooks/useCachedValue";
 import { nextBoardsMock } from "@/mocks/boardMock";
 import { Board } from "@/types/board.types";
 
-export function useNextBoards(uuid: string) {
-  const [loaded, setLoaded] = useState<{ uuid: string; boards: Board[] }>({
-    uuid: "",
-    boards: [],
-  });
-  const [isLoading, setIsLoading] = useState(false);
-  const [isError, setIsError] = useState(false);
+type NextBoards = { boards: Board[]; isError: boolean };
 
-  const loadNextBoards = async () => {
-    if (!uuid) return;
+const NO_NEXT_BOARDS: NextBoards = { boards: [], isError: false };
 
-    setIsLoading(true);
-    setIsError(false);
+async function readNextBoards(uuid: string): Promise<NextBoards> {
+  try {
+    // 1. Try to read from cache (where SyncEngine saves data)
+    const cacheData = await AsyncStorage.getItem(nextBoardsCacheKey(uuid));
 
-    try {
-      // 1. Try to read from cache (where SyncEngine saves data)
-      const cacheData = await AsyncStorage.getItem(nextBoardsCacheKey(uuid));
-
-      if (cacheData) {
-        // An empty list is the API saying this board has no successors, which
-        // is not the same as never having synced. The cache keeps the API's
-        // ranking order, so nothing here sorts.
-        setLoaded({ uuid, boards: JSON.parse(cacheData) });
-      } else {
-        // 2. If not in cache, fall back to Mock
-        setLoaded({ uuid, boards: nextBoardsMock[uuid] || [] });
-      }
-    } catch (error) {
-      console.log(`Failed to load next boards for UUID: ${uuid}.`);
-      setLoaded({ uuid, boards: [] });
-      setIsError(true);
-    } finally {
-      setIsLoading(false);
+    if (cacheData) {
+      // An empty list is the API saying this board has no successors, which
+      // is not the same as never having synced. The cache keeps the API's
+      // ranking order, so nothing here sorts.
+      return { boards: JSON.parse(cacheData), isError: false };
     }
-  };
 
-  useEffect(() => {
-    loadNextBoards();
-  }, [uuid]);
+    // 2. If not in cache, fall back to Mock
+    return { boards: nextBoardsMock[uuid] || [], isError: false };
+  } catch {
+    console.log(`Failed to load next boards for UUID: ${uuid}.`);
+    return { boards: [], isError: true };
+  }
+}
 
-  // Until the load for this uuid lands, the pair still holds the previous
-  // board's chain. Reading it as empty keeps that off screen entirely.
-  const nextBoards = loaded.uuid === uuid ? loaded.boards : [];
+export function useNextBoards(uuid: string) {
+  // Until the load for this uuid lands, the hook returns no chain at all, so
+  // the previous board's chain never shows up on screen.
+  const { value, isLoading } = useCachedValue(
+    uuid,
+    readNextBoards,
+    NO_NEXT_BOARDS,
+  );
 
-  return { nextBoards, isLoading, isError, refetch: loadNextBoards };
+  return { nextBoards: value.boards, isLoading, isError: value.isError };
 }

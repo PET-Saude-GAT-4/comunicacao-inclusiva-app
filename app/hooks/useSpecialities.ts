@@ -1,48 +1,36 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useEffect, useState } from "react";
 
 import { specialitiesCacheKey } from "@/constants/cache";
+import { useCachedValue } from "@/hooks/useCachedValue";
 import { specialityMock } from "@/mocks/specialityMock";
 import { Speciality } from "@/types/speciality.types";
 
+const NO_SPECIALITIES: Speciality[] = [];
+
+async function readSpecialities(professionCode: string): Promise<Speciality[]> {
+  const fromMock = () =>
+    specialityMock.filter((item) => item.professionCode === professionCode);
+
+  try {
+    // 1. Try to read from cache (where SyncEngine saves data)
+    const cacheData = await AsyncStorage.getItem(
+      specialitiesCacheKey(professionCode),
+    );
+
+    // 2. If cache is completely empty, fall back to Mock
+    return cacheData ? JSON.parse(cacheData) : fromMock();
+  } catch {
+    console.log("Failed to load specialities from cache. Using Mock.");
+    return fromMock();
+  }
+}
+
 export function useSpecialities(professionCode?: string) {
-  const [specialities, setSpecialities] = useState<Speciality[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const { value: specialities, isLoading } = useCachedValue(
+    professionCode,
+    readSpecialities,
+    NO_SPECIALITIES,
+  );
 
-  const loadSpecialities = async () => {
-    if (!professionCode) {
-      setSpecialities([]);
-      setIsLoading(false);
-      return;
-    }
-    const cacheKey = specialitiesCacheKey(professionCode);
-    try {
-      // 1. Try to read from cache (where SyncEngine saves data)
-      const cacheData = await AsyncStorage.getItem(cacheKey);
-
-      if (cacheData) {
-        setSpecialities(JSON.parse(cacheData));
-      } else {
-        // 2. If cache is completely empty, fall back to Mock
-        const filteredMock = specialityMock.filter(
-          (item) => item.professionCode === professionCode,
-        );
-        setSpecialities(filteredMock);
-      }
-    } catch (error) {
-      console.log("Failed to load specialities from cache. Using Mock.");
-      const filteredMock = specialityMock.filter(
-        (item) => item.professionCode === professionCode,
-      );
-      setSpecialities(filteredMock);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    loadSpecialities();
-  }, [professionCode]);
-
-  return { specialities, isLoading, refetch: loadSpecialities };
+  return { specialities, isLoading };
 }
