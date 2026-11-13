@@ -19,6 +19,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Offline banner on a partial sync.** "Servidor indisponível. Exibindo dados
   salvos." also appears when only some boards, phrases or specialities fail to
   download, instead of only when a whole list does.
+- **"Mal-Estar" on Sintomas Gerais.** The board now lists "Mal-Estar", so
+  "Estou com dor de cabeça" can be composed by tapping and suggests its boards.
 
 ## [0.1.0] - 2026-11-11
 

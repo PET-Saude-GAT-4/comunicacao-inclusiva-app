@@ -44,6 +44,8 @@ export const boardTermsMock: Record<string, Term[]> = {
     TERMS.back,
   ],
   [GENERAL_SYMPTOMS]: [
+    // Lets "Estou com dor de cabeça" (head + malaise) be composed by tapping.
+    TERMS.malaise,
     TERMS.nausea,
     TERMS.dizziness,
     TERMS["shortness-of-breath"],
