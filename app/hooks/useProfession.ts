@@ -1,9 +1,9 @@
-import { PROFESSIONS_CACHE_KEY } from "@/constants/cache";
-import { professionMock } from "@/mocks/professionMock";
-import { ApiProfession, Profession } from "@/types/profession.types";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useEffect, useState } from "react";
 
+import { PROFESSIONS_CACHE_KEY } from "@/constants/cache";
+import { professionMock } from "@/mocks/professionMock";
+import { ApiProfession, Profession } from "@/types/profession.types";
 
 export function useProfessions() {
   const [professions, setProfessions] = useState<Profession[]>([]);

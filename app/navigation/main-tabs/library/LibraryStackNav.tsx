@@ -1,11 +1,13 @@
-import GlobalHeader from "@/components/GlobalHeaderComponent";
-import { COLORS } from "@/styles/themes";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { Platform } from "react-native";
 import { Appbar } from "react-native-paper";
+
+import GlobalHeader from "@/components/GlobalHeaderComponent";
+import BoardDetailScreen from "@/screens/main-tabs/my-collection/BoardDetailScreen";
+import { COLORS } from "@/styles/themes";
+
 import { LibraryBoardStackParamList } from "./../../types";
 import LibraryTabNav from "./LibraryTabNav";
-import BoardDetailScreen from "@/screens/main-tabs/my-collection/BoardDetailScreen";
 
 const MORE_ICON = Platform.OS === "ios" ? "dots-horizontal" : "dots-vertical";
 

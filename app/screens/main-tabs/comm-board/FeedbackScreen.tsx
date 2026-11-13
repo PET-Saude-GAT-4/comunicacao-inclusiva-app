@@ -1,3 +1,10 @@
+import { Ionicons } from "@expo/vector-icons";
+import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
+import { Image } from "expo-image";
+import React from "react";
+import { ScrollView, Text, TouchableOpacity, View } from "react-native";
+
+import { useHotBarInset } from "@/hooks/useHotBarInset";
 import { usePreferences } from "@/hooks/usePreferences";
 import { useSession } from "@/hooks/useSession";
 import { RootStackParamList } from "@/navigation/types";
@@ -5,13 +12,8 @@ import { COLORS } from "@/styles/themes";
 import { InteractionEntry } from "@/types/interaction.types";
 import { Term } from "@/types/term.types";
 import { resolveTermDisplay } from "@/utils/resolveTermDisplay";
-import { Ionicons } from "@expo/vector-icons";
-import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
-import { Image } from "expo-image";
-import React from "react";
-import { ScrollView, Text, TouchableOpacity, View } from "react-native";
+
 import { styles } from "./FeedbackScreen.styles";
-import { useHotBarInset } from "@/hooks/useHotBarInset";
 
 export default function FeedbackScreen() {
   const hotBarInset = useHotBarInset();

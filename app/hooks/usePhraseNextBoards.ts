@@ -1,8 +1,9 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useEffect, useState } from "react";
+
 import { phraseNextBoardsCacheKey } from "@/constants/cache";
 import { phraseNextBoardsMock } from "@/mocks/boardMock";
 import { Board } from "@/types/board.types";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useEffect, useState } from "react";
 
 export function usePhraseNextBoards(uuid: string) {
   const [loaded, setLoaded] = useState<{ uuid: string; boards: Board[] }>({

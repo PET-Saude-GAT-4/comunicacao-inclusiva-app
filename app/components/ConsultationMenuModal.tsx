@@ -1,10 +1,11 @@
-import { useSession } from "@/hooks/useSession";
-import { COLORS, CONTAINERS, TYPOGRAPHY } from "@/styles/themes";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { useNavigation, NavigationProp } from "@react-navigation/native";
+import { NavigationProp, useNavigation } from "@react-navigation/native";
 import React from "react";
 import { Modal, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+
+import { useSession } from "@/hooks/useSession";
 import { RootStackParamList } from "@/navigation/types";
+import { COLORS, CONTAINERS, TYPOGRAPHY } from "@/styles/themes";
 
 interface Props {
   visible: boolean;
@@ -14,11 +15,7 @@ interface Props {
 export function ConsultationMenuModal({ visible, onClose }: Props) {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
-  const {
-    startConsultation,
-    currentSpeaker,
-    isInConsultation,
-  } = useSession();
+  const { startConsultation, currentSpeaker, isInConsultation } = useSession();
 
   const handleStart = () => {
     startConsultation();
@@ -85,7 +82,7 @@ export function ConsultationMenuModal({ visible, onClose }: Props) {
               styles.optionButton,
               { backgroundColor: COLORS.surface.secondary },
             ]}
-            onPress={() => { }}
+            onPress={() => {}}
           >
             <Text style={styles.optionText}>Prancha de Frequência</Text>
             <MaterialCommunityIcons
@@ -125,7 +122,7 @@ export function ConsultationMenuModal({ visible, onClose }: Props) {
               styles.optionButton,
               { backgroundColor: COLORS.surface.secondary },
             ]}
-            onPress={() => { }}
+            onPress={() => {}}
           >
             <Text style={styles.optionText}>Coleção de Pranchas</Text>
             <MaterialCommunityIcons

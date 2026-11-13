@@ -1,9 +1,3 @@
-import { useClipboard } from "@/hooks/useClipboard";
-import { useSession } from "@/hooks/useSession";
-import { assertNever } from "@/utils/assertNever";
-import { formatDateBR, formatTimeBR } from "@/utils/dateFormatter";
-import { formatBodyMapRecord, formatPainRecord } from "@/utils/interactionText";
-import { resolveTermDisplay } from "@/utils/resolveTermDisplay";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useNavigation } from "@react-navigation/native";
 import * as Clipboard from "expo-clipboard";
@@ -16,8 +10,16 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { styles } from "./ReportScreen.styles";
+
+import { useClipboard } from "@/hooks/useClipboard";
 import { useHotBarInset } from "@/hooks/useHotBarInset";
+import { useSession } from "@/hooks/useSession";
+import { assertNever } from "@/utils/assertNever";
+import { formatDateBR, formatTimeBR } from "@/utils/dateFormatter";
+import { formatBodyMapRecord, formatPainRecord } from "@/utils/interactionText";
+import { resolveTermDisplay } from "@/utils/resolveTermDisplay";
+
+import { styles } from "./ReportScreen.styles";
 
 export default function ReportScreen() {
   const hotBarInset = useHotBarInset();

@@ -1,8 +1,9 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useEffect, useState } from "react";
+
 import { PROFESSIONS_HISTORIC_KEY } from "@/constants/cache";
 import { Profession } from "@/types/profession.types";
 import { Speciality } from "@/types/speciality.types";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useEffect, useState } from "react";
 
 type HistoryEntry = {
   profession: Profession;
@@ -25,8 +26,8 @@ export function useProfessionHistory(avaliableProfessions?: Profession[]) {
             avaliableProfessions.some((p) => p.code === item.profession.code),
           );
           setHistory(validHistory);
-        }else{
-        setHistory(parsedHistory);
+        } else {
+          setHistory(parsedHistory);
         }
       }
     });
@@ -49,7 +50,10 @@ export function useProfessionHistory(avaliableProfessions?: Profession[]) {
     const newHistory = [newEntry, ...removeDuplicate].slice(0, MAX_HISTORY);
     setHistory(newHistory);
 
-    await AsyncStorage.setItem(PROFESSIONS_HISTORIC_KEY, JSON.stringify(newHistory));
+    await AsyncStorage.setItem(
+      PROFESSIONS_HISTORIC_KEY,
+      JSON.stringify(newHistory),
+    );
   };
 
   return { history, addHistoryEntry };

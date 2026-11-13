@@ -1,8 +1,9 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useEffect, useState } from "react";
+
 import { boardTermsCacheKey } from "@/constants/cache";
 import { bundledEmergencyBoardTerms } from "@/content/emergency";
 import { Term } from "@/types/term.types";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useEffect, useState } from "react";
 
 export function useModuleBoardTerms(uuid: string) {
   const [terms, setTerms] = useState<Term[]>([]);
@@ -31,7 +32,9 @@ export function useModuleBoardTerms(uuid: string) {
         setTerms(bundledEmergencyBoardTerms[uuid] || []);
       }
     } catch (error) {
-      console.log(`Failed to load cache for UUID: ${uuid}. Using bundled content.`);
+      console.log(
+        `Failed to load cache for UUID: ${uuid}. Using bundled content.`,
+      );
       setTerms(bundledEmergencyBoardTerms[uuid] || []);
     } finally {
       setIsLoading(false);

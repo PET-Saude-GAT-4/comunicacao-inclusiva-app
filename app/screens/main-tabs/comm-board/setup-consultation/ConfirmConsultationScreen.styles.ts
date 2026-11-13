@@ -1,5 +1,6 @@
-import { COLORS, CONTAINERS } from "@/styles/themes";
 import { StyleSheet } from "react-native";
+
+import { COLORS, CONTAINERS } from "@/styles/themes";
 
 export const styles = StyleSheet.create({
   safeArea: {

@@ -1,12 +1,13 @@
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import React from "react";
+
 import GlobalHeader from "@/components/GlobalHeaderComponent";
 import FeedbackScreen from "@/screens/main-tabs/comm-board/FeedbackScreen";
 import ReportScreen from "@/screens/main-tabs/comm-board/ReportScreen";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import React from "react";
+import { COLORS } from "@/styles/themes";
+
 import MainTabNavigator from "./MainTabNav";
 import TutorialStackNav from "./TutorialStackNav";
-
-import { COLORS } from "@/styles/themes";
 
 const RootStack = createNativeStackNavigator();
 

@@ -1,6 +1,7 @@
-import { COLORS } from "@/styles/themes";
 import { useEffect, useRef } from "react";
 import { Animated, ScrollView, StyleSheet, View } from "react-native";
+
+import { COLORS } from "@/styles/themes";
 
 export function BoardSkeleton() {
   const fadeAnim = useRef(new Animated.Value(0.5)).current;

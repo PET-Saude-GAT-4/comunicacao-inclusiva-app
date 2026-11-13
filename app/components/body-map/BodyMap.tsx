@@ -1,13 +1,14 @@
-import React, { useState } from "react";
-import { View, StyleSheet, TouchableOpacity, Text } from "react-native";
-import { BodyRegionSlug, BODY_REGIONS } from "@/constants/bodyMapRegions";
-import { BodyFrontView } from "./BodyFrontView";
-import { BodyBackView } from "./BodyBackView";
-import { COLORS, CONTAINERS, TYPOGRAPHY } from "@/styles/themes";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { useSession } from "@/hooks/useSession";
+import React, { useState } from "react";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
+import { BODY_REGIONS, BodyRegionSlug } from "@/constants/bodyMapRegions";
+import { useSession } from "@/hooks/useSession";
+import { COLORS, CONTAINERS, TYPOGRAPHY } from "@/styles/themes";
 import { BodyMapContent } from "@/types/interaction.types";
+
+import { BodyBackView } from "./BodyBackView";
+import { BodyFrontView } from "./BodyFrontView";
 
 interface Props {
   onSend: (content: BodyMapContent) => void;
@@ -32,7 +33,10 @@ export function BodyMap({ onSend }: Props) {
 
   const handleSend = () => {
     if (!isPatient || selectedRegions.length === 0) return;
-    const regions = selectedRegions.map((slug) => ({ slug, label: BODY_REGIONS[slug] }));
+    const regions = selectedRegions.map((slug) => ({
+      slug,
+      label: BODY_REGIONS[slug],
+    }));
     onSend({ regions });
     setSelectedRegions([]); // Clear selection after send
   };
@@ -45,7 +49,11 @@ export function BodyMap({ onSend }: Props) {
           style={styles.flipButton}
           onPress={() => setIsFrontView((prev) => !prev)}
         >
-          <MaterialCommunityIcons name="sync" size={28} color={COLORS.secondary} />
+          <MaterialCommunityIcons
+            name="sync"
+            size={28}
+            color={COLORS.secondary}
+          />
         </TouchableOpacity>
 
         {/* Tooltip Badge */}
@@ -82,7 +90,8 @@ export function BodyMap({ onSend }: Props) {
         <TouchableOpacity
           style={[
             styles.sendButton,
-            (selectedRegions.length === 0 || !isPatient) && styles.sendButtonDisabled,
+            (selectedRegions.length === 0 || !isPatient) &&
+              styles.sendButtonDisabled,
           ]}
           onPress={handleSend}
           disabled={selectedRegions.length === 0 || !isPatient}

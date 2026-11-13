@@ -1,10 +1,12 @@
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { Platform } from "react-native";
+import { Appbar } from "react-native-paper";
+
 import GlobalHeader from "@/components/GlobalHeaderComponent";
 import ModuleVisualizationScreen from "@/screens/main-tabs/emergency/ModuleVisualizationScreen";
 import { UrgencyResponseScreen } from "@/screens/main-tabs/emergency/tabs/QuickEmergency/UrgencyResponseScreen";
 import { COLORS } from "@/styles/themes";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { Platform } from "react-native";
-import { Appbar } from "react-native-paper";
+
 import { EmergencyStackParamList } from "./../../types";
 import EmergencyTabNav from "./EmergencyTabNav";
 

@@ -1,17 +1,18 @@
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import { useNavigation } from "@react-navigation/native";
+import React, { useMemo, useState } from "react";
+import { FlatList, Text, TouchableOpacity, View } from "react-native";
+
 import { BoardSkeleton } from "@/components/BoardSkeleton";
 import { PhraseCard } from "@/components/PhraseCard";
 import { styles as phraseCardStyles } from "@/components/PhraseCard.styles";
 import { SearchBar } from "@/components/SearchBar";
+import { useHotBarInset } from "@/hooks/useHotBarInset";
 import { useMyCollection } from "@/hooks/useMyCollection";
 import { usePhrases } from "@/hooks/usePhrases";
 import { useSession } from "@/hooks/useSession";
 import { styles } from "@/screens/main-tabs/library/PhrasesScreen.styles";
 import { Phrase } from "@/types/phrase.types";
-import MaterialIcons from "@expo/vector-icons/MaterialIcons";
-import { useNavigation } from "@react-navigation/native";
-import React, { useMemo, useState } from "react";
-import { FlatList, Text, TouchableOpacity, View } from "react-native";
-import { useHotBarInset } from "@/hooks/useHotBarInset";
 
 export default function MyPhraseScreen() {
   const hotBarInset = useHotBarInset();

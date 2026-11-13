@@ -1,8 +1,9 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useEffect, useState } from "react";
+
 import { specialitiesCacheKey } from "@/constants/cache";
 import { specialityMock } from "@/mocks/specialityMock";
 import { Speciality } from "@/types/speciality.types";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useEffect, useState } from "react";
 
 export function useSpecialities(professionCode?: string) {
   const [specialities, setSpecialities] = useState<Speciality[]>([]);

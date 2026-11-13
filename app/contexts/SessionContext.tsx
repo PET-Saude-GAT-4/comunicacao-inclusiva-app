@@ -1,7 +1,7 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { createContext, ReactNode, useEffect, useState } from "react";
 
 import { InteractionEntry } from "@/types/interaction.types";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const CACHE_KEY = "@active_session";
 

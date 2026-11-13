@@ -1,4 +1,3 @@
-import { COLORS, CONTAINERS } from "@/styles/themes";
 import * as Haptics from "expo-haptics";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import {
@@ -18,6 +17,9 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 import { scheduleOnRN } from "react-native-worklets";
+
+import { COLORS, CONTAINERS } from "@/styles/themes";
+
 import { faceSizeFor, nearestIndexFor, valueToY, yToValue } from "./geometry";
 import type { ScaleItem } from "./types";
 

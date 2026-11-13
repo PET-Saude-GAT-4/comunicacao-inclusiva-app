@@ -1,26 +1,6 @@
-import { AccessibilityMenu } from "@/components/AccessibilityMenu";
-import { BoardSkeleton } from "@/components/BoardSkeleton";
-import { SearchBar } from "@/components/SearchBar";
-import { PainScaleTray } from "@/components/pain-scale/PainScaleTray";
-import { PainScaleTrigger } from "@/components/pain-scale/PainScaleTrigger";
-import type { PainScaleSubmission } from "@/components/pain-scale/types";
-import { PAIN_SCALE_FACES } from "@/constants/painScaleFaces";
-import { useBoardTerms } from "@/hooks/useBoardTerms";
-import { useBoards } from "@/hooks/useBoards";
-import { useNextBoards } from "@/hooks/useNextBoards";
-import { usePhraseNextBoards } from "@/hooks/usePhraseNextBoards";
-import { usePhrases } from "@/hooks/usePhrases";
-import { usePreferences } from "@/hooks/usePreferences";
-import { useSession } from "@/hooks/useSession";
-import { CommBoardStackParamList } from "@/navigation/types";
-import { COLORS, CONTAINERS } from "@/styles/themes";
-import { Term } from "@/types/term.types";
-import { matchPhraseBySequence } from "@/utils/matchPhraseBySequence";
-import { resolveTermDisplay } from "@/utils/resolveTermDisplay";
 import { Ionicons } from "@expo/vector-icons";
 import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { BodyMap } from "@/components/body-map/BodyMap";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import React, { useEffect, useMemo, useState } from "react";
@@ -32,8 +12,30 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { styles } from "./CommBoardScreen.styles";
+
+import { AccessibilityMenu } from "@/components/AccessibilityMenu";
+import { BoardSkeleton } from "@/components/BoardSkeleton";
+import { BodyMap } from "@/components/body-map/BodyMap";
+import { PainScaleTray } from "@/components/pain-scale/PainScaleTray";
+import { PainScaleTrigger } from "@/components/pain-scale/PainScaleTrigger";
+import type { PainScaleSubmission } from "@/components/pain-scale/types";
+import { SearchBar } from "@/components/SearchBar";
+import { PAIN_SCALE_FACES } from "@/constants/painScaleFaces";
+import { useBoards } from "@/hooks/useBoards";
+import { useBoardTerms } from "@/hooks/useBoardTerms";
 import { useHotBarInset } from "@/hooks/useHotBarInset";
+import { useNextBoards } from "@/hooks/useNextBoards";
+import { usePhraseNextBoards } from "@/hooks/usePhraseNextBoards";
+import { usePhrases } from "@/hooks/usePhrases";
+import { usePreferences } from "@/hooks/usePreferences";
+import { useSession } from "@/hooks/useSession";
+import { CommBoardStackParamList } from "@/navigation/types";
+import { COLORS, CONTAINERS } from "@/styles/themes";
+import { Term } from "@/types/term.types";
+import { matchPhraseBySequence } from "@/utils/matchPhraseBySequence";
+import { resolveTermDisplay } from "@/utils/resolveTermDisplay";
+
+import { styles } from "./CommBoardScreen.styles";
 
 export default function CommBoardScreen() {
   const hotBarInset = useHotBarInset();
@@ -49,7 +51,6 @@ export default function CommBoardScreen() {
     setCurrentSpeaker,
   } = useSession();
   const { displayMode } = usePreferences();
-
 
   const [isTextMode, setIsTextMode] = useState(false);
   const [isBodyMapMode, setIsBodyMapMode] = useState(false);
@@ -373,178 +374,189 @@ export default function CommBoardScreen() {
 
       <View style={styles.gridContainer}>
         {isBodyMapMode ? (
-          <View style={{ flex: 1, width: "100%", backgroundColor: COLORS.surface.primary, borderRadius: CONTAINERS.radius.md, overflow: "hidden" }}>
-             {/* Componente independente BodyMap */}
-             <BodyMap
-               onSend={(regionsText) => {
-                 if (!isInConsultation) {
-                   console.log("Modo triagem: bodyMap não registrado.", regionsText);
-                   setIsBodyMapMode(false);
-                   return;
-                 }
-                 addInteraction({
-                   id: Math.random().toString(36).substr(2, 9),
-                   speaker: "patient",
-                   type: "bodyMap",
-                   content: regionsText,
-                   timestamp: new Date().toISOString(),
-                   understood: true,
-                 });
-                 // Alterna quem fala e sai do mapa
-                 setCurrentSpeaker("professional");
-                 setIsBodyMapMode(false);
-               }}
-             />
+          <View
+            style={{
+              flex: 1,
+              width: "100%",
+              backgroundColor: COLORS.surface.primary,
+              borderRadius: CONTAINERS.radius.md,
+              overflow: "hidden",
+            }}
+          >
+            {/* Componente independente BodyMap */}
+            <BodyMap
+              onSend={(regionsText) => {
+                if (!isInConsultation) {
+                  console.log(
+                    "Modo triagem: bodyMap não registrado.",
+                    regionsText,
+                  );
+                  setIsBodyMapMode(false);
+                  return;
+                }
+                addInteraction({
+                  id: Math.random().toString(36).substr(2, 9),
+                  speaker: "patient",
+                  type: "bodyMap",
+                  content: regionsText,
+                  timestamp: new Date().toISOString(),
+                  understood: true,
+                });
+                // Alterna quem fala e sai do mapa
+                setCurrentSpeaker("professional");
+                setIsBodyMapMode(false);
+              }}
+            />
           </View>
         ) : (
           <>
             {/* Text Mode Input */}
-        {isTextMode && (
-          <View style={{ marginBottom: 16 }}>
-            <View style={styles.textModeInputContainer}>
-              <TextInput
-                style={styles.textModeInput}
-                placeholder="Digite sua frase"
-                value={typedText}
-                onChangeText={(text) => {
-                  setTypedText(text);
-                  setIsSuggestionDismissed(true);
+            {isTextMode && (
+              <View style={{ marginBottom: 16 }}>
+                <View style={styles.textModeInputContainer}>
+                  <TextInput
+                    style={styles.textModeInput}
+                    placeholder="Digite sua frase"
+                    value={typedText}
+                    onChangeText={(text) => {
+                      setTypedText(text);
+                      setIsSuggestionDismissed(true);
+                    }}
+                  />
+                  {typedText.length > 0 && (
+                    <TouchableOpacity
+                      onPress={() => setTypedText("")}
+                      style={styles.clearTextButton}
+                    >
+                      <Ionicons name="close-circle" size={24} color="#666" />
+                    </TouchableOpacity>
+                  )}
+                </View>
+              </View>
+            )}
+
+            {/* Categories Bar */}
+            {isSearchActive && (
+              <View style={{ marginBottom: 16 }}>
+                <SearchBar
+                  value={searchQuery}
+                  onChangeText={setSearchQuery}
+                  placeholder="Buscar prancha..."
+                />
+              </View>
+            )}
+            <View style={styles.categoriesWrapper}>
+              <ScrollView
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                style={styles.categoriesScroll}
+              >
+                {orderedBoards.map((board) => {
+                  const isSelected = board.uuid === selectedBoardUuid;
+                  const isSuggested =
+                    !isSelected &&
+                    promotedBoards.some((next) => next.uuid === board.uuid);
+                  return (
+                    <TouchableOpacity
+                      key={board.uuid}
+                      onPress={() => {
+                        setSelectedBoardUuid(board.uuid);
+                        // Choosing a board asks for that board's own successors,
+                        // whether or not it was one of the suggested ones.
+                        setIsSuggestionDismissed(true);
+                      }}
+                    >
+                      <View
+                        style={[
+                          styles.categoryItem,
+                          isSelected && styles.categoryItemSelected,
+                          isSuggested && styles.categoryItemSuggested,
+                        ]}
+                      >
+                        <LinearGradient
+                          colors={["#5ce1e6", "#ffb8e4"]}
+                          style={styles.categoryGradient}
+                        >
+                          {/* Board cover always uses the representative pictogram, not a Term */}
+                          {board.representativePictogram && (
+                            <Image
+                              source={{
+                                uri: board.representativePictogram.imageSource,
+                              }}
+                              style={styles.categoryImage}
+                            />
+                          )}
+                          <Text style={styles.categoryText} numberOfLines={2}>
+                            {board.title.toUpperCase()}
+                          </Text>
+                        </LinearGradient>
+                      </View>
+                      {/* Sibling of the chip, not a child: the chip clips to its
+                      rounded corners and would cut the badge away. */}
+                      {isSuggested && (
+                        <View style={styles.categorySuggestedBadge}>
+                          <Ionicons
+                            name="arrow-forward"
+                            size={11}
+                            color={COLORS.text.onSecondary}
+                          />
+                        </View>
+                      )}
+                    </TouchableOpacity>
+                  );
+                })}
+              </ScrollView>
+
+              <TouchableOpacity
+                style={styles.searchButtonContainer}
+                onPress={() => {
+                  setIsSearchActive(!isSearchActive);
+                  setSearchQuery("");
                 }}
-              />
-              {typedText.length > 0 && (
-                <TouchableOpacity
-                  onPress={() => setTypedText("")}
-                  style={styles.clearTextButton}
-                >
-                  <Ionicons name="close-circle" size={24} color="#666" />
-                </TouchableOpacity>
+              >
+                <View style={styles.searchButton}>
+                  <Ionicons
+                    name={isSearchActive ? "close" : "search"}
+                    size={24}
+                    color="#666"
+                  />
+                </View>
+              </TouchableOpacity>
+            </View>
+
+            {/* FlatList — term grid */}
+            <View style={{ flex: 1, paddingTop: 16 }}>
+              {isLoadingTerms ? (
+                <BoardSkeleton />
+              ) : (
+                <FlatList
+                  numColumns={4}
+                  showsVerticalScrollIndicator={false}
+                  contentContainerStyle={{ paddingBottom: hotBarInset }}
+                  data={terms}
+                  keyExtractor={(item) => item.uuid}
+                  renderItem={({ item }) => {
+                    const display = resolveTermDisplay(item, displayMode);
+                    return (
+                      <TouchableOpacity
+                        style={styles.pictogramItem}
+                        onPress={() => handleSelect(item)}
+                      >
+                        <View style={styles.pictogramDiv}>
+                          <Image
+                            source={{ uri: display.imageSource }}
+                            style={styles.pictogramImage}
+                          />
+                          <Text style={styles.pictogramText} numberOfLines={1}>
+                            {display.label}
+                          </Text>
+                        </View>
+                      </TouchableOpacity>
+                    );
+                  }}
+                />
               )}
             </View>
-          </View>
-        )}
-
-        {/* Categories Bar */}
-        {isSearchActive && (
-          <View style={{ marginBottom: 16 }}>
-            <SearchBar
-              value={searchQuery}
-              onChangeText={setSearchQuery}
-              placeholder="Buscar prancha..."
-            />
-          </View>
-        )}
-        <View style={styles.categoriesWrapper}>
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            style={styles.categoriesScroll}
-          >
-            {orderedBoards.map((board) => {
-              const isSelected = board.uuid === selectedBoardUuid;
-              const isSuggested =
-                !isSelected &&
-                promotedBoards.some((next) => next.uuid === board.uuid);
-              return (
-                <TouchableOpacity
-                  key={board.uuid}
-                  onPress={() => {
-                    setSelectedBoardUuid(board.uuid);
-                    // Choosing a board asks for that board's own successors,
-                    // whether or not it was one of the suggested ones.
-                    setIsSuggestionDismissed(true);
-                  }}
-                >
-                  <View
-                    style={[
-                      styles.categoryItem,
-                      isSelected && styles.categoryItemSelected,
-                      isSuggested && styles.categoryItemSuggested,
-                    ]}
-                  >
-                    <LinearGradient
-                      colors={["#5ce1e6", "#ffb8e4"]}
-                      style={styles.categoryGradient}
-                    >
-                      {/* Board cover always uses the representative pictogram, not a Term */}
-                      {board.representativePictogram && (
-                        <Image
-                          source={{
-                            uri: board.representativePictogram.imageSource,
-                          }}
-                          style={styles.categoryImage}
-                        />
-                      )}
-                      <Text style={styles.categoryText} numberOfLines={2}>
-                        {board.title.toUpperCase()}
-                      </Text>
-                    </LinearGradient>
-                  </View>
-                  {/* Sibling of the chip, not a child: the chip clips to its
-                      rounded corners and would cut the badge away. */}
-                  {isSuggested && (
-                    <View style={styles.categorySuggestedBadge}>
-                      <Ionicons
-                        name="arrow-forward"
-                        size={11}
-                        color={COLORS.text.onSecondary}
-                      />
-                    </View>
-                  )}
-                </TouchableOpacity>
-              );
-            })}
-          </ScrollView>
-
-          <TouchableOpacity
-            style={styles.searchButtonContainer}
-            onPress={() => {
-              setIsSearchActive(!isSearchActive);
-              setSearchQuery("");
-            }}
-          >
-            <View style={styles.searchButton}>
-              <Ionicons
-                name={isSearchActive ? "close" : "search"}
-                size={24}
-                color="#666"
-              />
-            </View>
-          </TouchableOpacity>
-        </View>
-
-        {/* FlatList — term grid */}
-        <View style={{ flex: 1, paddingTop: 16 }}>
-          {isLoadingTerms ? (
-            <BoardSkeleton />
-          ) : (
-            <FlatList
-              numColumns={4}
-              showsVerticalScrollIndicator={false}
-              contentContainerStyle={{ paddingBottom: hotBarInset }}
-              data={terms}
-              keyExtractor={(item) => item.uuid}
-              renderItem={({ item }) => {
-                const display = resolveTermDisplay(item, displayMode);
-                return (
-                  <TouchableOpacity
-                    style={styles.pictogramItem}
-                    onPress={() => handleSelect(item)}
-                  >
-                    <View style={styles.pictogramDiv}>
-                      <Image
-                        source={{ uri: display.imageSource }}
-                        style={styles.pictogramImage}
-                      />
-                      <Text style={styles.pictogramText} numberOfLines={1}>
-                        {display.label}
-                      </Text>
-                    </View>
-                  </TouchableOpacity>
-                );
-              }}
-            />
-          )}
-        </View>
           </>
         )}
       </View>

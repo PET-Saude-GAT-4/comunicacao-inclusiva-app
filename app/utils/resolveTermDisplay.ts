@@ -14,15 +14,12 @@ export interface TermDisplay {
  * Board cover images (category chips, board cards) keep using
  * `board.representativePictogram` directly — they are not Terms.
  */
-export function resolveTermDisplay(
-  term: Term,
-  mode: DisplayMode,
-): TermDisplay {
+export function resolveTermDisplay(term: Term, mode: DisplayMode): TermDisplay {
   return {
     imageSource:
       mode === "signWriting"
-        ? term.signWriting.imageSource as string
-        : term.pictogram.imageSource as string,
+        ? (term.signWriting.imageSource as string)
+        : (term.pictogram.imageSource as string),
     label: term.description.toUpperCase(),
   };
 }

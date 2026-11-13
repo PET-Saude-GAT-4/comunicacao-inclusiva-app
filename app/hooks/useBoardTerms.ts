@@ -1,8 +1,9 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useEffect, useState } from "react";
+
 import { boardTermsCacheKey } from "@/constants/cache";
 import { boardTermsMock } from "@/mocks/boardMock";
 import { Term } from "@/types/term.types";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useEffect, useState } from "react";
 
 export function useBoardTerms(uuid: string) {
   const [terms, setTerms] = useState<Term[]>([]);

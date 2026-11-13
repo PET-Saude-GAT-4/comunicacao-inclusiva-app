@@ -1,8 +1,9 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useEffect, useState } from "react";
+
 import { BOARDS_CACHE_KEY } from "@/constants/cache";
 import { boardsMock } from "@/mocks/boardMock";
 import { Board } from "@/types/board.types";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useEffect, useState } from "react";
 
 export function useBoards() {
   const [boards, setBoards] = useState<Board[]>([]);

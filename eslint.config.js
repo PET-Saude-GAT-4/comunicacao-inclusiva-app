@@ -5,10 +5,10 @@ import { FlatCompat } from "@eslint/eslintrc";
 import js from "@eslint/js";
 import typescriptEslint from "@typescript-eslint/eslint-plugin";
 import tsParser from "@typescript-eslint/parser";
+import { defineConfig, globalIgnores } from "eslint/config";
 import expoConfig from "eslint-config-expo/flat.js";
 import eslintPluginPrettierRecommended from "eslint-plugin-prettier/recommended";
 import simpleImportSort from "eslint-plugin-simple-import-sort";
-import { defineConfig, globalIgnores } from "eslint/config";
 import globals from "globals";
 
 const __filename = fileURLToPath(import.meta.url);

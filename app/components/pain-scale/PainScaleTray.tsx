@@ -1,5 +1,3 @@
-import { PAIN_SCALE_FACES } from "@/constants/painScaleFaces";
-import { COLORS, CONTAINERS, TYPOGRAPHY } from "@/styles/themes";
 import { Ionicons } from "@expo/vector-icons";
 import * as Haptics from "expo-haptics";
 import React, { useCallback, useEffect, useRef, useState } from "react";
@@ -21,6 +19,10 @@ import Animated, {
 } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { scheduleOnRN } from "react-native-worklets";
+
+import { PAIN_SCALE_FACES } from "@/constants/painScaleFaces";
+import { COLORS, CONTAINERS, TYPOGRAPHY } from "@/styles/themes";
+
 import { nearestIndexFor } from "./geometry";
 import { PainScaleSlider, TRACK_COLUMN_WIDTH } from "./PainScaleSlider";
 import type { PainScaleSubmission, ScaleItem } from "./types";

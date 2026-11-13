@@ -1,8 +1,9 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useEffect, useState } from "react";
+
 import { TRIAGE_STEPS_CACHE_KEY } from "@/constants/cache";
 import { bundledTriageSteps } from "@/content/emergency";
 import { TriageStep } from "@/types/triage.types";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useEffect, useState } from "react";
 
 export function useTriage() {
   const [steps, setSteps] = useState<TriageStep[]>([]);
@@ -23,7 +24,9 @@ export function useTriage() {
         setSteps(bundledTriageSteps);
       }
     } catch (error) {
-      console.log("Failed to load triage steps from cache. Using bundled content.");
+      console.log(
+        "Failed to load triage steps from cache. Using bundled content.",
+      );
       setSteps(bundledTriageSteps);
     } finally {
       setIsLoading(false);

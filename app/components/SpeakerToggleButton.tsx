@@ -1,17 +1,14 @@
-import React, { useEffect, useRef } from "react";
-import {
-  Animated,
-  StyleSheet,
-  TouchableOpacity,
-} from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import React, { useEffect, useRef } from "react";
+import { Animated, StyleSheet, TouchableOpacity } from "react-native";
+
 import { useSession } from "@/hooks/useSession";
 import { COLORS } from "@/styles/themes";
 
 export function SpeakerToggleButton() {
   const { currentSpeaker, setCurrentSpeaker } = useSession();
   const animatedValue = useRef(
-    new Animated.Value(currentSpeaker === "professional" ? 1 : 0)
+    new Animated.Value(currentSpeaker === "professional" ? 1 : 0),
   ).current;
 
   useEffect(() => {
@@ -24,7 +21,7 @@ export function SpeakerToggleButton() {
 
   const handleToggle = () => {
     setCurrentSpeaker(
-      currentSpeaker === "professional" ? "patient" : "professional"
+      currentSpeaker === "professional" ? "patient" : "professional",
     );
   };
 

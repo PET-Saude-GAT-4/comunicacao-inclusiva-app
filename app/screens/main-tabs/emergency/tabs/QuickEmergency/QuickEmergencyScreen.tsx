@@ -1,22 +1,21 @@
-import { useTriage } from "@/hooks/useTriage";
-import { QuickEmergencyStackParamList } from "@/navigation/types";
-import { ScrollIndicator } from "@/screens/main-tabs/components/ScrollIndicator/ScrollIndicator";
-import { Board } from "@/types/board.types";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import { runOnJS } from "react-native-reanimated";
+
+import { useTriage } from "@/hooks/useTriage";
+import { QuickEmergencyStackParamList } from "@/navigation/types";
+import { ScrollIndicator } from "@/screens/main-tabs/components/ScrollIndicator/ScrollIndicator";
+import { Board } from "@/types/board.types";
+
 import ModuleVisualizationScreen from "../../ModuleVisualizationScreen";
 
 export function QuickEmergencyScreen() {
   const navigation =
     useNavigation<
-      NativeStackNavigationProp<
-        QuickEmergencyStackParamList,
-        "QuickEmergency"
-      >
+      NativeStackNavigationProp<QuickEmergencyStackParamList, "QuickEmergency">
     >();
   // One board per triage level, most urgent first.
   const { steps } = useTriage();
@@ -59,10 +58,7 @@ export function QuickEmergencyScreen() {
           />
         )}
         <View style={styles.indicatorWrapper}>
-          <ScrollIndicator
-            count={boards.length}
-            activeIndex={activeIndex}
-          />
+          <ScrollIndicator count={boards.length} activeIndex={activeIndex} />
         </View>
       </View>
     </GestureDetector>

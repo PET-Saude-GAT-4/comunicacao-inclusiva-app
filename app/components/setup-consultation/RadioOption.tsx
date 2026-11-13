@@ -1,5 +1,6 @@
-import { COLORS } from "@/styles/themes";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+
+import { COLORS } from "@/styles/themes";
 
 interface RadioOptionProps {
   label: string;
@@ -35,7 +36,7 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.surface.primary,
     borderWidth: 1,
     borderColor: COLORS.outlineCommon,
-    borderRadius: 32, 
+    borderRadius: 32,
     marginBottom: 12,
   },
   containerSelected: {
@@ -48,7 +49,7 @@ const styles = StyleSheet.create({
     fontWeight: "500",
   },
   labelSelected: {
-    fontWeight: "700", 
+    fontWeight: "700",
     color: COLORS.primaryDark,
   },
   radioOuter: {

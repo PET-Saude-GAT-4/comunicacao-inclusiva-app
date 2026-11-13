@@ -1,8 +1,9 @@
+import { Image } from "react-native";
+
 import { Board, BoardType } from "@/types/board.types";
 import { Pictogram } from "@/types/pictogram.types";
 import { SignWriting } from "@/types/signWriting.types";
 import { Term } from "@/types/term.types";
-import { Image } from "react-native";
 
 const now = new Date().toISOString();
 

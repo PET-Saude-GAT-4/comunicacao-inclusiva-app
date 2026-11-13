@@ -1,3 +1,5 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
 import {
   BOARDS_CACHE_KEY,
   boardTermsCacheKey,
@@ -13,7 +15,7 @@ import { BoardService } from "@/services/boards";
 import { PhraseService } from "@/services/phrases";
 import { TriageService } from "@/services/triage";
 import { Board, BoardType } from "@/types/board.types";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+
 import { ProfessionService } from "./ProfessionService";
 
 const boardService = new BoardService();

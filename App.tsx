@@ -3,6 +3,7 @@ import { StatusBar } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { PaperProvider, useTheme } from "react-native-paper";
 import { SafeAreaProvider } from "react-native-safe-area-context";
+
 import { MyCollectionProvider } from "./app/contexts/MyCollectionContext";
 import { PreferencesProvider } from "./app/contexts/PreferencesContext";
 import { SessionProvider } from "./app/contexts/SessionContext";

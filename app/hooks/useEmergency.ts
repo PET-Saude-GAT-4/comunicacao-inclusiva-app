@@ -1,8 +1,9 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useEffect, useState } from "react";
+
 import { EMERGENCY_BOARDS_CACHE_KEY } from "@/constants/cache";
 import { bundledEmergencyBoards } from "@/content/emergency";
 import { Board } from "@/types/board.types";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useEffect, useState } from "react";
 
 export function useEmergency() {
   const [boards, setBoards] = useState<Board[]>([]);

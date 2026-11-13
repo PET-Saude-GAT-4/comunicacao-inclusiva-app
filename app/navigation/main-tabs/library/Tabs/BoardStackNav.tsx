@@ -1,8 +1,9 @@
-import { LibraryBoardStackParamList } from "@/navigation/types";
-import BoardDetailScreen from "@/screens/main-tabs/my-collection/BoardDetailScreen";
-import PublicBoardsScreen from "@/screens/main-tabs/library/PublicBoardsScreen";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import React from "react";
+
+import { LibraryBoardStackParamList } from "@/navigation/types";
+import PublicBoardsScreen from "@/screens/main-tabs/library/PublicBoardsScreen";
+import BoardDetailScreen from "@/screens/main-tabs/my-collection/BoardDetailScreen";
 
 const Stack = createNativeStackNavigator<LibraryBoardStackParamList>();
 

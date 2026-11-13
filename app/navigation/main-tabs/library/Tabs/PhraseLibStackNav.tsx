@@ -1,7 +1,8 @@
-import { LibraryPhraseStackParamList } from "@/navigation/types";
-import PhrasesScreen from "@/screens/main-tabs/library/PhrasesScreen";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import React from "react";
+
+import { LibraryPhraseStackParamList } from "@/navigation/types";
+import PhrasesScreen from "@/screens/main-tabs/library/PhrasesScreen";
 
 const Stack = createNativeStackNavigator<LibraryPhraseStackParamList>();
 

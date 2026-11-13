@@ -1,8 +1,10 @@
-import { usePreferences } from "@/hooks/usePreferences";
-import { COLORS } from "@/styles/themes";
 import React from "react";
 import { Text, View } from "react-native";
 import { Switch } from "react-native-paper";
+
+import { usePreferences } from "@/hooks/usePreferences";
+import { COLORS } from "@/styles/themes";
+
 import { styles } from "./SettingsScreen.styles";
 
 export default function SettingsScreen() {
