@@ -1,0 +1,22 @@
+name: Set up Node and dependencies
+description: Installs Node from .nvmrc, activates the Yarn release pinned by package.json and installs the dependencies.
+
+runs:
+  using: composite
+  steps:
+    # Runners ship Yarn 1. Corepack has to be enabled before setup-node so the
+    # cache lookup asks Yarn 4 for its cache folder instead of Yarn 1.
+    - name: Enable Corepack
+      shell: bash
+      run: corepack enable
+
+    - uses: actions/setup-node@v4
+      with:
+        node-version-file: .nvmrc
+        cache: yarn
+
+    # --immutable fails the run when yarn.lock is out of date instead of
+    # rewriting it on the runner.
+    - name: Install dependencies
+      shell: bash
+      run: yarn install --immutable

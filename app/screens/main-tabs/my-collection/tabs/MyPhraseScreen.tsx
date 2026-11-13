@@ -1,5 +1,5 @@
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
-import { useNavigation } from "@react-navigation/native";
+import { NavigationProp, useNavigation } from "@react-navigation/native";
 import React, { useMemo, useState } from "react";
 import { FlatList, Text, TouchableOpacity, View } from "react-native";
 
@@ -12,6 +12,7 @@ import { useMyCollection } from "@/hooks/useMyCollection";
 import { usePhrases } from "@/hooks/usePhrases";
 import { useSession } from "@/hooks/useSession";
 import { styles } from "@/screens/main-tabs/library/PhrasesScreen.styles";
+import { MainTabParamList } from "@/navigation/types";
 import { Phrase } from "@/types/phrase.types";
 
 export default function MyPhraseScreen() {
@@ -20,18 +21,18 @@ export default function MyPhraseScreen() {
   const { listedPhrases, isLoading } = usePhrases();
   const { savedUuids } = useMyCollection();
   const { isInConsultation } = useSession();
-  const navigation = useNavigation();
+  const navigation = useNavigation<NavigationProp<MainTabParamList>>();
 
   const handleUsePhrase = (phrase: Phrase) => {
     if (!isInConsultation) {
-      navigation.navigate("CommBoardStackNav" as any, {
+      navigation.navigate("CommBoardStackNav", {
         screen: "NoConsultationScreen",
         params: { showPhrasePrompt: true },
       });
       return;
     }
 
-    navigation.navigate("CommBoardStackNav" as any, {
+    navigation.navigate("CommBoardStackNav", {
       screen: "CommBoardScreen",
       params: { initialTerms: phrase.terms, triggerPhraseUuid: phrase.uuid },
     });

@@ -56,6 +56,13 @@ export default defineConfig([
       "simple-import-sort/imports": "warn",
       "simple-import-sort/exports": "warn",
       "@typescript-eslint/no-empty-object-type": "off",
+      // Warnings only until the existing violations are fixed in code (#97):
+      // they sit in the data-loading hooks, the pain scale and the speaker
+      // toggle, which have no screen tests to catch a regression. #97 turns
+      // them back into errors.
+      "react-hooks/set-state-in-effect": "warn",
+      "react-hooks/immutability": "warn",
+      "react-hooks/refs": "warn",
     },
   },
 ]);

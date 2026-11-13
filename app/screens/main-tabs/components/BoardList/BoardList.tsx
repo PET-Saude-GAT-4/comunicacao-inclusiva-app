@@ -2,6 +2,7 @@ import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import React from "react";
 import {
   FlatList,
+  FlatListProps,
   Image,
   StyleSheet,
   Text,
@@ -23,8 +24,7 @@ type BoardListProps = {
   filteredBoards: Board[];
   onBoardPress: (board: Board) => void;
   keyExtractor?: (item: Board) => string;
-  renderListEmptyComponent?:
-    React.ComponentType<any> | React.ReactElement | null;
+  renderListEmptyComponent?: FlatListProps<Board>["ListEmptyComponent"];
 };
 
 export default function BoardList({

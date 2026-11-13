@@ -1,12 +1,21 @@
 import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
-import { RouteProp, useNavigation, useRoute } from "@react-navigation/native";
+import {
+  CompositeNavigationProp,
+  NavigationProp,
+  RouteProp,
+  useNavigation,
+  useRoute,
+} from "@react-navigation/native";
 import { Image } from "expo-image";
 import React from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 import { useHotBarInset } from "@/hooks/useHotBarInset";
 import { usePreferences } from "@/hooks/usePreferences";
-import { QuickEmergencyStackParamList } from "@/navigation/types";
+import {
+  MainTabParamList,
+  QuickEmergencyStackParamList,
+} from "@/navigation/types";
 import { COLORS, CONTAINERS, TYPOGRAPHY } from "@/styles/themes";
 import { Pictogram } from "@/types/pictogram.types";
 
@@ -25,7 +34,13 @@ export function UrgencyResponseScreen({
   onPickAnotherSymptom,
 }: Props) {
   const hotBarInset = useHotBarInset();
-  const navigation = useNavigation<any>();
+  const navigation =
+    useNavigation<
+      CompositeNavigationProp<
+        NavigationProp<QuickEmergencyStackParamList>,
+        NavigationProp<MainTabParamList>
+      >
+    >();
   const route = useRoute<UrgencyRouteProp>();
   const { displayMode } = usePreferences();
   const isSignWriting = displayMode === "signWriting";

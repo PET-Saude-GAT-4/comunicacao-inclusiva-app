@@ -99,7 +99,6 @@ export function ConsultationMenuModal({ visible, onClose }: Props) {
               ]}
               onPress={() => {
                 onClose();
-                // @ts-ignore - bypassing strict type for nested nav
                 navigation.navigate("MainTabNav", {
                   screen: "CommBoardStackNav",
                   params: {

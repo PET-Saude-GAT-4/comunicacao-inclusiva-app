@@ -82,6 +82,9 @@ from built-in sample data.
 | `yarn ios`           | Start Metro and open the app on the iOS simulator          |
 | `yarn web`           | Start Metro for the web build                              |
 | `yarn lint`          | ESLint over the repository (`expo lint`)                   |
+| `yarn format`        | Format every file with Prettier                            |
+| `yarn format:check`  | Fail if Prettier would change a file                       |
+| `yarn typecheck`     | Type-check with `tsc --noEmit`                             |
 | `yarn test`          | Run the Jest suite once                                    |
 | `yarn test:watch`    | Run Jest in watch mode                                     |
 | `yarn test:coverage` | Run Jest with a coverage report                            |
@@ -112,6 +115,8 @@ The full table, with the remaining folders, is in
   accessibility menu, and the rules every new screen follows.
 - [CHANGELOG.md](CHANGELOG.md): what changed in each version.
 - [AGENTS.md](AGENTS.md): conventions, and what is easy to get wrong here.
+- [.github/workflows/README.md](.github/workflows/README.md): the checks every
+  pull request must pass.
 - The domain terms (board, term, placement, phrase, triage step…) are defined
   in the
   [API glossary](https://github.com/PET-Saude-GAT-4/comunicacao-inclusiva-api/blob/main/docs/GLOSSARY.md)
@@ -123,5 +128,7 @@ The full table, with the remaining folders, is in
   `fix/offline-banner`).
 - Commits follow [Conventional Commits](https://www.conventionalcommits.org/)
   in the imperative: `feat: …`, `fix: …`, `docs: …`.
+- Run `yarn lint`, `yarn format:check`, `yarn typecheck` and `yarn test`
+  before pushing: CI runs the same commands and blocks the merge if one fails.
 - Open the pull request into `develop`. Changes a user would notice go under
   `[Unreleased]` in the [CHANGELOG](CHANGELOG.md).

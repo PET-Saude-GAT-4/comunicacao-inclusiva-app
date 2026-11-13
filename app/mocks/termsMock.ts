@@ -1,4 +1,4 @@
-import { Image } from "react-native";
+import { Image, ImageSourcePropType } from "react-native";
 
 import { Board, BoardType } from "@/types/board.types";
 import { Pictogram } from "@/types/pictogram.types";
@@ -9,7 +9,7 @@ const now = new Date().toISOString();
 
 const timestamp = () => ({ createdAt: now, updatedAt: now });
 
-function img(asset: any): string {
+function img(asset: ImageSourcePropType): string {
   return Image.resolveAssetSource(asset)?.uri ?? "";
 }
 

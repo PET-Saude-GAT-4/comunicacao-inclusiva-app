@@ -18,7 +18,15 @@ online. Before using an Expo module or a React Native API, check the version in
 `yarn expo install <package>` so the version matches the SDK.
 
 Tests are Jest through the `jest-expo` preset, with React Native Testing
-Library. Prettier formats every file with the repository's `.prettierrc`.
+Library. Prettier formats every file with the repository's `.prettierrc`; run
+`yarn format` before committing rather than formatting by hand.
+
+Every pull request must pass five CI jobs (lint, format, types, test, bundle),
+and each is one local command — see
+[.github/workflows/README.md](.github/workflows/README.md). Three
+`react-hooks` rules (`set-state-in-effect`, `immutability`, `refs`) are
+warnings until [#97](https://github.com/PET-Saude-GAT-4/comunicacao-inclusiva-app/issues/97) fixes the code that breaks them; new code should not add
+to them.
 
 ## Architecture in a few lines
 
@@ -97,6 +105,9 @@ change a user would notice gets a line under `[Unreleased]` in
 | `yarn ios`           | Same, opening the iOS simulator |
 | `yarn web`           | Same, for the web build         |
 | `yarn lint`          | ESLint (`expo lint`)            |
+| `yarn format`        | Prettier, writing               |
+| `yarn format:check`  | Prettier, checking only         |
+| `yarn typecheck`     | `tsc --noEmit`                  |
 | `yarn test`          | Jest, once                      |
 | `yarn test:watch`    | Jest in watch mode              |
 | `yarn test:coverage` | Jest with coverage              |
@@ -109,3 +120,4 @@ change a user would notice gets a line under `[Unreleased]` in
 | Display modes, accessibility menu, rules for screens                             | [docs/ACCESSIBILITY.md](docs/ACCESSIBILITY.md)                                                          |
 | Domain terms (board, term, placement, phrase…), once the API's docs reach `main` | [API glossary](https://github.com/PET-Saude-GAT-4/comunicacao-inclusiva-api/blob/main/docs/GLOSSARY.md) |
 | What changed in each version                                                     | [CHANGELOG.md](CHANGELOG.md)                                                                            |
+| The CI jobs, and how to reproduce a failure                                      | [.github/workflows/README.md](.github/workflows/README.md)                                              |

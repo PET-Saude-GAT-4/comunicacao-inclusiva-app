@@ -8,7 +8,7 @@ import BoardStackNav from "./tabs/BoardStackNav";
 
 const TopTabs = createMaterialTopTabNavigator();
 
-export default function () {
+export default function BoardCollectionTabNav() {
   return (
     <TopTabs.Navigator
       screenOptions={{
