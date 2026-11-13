@@ -117,7 +117,12 @@ API ──request()──▶ services ──adapters──▶ syncService ──
    (professions, common boards, emergency boards, triage steps, phrases) or a
    single board's terms or next boards, a phrase's next boards or a
    profession's specialities. A failed entry keeps its previous cache and does
-   not stop the remaining boards, phrases or professions from syncing.
+   not stop the remaining boards, phrases or professions from syncing. After
+   the lists, the per-entry caches of boards, phrases and professions that are
+   no longer listed (their terms, next boards and specialities) are cleared,
+   so a removed entry reads as never synced. A family of keys is only cleared
+   when every list it depends on downloaded; a board's terms stay while it is
+   a common board, an emergency board or a triage level.
 5. **Read.** Hooks (`useBoards`, `usePhrases`, `useTriage`, …) read the cache.
    When a key was never written they fall back to `app/mocks/` or, for
    emergency content, to `app/content/emergency.ts`, so the app is usable on

@@ -9,6 +9,7 @@ import {
   phraseNextBoardsCacheKey,
   PHRASES_CACHE_KEY,
   PROFESSIONS_CACHE_KEY,
+  PROFESSIONS_HISTORIC_KEY,
   specialitiesCacheKey,
   TRIAGE_STEPS_CACHE_KEY,
 } from "@/constants/cache";
@@ -306,5 +307,147 @@ describe("SyncService.syncAll board terms", () => {
     await service.syncAll();
 
     expect(requestsTo(triageTerms)).toBe(2);
+  });
+});
+
+describe("SyncService.syncAll removed entries", () => {
+  const stale = JSON.stringify([{ uuid: "stale" }]);
+  const removedKeys = [
+    boardTermsCacheKey("removed-board"),
+    nextBoardsCacheKey("removed-board"),
+    phraseNextBoardsCacheKey("removed-phrase"),
+    specialitiesCacheKey("REMOVED"),
+  ];
+  const unrelatedKeys = [
+    "@active_session",
+    "@preferences_display_mode",
+    PROFESSIONS_HISTORIC_KEY,
+    "@saved_boards",
+  ];
+
+  async function present(key: string) {
+    return (await AsyncStorage.getItem(key)) !== null;
+  }
+
+  it("clears the per-entry caches of boards, phrases and professions no longer listed", async () => {
+    await AsyncStorage.multiSet(removedKeys.map((key) => [key, stale]));
+    serve(defaultRoutes());
+
+    await expect(new SyncService().syncAll()).resolves.toBe(true);
+
+    for (const key of removedKeys) expect(await present(key)).toBe(false);
+  });
+
+  it("keeps the caches of listed entries and the keys of other features", async () => {
+    await AsyncStorage.multiSet(unrelatedKeys.map((key) => [key, stale]));
+    serve(defaultRoutes());
+
+    await new SyncService().syncAll();
+
+    for (const key of [
+      ...unrelatedKeys,
+      boardTermsCacheKey("common-1"),
+      boardTermsCacheKey("emergency-1"),
+      boardTermsCacheKey("triage-board-1"),
+      nextBoardsCacheKey("common-1"),
+      nextBoardsCacheKey("emergency-1"),
+      phraseNextBoardsCacheKey("phrase-1"),
+      specialitiesCacheKey("MED"),
+    ]) {
+      expect(await present(key)).toBe(true);
+    }
+  });
+
+  it("keeps the terms of a board that left the common list but is still an emergency board", async () => {
+    serve(defaultRoutes());
+    const service = new SyncService();
+    await service.syncAll();
+
+    serve({
+      ...defaultRoutes(),
+      [`${API}/boards?type=common`]: { boards: [] },
+      [`${API}/boards?type=emergency`]: {
+        boards: [emergencyBoard, commonBoard],
+      },
+    });
+    await service.syncAll();
+
+    expect(await present(boardTermsCacheKey("common-1"))).toBe(true);
+    expect(await present(nextBoardsCacheKey("common-1"))).toBe(true);
+  });
+
+  it("keeps the terms of a board that left the board lists but is still a triage level", async () => {
+    serve(defaultRoutes());
+    await new SyncService().syncAll();
+
+    serve({
+      ...defaultRoutes(),
+      [`${API}/boards?type=common`]: { boards: [] },
+      [`${API}/triage-steps`]: {
+        triageSteps: [
+          {
+            uuid: "step-1",
+            level: 1,
+            board: commonBoard,
+            createdAt: "2026-01-01T00:00:00.000Z",
+            updatedAt: "2026-01-01T00:00:00.000Z",
+          },
+        ],
+      },
+    });
+    await new SyncService().syncAll();
+
+    expect(await present(boardTermsCacheKey("common-1"))).toBe(true);
+    expect(await present(nextBoardsCacheKey("common-1"))).toBe(false);
+  });
+
+  it.each([
+    ["professions", `${API}/professions`, [specialitiesCacheKey("REMOVED")]],
+    [
+      "common boards",
+      `${API}/boards?type=common`,
+      [
+        boardTermsCacheKey("removed-board"),
+        nextBoardsCacheKey("removed-board"),
+      ],
+    ],
+    [
+      "emergency boards",
+      `${API}/boards?type=emergency`,
+      [
+        boardTermsCacheKey("removed-board"),
+        nextBoardsCacheKey("removed-board"),
+      ],
+    ],
+    [
+      "triage steps",
+      `${API}/triage-steps`,
+      [boardTermsCacheKey("removed-board")],
+    ],
+    ["phrases", `${API}/phrases`, [phraseNextBoardsCacheKey("removed-phrase")]],
+  ])(
+    "removes no key that depends on the %s list when it fails",
+    async (_, failingUrl, keptKeys) => {
+      await AsyncStorage.multiSet(removedKeys.map((key) => [key, stale]));
+      serve({ ...defaultRoutes(), [failingUrl]: new Error("500") });
+
+      await expect(new SyncService().syncAll()).resolves.toBe(false);
+
+      for (const key of keptKeys) expect(await present(key)).toBe(true);
+    },
+  );
+
+  it("keeps the cache of a listed entry whose own request fails", async () => {
+    await AsyncStorage.setItem(phraseNextBoardsCacheKey("phrase-1"), stale);
+    serve({
+      ...defaultRoutes(),
+      [`${API}/phrases/phrase-1/next-boards`]: new Error("500"),
+    });
+
+    await expect(new SyncService().syncAll()).resolves.toBe(false);
+
+    expect(
+      await AsyncStorage.getItem(phraseNextBoardsCacheKey("phrase-1")),
+    ).toBe(stale);
   });
 });
