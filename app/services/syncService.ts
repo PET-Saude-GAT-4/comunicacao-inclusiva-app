@@ -1,13 +1,17 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import {
+  BOARD_TERMS_KEY_PREFIX,
   BOARDS_CACHE_KEY,
   boardTermsCacheKey,
   EMERGENCY_BOARDS_CACHE_KEY,
+  NEXT_BOARDS_KEY_PREFIX,
   nextBoardsCacheKey,
+  PHRASE_NEXT_BOARDS_KEY_PREFIX,
   phraseNextBoardsCacheKey,
   PHRASES_CACHE_KEY,
   PROFESSIONS_CACHE_KEY,
+  SPECIALITIES_KEY_PREFIX,
   specialitiesCacheKey,
   TRIAGE_STEPS_CACHE_KEY,
 } from "@/constants/cache";
@@ -23,6 +27,19 @@ const phraseService = new PhraseService();
 const professionService = new ProfessionService();
 const triageService = new TriageService();
 
+// Outcome of each board's terms sync within one syncAll run, keyed by board
+// uuid. A triage level's board is also listed among emergency boards, so the
+// second list reuses the first one's outcome, failure included, instead of
+// requesting the same terms again.
+type SyncedBoardTerms = Map<string, Promise<boolean>>;
+
+// `ids` are the entries of the list just downloaded (board or phrase uuids,
+// profession codes), still listed even when their own request failed; `null`
+// means the list itself failed, so which entries are live is unknown.
+type ListOutcome = { ok: boolean; ids: string[] | null };
+
+const FAILED_LIST: ListOutcome = { ok: false, ids: null };
+
 // Every list is cached as the API returned it, the empty list included: "the
 // server has none" must replace what an earlier sync saved, and stay
 // distinguishable from "never synced", which is when the hooks fall back to
@@ -34,23 +51,32 @@ export class SyncService {
    * Each resource is synced on its own, so a failure in one does not discard the other.
    * Returns true if every request succeeded, false if any failed, including the
    * per-entry ones (a board's terms, a profession's specialities…), whose entry
-   * is then served from its previous cache.
+   * is then served from its previous cache. Then removes the per-entry caches
+   * of boards, phrases and professions the API no longer lists.
    */
   async syncAll(): Promise<boolean> {
     console.log("Starting background synchronization...");
 
-    const professionsOk = await this.syncProfessions();
-    const boardsOk = await this.syncBoards();
-    const emergencyBoardsOk = await this.syncEmergencyBoards();
-    const triageStepsOk = await this.syncTriageSteps();
-    const phrasesOk = await this.syncPhrases();
+    const syncedBoardTerms: SyncedBoardTerms = new Map();
+    const professions = await this.syncProfessions();
+    const boards = await this.syncBoards(syncedBoardTerms);
+    const emergencyBoards = await this.syncEmergencyBoards(syncedBoardTerms);
+    const triageSteps = await this.syncTriageSteps(syncedBoardTerms);
+    const phrases = await this.syncPhrases();
+
+    const cleanupOk = await this.clearRemovedEntries([
+      [SPECIALITIES_KEY_PREFIX, [professions]],
+      [PHRASE_NEXT_BOARDS_KEY_PREFIX, [phrases]],
+      [NEXT_BOARDS_KEY_PREFIX, [boards, emergencyBoards]],
+      // Common boards, emergency boards and triage levels share one terms key
+      // per board, so a key stays while any of the three lists has its board.
+      [BOARD_TERMS_KEY_PREFIX, [boards, emergencyBoards, triageSteps]],
+    ]);
 
     const allOk =
-      professionsOk &&
-      boardsOk &&
-      emergencyBoardsOk &&
-      triageStepsOk &&
-      phrasesOk;
+      [professions, boards, emergencyBoards, triageSteps, phrases].every(
+        (list) => list.ok,
+      ) && cleanupOk;
 
     if (allOk) {
       console.log("Sync completed successfully!");
@@ -63,7 +89,7 @@ export class SyncService {
     return allOk;
   }
 
-  private async syncProfessions(): Promise<boolean> {
+  private async syncProfessions(): Promise<ListOutcome> {
     try {
       //1. Download All Professions
       const professions = await professionService.getProfessions();
@@ -93,29 +119,36 @@ export class SyncService {
         }
       }
 
-      return allOk;
+      return {
+        ok: allOk,
+        ids: professions.map((profession) => profession.code),
+      };
     } catch (error) {
       // Silent failure. We don't pass 'error' to avoid freezing the React Native console.
       console.log(
         "Professions sync failed (API offline or server error). Using current cache.",
       );
-      return false;
+      return FAILED_LIST;
     }
   }
 
-  private async syncBoards(): Promise<boolean> {
-    return this.syncBoardList("common", BOARDS_CACHE_KEY);
+  private async syncBoards(synced: SyncedBoardTerms): Promise<ListOutcome> {
+    return this.syncBoardList("common", BOARDS_CACHE_KEY, synced);
   }
 
   // The API only lists emergency boards when asked for them by type, so they
   // are pulled and cached apart from the common ones.
-  private async syncEmergencyBoards(): Promise<boolean> {
-    return this.syncBoardList("emergency", EMERGENCY_BOARDS_CACHE_KEY);
+  private async syncEmergencyBoards(
+    synced: SyncedBoardTerms,
+  ): Promise<ListOutcome> {
+    return this.syncBoardList("emergency", EMERGENCY_BOARDS_CACHE_KEY, synced);
   }
 
   // Quick Emergency levels come from their own endpoint, in level order, each
   // with its board; only the boards' terms need a request of their own.
-  private async syncTriageSteps(): Promise<boolean> {
+  private async syncTriageSteps(
+    synced: SyncedBoardTerms,
+  ): Promise<ListOutcome> {
     try {
       const steps = await triageService.getTriageSteps();
 
@@ -125,21 +158,33 @@ export class SyncService {
 
       let allOk = true;
       for (const step of steps) {
-        if (!(await this.syncBoardTerms(step.board))) allOk = false;
+        if (!(await this.syncBoardTerms(step.board, synced))) allOk = false;
       }
 
-      return allOk;
+      return { ok: allOk, ids: steps.map((step) => step.board.uuid) };
     } catch (error) {
       // Silent failure. We don't pass 'error' to avoid freezing the React Native console.
       console.log(
         "Triage steps sync failed (API offline or server error). Using current cache.",
       );
-      return false;
+      return FAILED_LIST;
     }
   }
 
   // Failures stay isolated to one board, so the rest of a list still syncs.
-  private async syncBoardTerms(board: Board): Promise<boolean> {
+  private syncBoardTerms(
+    board: Board,
+    synced: SyncedBoardTerms,
+  ): Promise<boolean> {
+    let outcome = synced.get(board.uuid);
+    if (!outcome) {
+      outcome = this.requestBoardTerms(board);
+      synced.set(board.uuid, outcome);
+    }
+    return outcome;
+  }
+
+  private async requestBoardTerms(board: Board): Promise<boolean> {
     try {
       const boardTerms = await boardService.getBoardTerms(board.uuid);
 
@@ -156,7 +201,8 @@ export class SyncService {
   private async syncBoardList(
     type: BoardType,
     cacheKey: string,
-  ): Promise<boolean> {
+    synced: SyncedBoardTerms,
+  ): Promise<ListOutcome> {
     try {
       // 1. Download all boards of this type
       const boards = await boardService.getBoards(type);
@@ -167,7 +213,7 @@ export class SyncService {
       // 2. For each board, download its terms and its next boards
       let allOk = true;
       for (const board of boards) {
-        if (!(await this.syncBoardTerms(board))) allOk = false;
+        if (!(await this.syncBoardTerms(board, synced))) allOk = false;
 
         try {
           const nextBoards = await boardService.getNextBoards(board.uuid);
@@ -180,17 +226,17 @@ export class SyncService {
         }
       }
 
-      return allOk;
+      return { ok: allOk, ids: boards.map((board) => board.uuid) };
     } catch (error) {
       // Silent failure. We don't pass 'error' to avoid freezing the React Native console.
       console.log(
         `${type} boards sync failed (API offline or server error). Using current cache.`,
       );
-      return false;
+      return FAILED_LIST;
     }
   }
 
-  private async syncPhrases(): Promise<boolean> {
+  private async syncPhrases(): Promise<ListOutcome> {
     try {
       // Phrases already carry their pictograms, so a single request is enough
       const phrases = await phraseService.getPhrases();
@@ -216,12 +262,42 @@ export class SyncService {
         }
       }
 
-      return allOk;
+      return { ok: allOk, ids: phrases.map((phrase) => phrase.uuid) };
     } catch (error) {
       // Silent failure. We don't pass 'error' to avoid freezing the React Native console.
       console.log(
         "Phrases sync failed (API offline or server error). Using current cache.",
       );
+      return FAILED_LIST;
+    }
+  }
+
+  // A family of per-entry keys is cleaned only when every list it depends on
+  // downloaded: with a failed list the live entries are unknown, and deleting
+  // would drop data the app still needs offline.
+  private async clearRemovedEntries(
+    families: [prefix: string, lists: ListOutcome[]][],
+  ): Promise<boolean> {
+    try {
+      const keys = await AsyncStorage.getAllKeys();
+      const removed: string[] = [];
+
+      for (const [prefix, lists] of families) {
+        const listed = lists.map((list) => list.ids);
+        if (!listed.every((ids): ids is string[] => ids !== null)) continue;
+        const live = new Set(listed.flat());
+        for (const key of keys) {
+          if (key.startsWith(prefix) && !live.has(key.slice(prefix.length))) {
+            removed.push(key);
+          }
+        }
+      }
+
+      if (removed.length > 0) await AsyncStorage.multiRemove(removed);
+      return true;
+    } catch (error) {
+      // Silent failure. We don't pass 'error' to avoid freezing the React Native console.
+      console.log("Failed to clear the caches of removed entries.");
       return false;
     }
   }

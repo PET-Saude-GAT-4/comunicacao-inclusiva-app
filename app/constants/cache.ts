@@ -14,13 +14,21 @@ export const PROFESSIONS_CACHE_KEY = "@professions_cache";
 
 export const PROFESSIONS_HISTORIC_KEY = "@profession_history";
 
-export const specialitiesCacheKey = (professionCode: string) =>
-  `@specialities_cache_${professionCode}`;
+// One key per entry of a list. The sync finds the keys of entries the API no
+// longer lists by these prefixes, so each one must not be the start of another.
+export const SPECIALITIES_KEY_PREFIX = "@specialities_cache_";
+export const BOARD_TERMS_KEY_PREFIX = "@board_terms:";
+export const NEXT_BOARDS_KEY_PREFIX = "@next_boards_cache:";
+export const PHRASE_NEXT_BOARDS_KEY_PREFIX = "@phrase_next_boards_cache:";
 
-export const boardTermsCacheKey = (uuid: string) => `@board_terms:${uuid}`;
+export const specialitiesCacheKey = (professionCode: string) =>
+  `${SPECIALITIES_KEY_PREFIX}${professionCode}`;
+
+export const boardTermsCacheKey = (uuid: string) =>
+  `${BOARD_TERMS_KEY_PREFIX}${uuid}`;
 
 export const nextBoardsCacheKey = (uuid: string) =>
-  `@next_boards_cache:${uuid}`;
+  `${NEXT_BOARDS_KEY_PREFIX}${uuid}`;
 
 export const phraseNextBoardsCacheKey = (uuid: string) =>
-  `@phrase_next_boards_cache:${uuid}`;
+  `${PHRASE_NEXT_BOARDS_KEY_PREFIX}${uuid}`;
