@@ -9,11 +9,13 @@ on:
   push:
     branches: [main, develop]
 
-# Only pull request runs cancel each other. Push runs are keyed by commit so
-# every merge keeps its own result: a group shared by push runs would drop a
-# queued run when a newer one arrives, even with cancel-in-progress off.
+# Only pull request runs cancel each other. Push runs are keyed by branch and
+# commit so every merge keeps its own result: a group shared by push runs would
+# drop a queued run when a newer one arrives, even with cancel-in-progress off.
+# The branch is part of the key because a fast-forward can put the same commit
+# on main and develop.
 concurrency:
-  group: ci-${{ github.workflow }}-${{ github.event_name == 'pull_request' && github.ref || github.sha }}
+  group: ci-${{ github.workflow }}-${{ github.ref }}${{ github.event_name != 'pull_request' && format('-{0}', github.sha) || '' }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 permissions:
