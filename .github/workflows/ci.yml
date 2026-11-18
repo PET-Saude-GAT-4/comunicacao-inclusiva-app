@@ -3,10 +3,20 @@ name: CI
 on:
   pull_request:
     branches: [main, develop]
+  # Branch protection does not require PRs to be up to date with their base, so
+  # two PRs that each pass can still break develop once both are merged. The
+  # push run checks the merged code where it lands.
+  push:
+    branches: [main, develop]
 
+# Only pull request runs cancel each other. Push runs are keyed by branch and
+# commit so every merge keeps its own result: a group shared by push runs would
+# drop a queued run when a newer one arrives, even with cancel-in-progress off.
+# The branch is part of the key because a fast-forward can put the same commit
+# on main and develop.
 concurrency:
-  group: ci-${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+  group: ci-${{ github.workflow }}-${{ github.ref }}${{ github.event_name != 'pull_request' && format('-{0}', github.sha) || '' }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 permissions:
   contents: read
@@ -25,7 +35,11 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          # No job pushes, so the token does not need to stay in .git/config,
+          # where every dependency script run afterwards could read it.
+          persist-credentials: false
       - uses: ./.github/actions/setup
       - run: yarn lint
 
@@ -34,7 +48,9 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          persist-credentials: false
       - uses: ./.github/actions/setup
       - run: yarn format:check
 
@@ -43,7 +59,9 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          persist-credentials: false
       - uses: ./.github/actions/setup
       - run: yarn typecheck
 
@@ -52,7 +70,9 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          persist-credentials: false
       - uses: ./.github/actions/setup
       - run: yarn test
 
@@ -61,7 +81,9 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          persist-credentials: false
       - uses: ./.github/actions/setup
       # Bundles the JavaScript the way a release does, which catches Metro
       # resolution errors that tsc and Jest do not see. The URL is a
