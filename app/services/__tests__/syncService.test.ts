@@ -451,3 +451,101 @@ describe("SyncService.syncAll removed entries", () => {
     ).toBe(stale);
   });
 });
+
+describe("SyncService.syncAll overlapping calls", () => {
+  it("shares one set of requests across overlapping syncAll calls and resolves both with the same value", async () => {
+    const routes = defaultRoutes();
+    let releaseFirstRequest!: () => void;
+    const firstRequestGate = new Promise<void>((resolve) => {
+      releaseFirstRequest = resolve;
+    });
+
+    mockedRequest.mockImplementation(async (url: string) => {
+      if (url === `${API}/professions`) {
+        await firstRequestGate;
+      }
+      if (!(url in routes)) throw new Error(`Unexpected request: ${url}`);
+      return routes[url];
+    });
+
+    const service = new SyncService();
+    const first = service.syncAll();
+    const second = service.syncAll();
+
+    releaseFirstRequest();
+
+    await expect(Promise.all([first, second])).resolves.toEqual([true, true]);
+    for (const url of Object.keys(routes)) {
+      expect(requestsTo(url)).toBe(1);
+    }
+  });
+
+  it("starts a new set of requests when called after the previous sync resolved", async () => {
+    const routes = defaultRoutes();
+    serve(routes);
+
+    const service = new SyncService();
+    await expect(service.syncAll()).resolves.toBe(true);
+    await expect(service.syncAll()).resolves.toBe(true);
+
+    for (const url of Object.keys(routes)) {
+      expect(requestsTo(url)).toBe(2);
+    }
+  });
+
+  it("starts a new sync instead of reusing the result after a shared run fails", async () => {
+    const failingRoutes: Record<string, unknown> = {
+      ...defaultRoutes(),
+      [`${API}/professions`]: new Error("500"),
+    };
+    let releaseFirstRequest!: () => void;
+    const firstRequestGate = new Promise<void>((resolve) => {
+      releaseFirstRequest = resolve;
+    });
+
+    mockedRequest.mockImplementation(async (url: string) => {
+      if (url === `${API}/professions`) {
+        await firstRequestGate;
+      }
+      const answer = failingRoutes[url];
+      if (answer instanceof Error) throw answer;
+      return answer;
+    });
+
+    const service = new SyncService();
+    const first = service.syncAll();
+    const second = service.syncAll();
+
+    releaseFirstRequest();
+
+    await expect(Promise.all([first, second])).resolves.toEqual([false, false]);
+    expect(requestsTo(`${API}/professions`)).toBe(1);
+
+    serve(defaultRoutes());
+    await expect(service.syncAll()).resolves.toBe(true);
+    expect(requestsTo(`${API}/professions`)).toBe(2);
+  });
+
+  it("propagates a rejection to all overlapping callers and allows a fresh sync afterwards", async () => {
+    const service = new SyncService();
+    const boom = new Error("unexpected failure");
+    const runSpy = jest
+      .spyOn(
+        service as unknown as { runSync: () => Promise<boolean> },
+        "runSync",
+      )
+      .mockRejectedValueOnce(boom);
+
+    const first = service.syncAll();
+    const second = service.syncAll();
+
+    await expect(first).rejects.toBe(boom);
+    await expect(second).rejects.toBe(boom);
+    expect(runSpy).toHaveBeenCalledTimes(1);
+
+    runSpy.mockRestore();
+    serve(defaultRoutes());
+    await expect(service.syncAll()).resolves.toBe(true);
+    expect(requestsTo(`${API}/professions`)).toBe(1);
+  });
+});
