@@ -45,6 +45,8 @@ const FAILED_LIST: ListOutcome = { ok: false, ids: null };
 // distinguishable from "never synced", which is when the hooks fall back to
 // their mocks.
 export class SyncService {
+  private inFlightSync: Promise<boolean> | null = null;
+
   /**
    * Downloads every resource the app can use offline and saves it to AsyncStorage.
    * Does not block the UI and fails silently if there is no internet connection.
@@ -55,6 +57,18 @@ export class SyncService {
    * of boards, phrases and professions the API no longer lists.
    */
   async syncAll(): Promise<boolean> {
+    if (this.inFlightSync !== null) {
+      return this.inFlightSync;
+    }
+
+    this.inFlightSync = this.runSync().finally(() => {
+      this.inFlightSync = null;
+    });
+
+    return this.inFlightSync;
+  }
+
+  private async runSync(): Promise<boolean> {
     console.log("Starting background synchronization...");
 
     const syncedBoardTerms: SyncedBoardTerms = new Map();
