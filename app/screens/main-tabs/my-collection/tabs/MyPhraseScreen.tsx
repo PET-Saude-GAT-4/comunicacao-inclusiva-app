@@ -11,8 +11,9 @@ import { useHotBarInset } from "@/hooks/useHotBarInset";
 import { useMyCollection } from "@/hooks/useMyCollection";
 import { usePhrases } from "@/hooks/usePhrases";
 import { useSession } from "@/hooks/useSession";
-import { styles } from "@/screens/main-tabs/library/PhrasesScreen.styles";
+import { useSyncEngine } from "@/hooks/useSyncEngine";
 import { MainTabParamList } from "@/navigation/types";
+import { styles } from "@/screens/main-tabs/library/PhrasesScreen.styles";
 import { Phrase } from "@/types/phrase.types";
 
 export default function MyPhraseScreen() {
@@ -21,6 +22,7 @@ export default function MyPhraseScreen() {
   const { listedPhrases, isLoading } = usePhrases();
   const { savedUuids } = useMyCollection();
   const { isInConsultation } = useSession();
+  const { isSyncing, triggerSync } = useSyncEngine();
   const navigation = useNavigation<NavigationProp<MainTabParamList>>();
 
   const handleUsePhrase = (phrase: Phrase) => {
@@ -68,6 +70,8 @@ export default function MyPhraseScreen() {
       </View>
       <FlatList
         data={savedPhrases}
+        refreshing={isSyncing}
+        onRefresh={triggerSync}
         keyExtractor={(item) => item.uuid}
         contentContainerStyle={[
           styles.listContent,

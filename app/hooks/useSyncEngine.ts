@@ -1,30 +1,13 @@
-import { useEffect, useState } from "react";
+import { useContext } from "react";
 
-import { syncService } from "@/services/syncService";
+import { SyncContext } from "@/contexts/SyncContext";
 
 export function useSyncEngine() {
-  // The sync starts on mount, so the hook is syncing from its first render.
-  const [isSyncing, setIsSyncing] = useState(true);
-  const [isError, setIsError] = useState(false);
+  const context = useContext(SyncContext);
 
-  const finish = (success: boolean) => {
-    setIsError(!success);
-    setIsSyncing(false);
-  };
+  if (!context || context.isSyncing === undefined) {
+    throw new Error("useSyncEngine must be used within a SyncProvider");
+  }
 
-  const triggerSync = async () => {
-    setIsSyncing(true);
-    setIsError(false);
-    finish(await syncService.syncAll().catch(() => false));
-  };
-
-  useEffect(() => {
-    // Silently triggers sync every time the app opens
-    syncService
-      .syncAll()
-      .then(finish)
-      .catch(() => finish(false));
-  }, []);
-
-  return { isSyncing, isError, triggerSync };
+  return context;
 }

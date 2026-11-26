@@ -3,10 +3,17 @@ import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 interface OfflineBannerProps {
   visible: boolean;
+  isSyncing?: boolean;
+  onRetry?: () => void;
   onClose: () => void;
 }
 
-export function OfflineBanner({ visible, onClose }: OfflineBannerProps) {
+export function OfflineBanner({
+  visible,
+  isSyncing,
+  onRetry,
+  onClose,
+}: OfflineBannerProps) {
   if (!visible) return null;
 
   return (
@@ -20,7 +27,30 @@ export function OfflineBanner({ visible, onClose }: OfflineBannerProps) {
       <Text style={styles.text}>
         Servidor indisponível. Exibindo dados salvos.
       </Text>
-      <TouchableOpacity onPress={onClose} style={styles.close}>
+      {/* Botão de Tentar Novamente */}
+      {onRetry && (
+        <TouchableOpacity
+          onPress={onRetry}
+          disabled={isSyncing}
+          style={styles.retryButton}
+          accessibilityRole="button"
+          accessibilityLabel="Tentar reconectar ao servidor"
+        >
+          <MaterialIcons
+            name="refresh"
+            size={18}
+            color="white"
+            style={isSyncing ? { opacity: 0.5 } : undefined}
+          />
+        </TouchableOpacity>
+      )}
+      {/* Botão de Fechar */}
+      <TouchableOpacity
+        onPress={onClose}
+        style={styles.close}
+        accessibilityRole="button"
+        accessibilityLabel="Fechar aviso"
+      >
         <MaterialIcons name="close" size={18} color="white" />
       </TouchableOpacity>
     </View>
@@ -48,5 +78,8 @@ const styles = StyleSheet.create({
   },
   close: {
     marginLeft: "auto",
+  },
+  retryButton: {
+    marginRight: 8,
   },
 });

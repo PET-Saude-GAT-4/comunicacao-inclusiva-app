@@ -27,12 +27,14 @@ const MORE_ICON = Platform.OS === "ios" ? "dots-horizontal" : "dots-vertical";
 const MainTabs = createBottomTabNavigator();
 
 export default function MainTabNav() {
-  const { isError } = useSyncEngine();
+  const { isError, isSyncing, syncVersion, triggerSync } = useSyncEngine();
   const { isInConsultation } = useSession();
-  const [isBannerDismissed, setIsBannerDismissed] = useState(false);
+  const [dismissedAtVersion, setDismissedAtVersion] = useState<number | null>(
+    null,
+  );
   const [menuVisible, setMenuVisible] = useState(false);
 
-  const bannerVisible = isError && !isBannerDismissed;
+  const bannerVisible = isError && dismissedAtVersion !== syncVersion;
 
   return (
     <View style={{ flex: 1 }}>
@@ -54,7 +56,9 @@ export default function MainTabNav() {
           >
             <OfflineBanner
               visible={bannerVisible}
-              onClose={() => setIsBannerDismissed(true)}
+              isSyncing={isSyncing}
+              onRetry={triggerSync}
+              onClose={() => setDismissedAtVersion(syncVersion)}
             />
             <BottomTabBar {...props} insets={{ ...props.insets, bottom: 0 }} />
           </View>

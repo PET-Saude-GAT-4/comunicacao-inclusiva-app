@@ -1,5 +1,7 @@
 import { act, renderHook, waitFor } from "@testing-library/react-native";
+import React from "react";
 
+import { SyncContext } from "@/contexts/SyncContext";
 import { useCachedValue } from "@/hooks/useCachedValue";
 
 function deferredRead() {
@@ -90,5 +92,42 @@ describe("useCachedValue", () => {
     expect(result.current.isLoading).toBe(false);
     expect(result.current.value).toBe("empty");
     expect(read).not.toHaveBeenCalled();
+  });
+
+  it("re-runs the read when syncVersion changes without clearing the current value", async () => {
+    let version = 1;
+    const read = jest.fn(
+      async (source: string) => `version ${version} of ${source}`,
+    );
+
+    const wrapper = ({ children }: { children: React.ReactNode }) => (
+      <SyncContext.Provider
+        value={{
+          isSyncing: false,
+          isError: false,
+          syncVersion: version,
+          triggerSync: jest.fn(),
+        }}
+      >
+        {children}
+      </SyncContext.Provider>
+    );
+
+    const { result, rerender } = await renderHook(
+      () => useCachedValue("board-1", read, "empty"),
+      { wrapper },
+    );
+
+    await waitFor(() =>
+      expect(result.current.value).toBe("version 1 of board-1"),
+    );
+
+    version = 2;
+    await rerender({});
+
+    await waitFor(() =>
+      expect(result.current.value).toBe("version 2 of board-1"),
+    );
+    expect(read).toHaveBeenCalledTimes(2);
   });
 });
