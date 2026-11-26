@@ -5,6 +5,7 @@ import { FlatList, Text, TouchableOpacity, View } from "react-native";
 
 import { useHotBarInset } from "@/hooks/useHotBarInset";
 import { useMyCollection } from "@/hooks/useMyCollection";
+import { useSyncEngine } from "@/hooks/useSyncEngine";
 import { COLORS } from "@/styles/themes";
 import { Board } from "@/types/board.types";
 
@@ -27,6 +28,7 @@ export default function BoardListComponent({
   const hotBarInset = useHotBarInset();
   const [searchQuery, setSearchQuery] = useState("");
   const { isSaved, toggleSaved } = useMyCollection();
+  const { isSyncing, triggerSync } = useSyncEngine();
 
   const filteredBoards = useMemo(() => {
     return boards.filter((board) =>
@@ -46,6 +48,8 @@ export default function BoardListComponent({
       <FlatList
         data={filteredBoards}
         showsVerticalScrollIndicator={false}
+        refreshing={isSyncing}
+        onRefresh={triggerSync}
         contentContainerStyle={{ paddingBottom: hotBarInset }}
         keyExtractor={(item) => item.uuid}
         ListEmptyComponent={

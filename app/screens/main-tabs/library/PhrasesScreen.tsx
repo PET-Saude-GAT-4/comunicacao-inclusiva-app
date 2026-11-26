@@ -8,6 +8,7 @@ import { SearchBar } from "@/components/SearchBar";
 import { useHotBarInset } from "@/hooks/useHotBarInset";
 import { useMyCollection } from "@/hooks/useMyCollection";
 import { usePhrases } from "@/hooks/usePhrases";
+import { useSyncEngine } from "@/hooks/useSyncEngine";
 import { COLORS } from "@/styles/themes";
 
 import { styles } from "./PhrasesScreen.styles";
@@ -17,6 +18,7 @@ export default function PhrasesScreen() {
   const [searchQuery, setSearchQuery] = useState("");
   const { listedPhrases, isLoading } = usePhrases();
   const { isSaved, toggleSaved } = useMyCollection();
+  const { isSyncing, triggerSync } = useSyncEngine();
 
   const filteredPhrases = useMemo(() => {
     return listedPhrases.filter((phrase) =>
@@ -43,6 +45,8 @@ export default function PhrasesScreen() {
       </View>
       <FlatList
         data={filteredPhrases}
+        refreshing={isSyncing}
+        onRefresh={triggerSync}
         keyExtractor={(item) => item.uuid}
         contentContainerStyle={[
           styles.listContent,

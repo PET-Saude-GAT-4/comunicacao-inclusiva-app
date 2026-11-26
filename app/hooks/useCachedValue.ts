@@ -1,4 +1,6 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
+
+import { SyncContext } from "@/contexts/SyncContext";
 
 /**
  * Runs `read` for `source` and returns its result, tagged with the source it
@@ -17,6 +19,8 @@ export function useCachedValue<T>(
     null,
   );
 
+  const syncContext = useContext(SyncContext);
+  const syncVersion = syncContext?.syncVersion ?? 0;
   useEffect(() => {
     if (!source) return;
 
@@ -27,7 +31,7 @@ export function useCachedValue<T>(
     return () => {
       isCurrent = false;
     };
-  }, [source, read]);
+  }, [source, read, syncVersion]);
 
   const isReady = !source || loaded?.source === source;
   const value = source && loaded?.source === source ? loaded.value : empty;
